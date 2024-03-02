@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet id="1639771694622-1" author="jermakova">
+        <createTable tableName="story_allowed_viewers">
+            <column name="story_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="person_id" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="1639771694622-2" author="jermakova">
+        <addForeignKeyConstraint baseColumnNames="story_id"
+                                 baseTableName="story_allowed_viewers"
+                                 constraintName="fk_story_allowed_viewers_on_story"
+                                 referencedColumnNames="id" referencedTableName="story"/>
+    </changeSet>
+    <changeSet id="1639771694622-3" author="jermakova">
+        <addColumn tableName="story">
+            <column name="access_type" type="VARCHAR(255)" defaultValue="ALL_FOLLOWERS"/>
+        </addColumn>
+    </changeSet>
+    <changeSet id="1639771694622-4" author="jermakova">
+        <update tableName="story_configuration">
+            <column name="access_type" value="ALL_FOLLOWERS" />
+            <where>access_type='PRIVATE'</where>
+        </update>
+    </changeSet>
+    <changeSet id="1639771694622-5" author="jermakova">
+        <update tableName="story_configuration">
+            <column name="access_type" value="SELECTED_FOLLOWERS" />
+            <where>access_type='SPECIFIED_USERS'</where>
+        </update>
+    </changeSet>
+
+</databaseChangeLog>

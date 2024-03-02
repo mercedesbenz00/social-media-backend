@@ -1,0 +1,516 @@
+version: '3.7'
+
+services:
+  prometheus:
+    image: prom/prometheus:v2.38.0
+    container_name: prometheus-container
+    volumes:
+      - ./prometheus/:/etc/prometheus/
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yaml'
+    ports:
+      - "9090:9090"
+    restart: always
+
+  grafana:
+    image: grafana/grafana-oss:9.1.4
+    user: "$UID:$GID"
+    container_name: grafana-container
+    depends_on:
+      - prometheus
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./grafana/:/var/lib/grafana
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_SERVER_DOMAIN=localhost
+  db:
+    image: postgres:13
+    environment:
+      - POSTGRES_MULTIPLE_DATABASES=person_service, group_service, post_service, notification_service, chat_service, transcoder_service, comment_service
+      - POSTGRES_USER=earthlink
+      - POSTGRES_PASSWORD=example
+    volumes:
+      - ./db_init:/docker-entrypoint-initdb.d
+      - postgres-data:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+
+  cassandra:
+    container_name: cassandra
+    image: cassandra:3.0.29
+    ports:
+      - "9042:9042"
+    environment:
+      - "MAX_HEAP_SIZE=256M"
+      - "HEAP_NEWSIZE=128M"
+    restart: always
+    volumes:
+      - ./cassandra_data:/var/lib/cassandra
+
+  cassandra-load-keyspace:
+    container_name: cassandra-load-keyspace
+    image: cassandra:3.0.29
+    depends_on:
+      - cassandra
+    volumes:
+      - ./social-ddl/social.cql:/social.cql
+    command: /bin/bash -c "sleep 60 && echo loading cassandra keyspace && cqlsh cassandra -f /social.cql"
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 120s
+
+  pact_broker:
+    image: pactfoundation/pact-broker
+    links:
+      - db
+    ports:
+      - 8000:9292
+    environment:
+      PACT_BROKER_BASIC_AUTH_USERNAME: pact_workshop
+      PACT_BROKER_BASIC_AUTH_PASSWORD: pact_workshop
+      PACT_BROKER_DATABASE_USERNAME: earthlink
+      PACT_BROKER_DATABASE_PASSWORD: example
+      PACT_BROKER_DATABASE_HOST: db
+      PACT_BROKER_DATABASE_NAME: postgres
+
+  rabbit:
+    image: rabbitmq:3-management
+    ports:
+      - 5672:5672
+      - 15672:15672
+
+  redis:
+    image: redis/redis-stack:latest
+    environment:
+      - REDIS_ARGS=--requirepass guest
+    ports:
+      - 6379:6379
+      - 16379:16379
+
+  redis-commander:
+    container_name: redis-commander
+    hostname: redis-commander
+    image: rediscommander/redis-commander:latest
+    restart: always
+    environment:
+      - REDIS_HOSTS=local:redis:6379:0:guest
+    ports:
+      - "8099:8081"
+
+  person-service:
+    image: person-service:local
+    ports:
+      - 8081:8080
+    environment:
+      DB_URL: jdbc:postgresql://db:5432/person_service
+      DB_USER: earthlink
+      DB_PASSWORD: example
+      RABBIT_HOST: rabbit
+      REDIS_HOST: redis
+      REDIS_PASS: guest
+      KAFKA_BOOTSTRAP_SERVERS: broker:29092
+      MINIO_ENDPOINT: "http://minio:9000"
+      MINIO_EXTERNAL_ENDPOINT: "http://minio:9000"
+      POST_SERVICE_URL: "http://post-service:8080"
+      PERSON_SERVICE_URL: "http://person-service:8080"
+      ACCOUNTS_CLEANUP_CRON: 0 0 * * * * # Remove deactivated accounts every hour
+    depends_on:
+      - db
+      - rabbit
+      - redis
+      - minio
+      - mc
+
+  group-service:
+    image: group-service:local
+    ports:
+      - 8082:8080
+    depends_on:
+      - db
+      - rabbit
+      - person-service
+    environment:
+      DB_URL: jdbc:postgresql://db:5432/group_service
+      DB_USER: earthlink
+      DB_PASSWORD: example
+      RABBIT_HOST: rabbit
+      REDIS_HOST: redis
+      REDIS_PASS: guest
+      MINIO_ENDPOINT: "http://minio:9000"
+      MINIO_EXTERNAL_ENDPOINT: "http://minio:9000"
+      USER_INFO_URL: "http://person-service:8080/api/v1/persons/profile"
+      PERSON_SERVICE_URL: "http://person-service:8080"
+      GROUP_STATISTICS_CRON: 0 0 2 * * ? # Update statistics every day at 2 am
+
+  post-service:
+    image: post-service:local
+    ports:
+      - 8083:8080
+    depends_on:
+      - db
+      - rabbit
+      - person-service
+      - group-service
+    environment:
+      DB_URL: jdbc:postgresql://db:5432/post_service
+      DB_USER: earthlink
+      DB_PASSWORD: example
+      RABBIT_HOST: rabbit
+      REDIS_HOST: redis
+      REDIS_PASS: guest
+      KAFKA_BOOTSTRAP_SERVERS: broker:29092
+      MINIO_ENDPOINT: "http://minio:9000"
+      MINIO_EXTERNAL_ENDPOINT: "http://minio:9000"
+      USER_INFO_URL: "http://person-service:8080/api/v1/persons/profile"
+      GROUP_SERVICE_URL: "http://group-service:8080"
+      PERSON_SERVICE_URL: "http://person-service:8080"
+      TRANSCODE_SERVICE_URL: "http://transcode-service:8033"
+      POST_STATISTICS_CRON: 0 0 2 * * ? # Update statistics every day at 2 am
+  post-processor-service:
+    image: post-processor-service:local
+    ports:
+      - 8085:8080
+    environment:
+      KAFKA_BOOTSTRAP_SERVERS: broker:29092
+      REDIS_ClUSTER_NODES: 173.18.0.2:6379,173.18.0.3:6379,173.18.0.4:6379
+      REDIS_MODE: cluster
+  post-event-processor-service:
+    image: post-event-processor-service:local
+    ports:
+      - 8086:8080
+    environment:
+      KAFKA_BOOTSTRAP_SERVERS: broker:29092
+      REDIS_ClUSTER_NODES: 173.18.0.2:6379,173.18.0.3:6379,173.18.0.4:6379
+      REDIS_MODE: cluster
+    depends_on:
+      - zookeeper
+      - broker
+  recent-feed-aggregator-service:
+    image: feed-aggregator-service:local
+    ports:
+      - 8093:8080
+    environment:
+      REDIS_ClUSTER_NODES: 173.18.0.2:6379,173.18.0.3:6379,173.18.0.4:6379
+      REDIS_MODE: standalone
+      APP_MODE: recentMode
+      REDIS_CACHE_HOST: host.docker.internal
+      REDIS_HOST: redis
+      REDIS_PASS: guest
+    depends_on:
+      - redis
+  topk-feed-aggregator-service:
+    image: feed-aggregator-service:local
+    ports:
+      - 8094:8080
+    environment:
+      REDIS_ClUSTER_NODES: 173.18.0.2:6379,173.18.0.3:6379,173.18.0.4:6379
+      REDIS_MODE: standalone
+      APP_MODE: topkMode
+      REDIS_CACHE_HOST: host.docker.internal
+      REDIS_HOST: redis
+      REDIS_PASS: guest
+  notification-service:
+    image: notification-service:local
+    depends_on:
+      - db
+      - person-service
+    ports:
+      - 8084:8080
+    environment:
+      DB_URL: jdbc:postgresql://db:5432/notification_service
+      DB_USER: earthlink
+      DB_PASSWORD: example
+      RABBIT_HOST: rabbit
+      NOTIFICATIONS_CLEANUP_CRON: 0 0 3 * * ?  # Cleanup expired notifications every day at 3 am
+
+  transcode-service:
+    image: transcode-service:local
+    depends_on:
+      - rabbit
+      - db
+    ports:
+      - 8033:8033
+
+  transcode-node:
+    image: transcode-node:local
+    volumes:
+      - ./config/:/config/
+    ports:
+      - 8034:8034
+    depends_on:
+      - transcode-service
+      - rabbit
+      - db
+
+  short-video-service:
+    image: short-video-service:local
+    ports:
+      - 8088:8088
+    environment:
+      MINIO_ENDPOINT: "http://minio:9000"
+      MINIO_EXTERNAL_ENDPOINT: "http://minio:9000"
+      USER_INFO_URL: "http://person-service:8080/api/v1/persons/profile"
+      SHORT_VIDEO_REGISTRY_SERVICE_URL: "http://host.docker.internal:8091"
+      COMMENT_SERVICE_URL: "http://host.docker.internal:8097"
+      KAFKA_BOOTSTRAP_SERVERS: host.docker.internal:9092
+    depends_on:
+      - minio
+      - mc
+      - person-service
+
+  short-video-registry-service:
+    image: short-video-registry-service:local
+    ports:
+      - 8090:8090
+    environment:
+      DB_URL: jdbc:cassandra://cassandra:9042/short_video_service;DefaultKeyspace=short_video_service
+      DB_USER: cassandra
+      DB_PASSWORD: cassandra
+      MINIO_ENDPOINT: "http://minio:9000"
+      MINIO_EXTERNAL_ENDPOINT: "http://minio:9000"
+      USER_INFO_URL: "http://person-service:8080/api/v1/persons/profile"
+      KAFKA_BOOTSTRAP_SERVERS: host.docker.internal:9092
+      SPRING_PROFILES_ACTIVE: api
+    depends_on:
+      - db
+      - minio
+      - mc
+      - cassandra
+      - cassandra-load-keyspace
+
+  comment-service:
+    image: comment-service:local
+    ports:
+      - 8097:8097
+    environment:
+      USER_INFO_URL: "http://person-service:8080/api/v1/persons/profile"
+      DB_URL: jdbc:postgresql://db:5432/comment_service
+      DB_USER: earthlink
+      DB_PASSWORD: example
+    depends_on:
+      - person-service
+      - db
+
+  audit-service:
+    image: audit-service:local
+    ports:
+      - 8089:8089
+    depends_on:
+      - elasticsearch
+    environment:
+      ES_HOST: elasticsearch
+      ES_URI: elasticsearch
+      KAFKA_BOOTSTRAP_SERVERS: broker:29092
+      REDIS_HOST: redis
+      PERSON_SERVICE_URL: "http://person-service:8080"
+  matrix:
+    image: matrix:local
+    ports:
+      - 8008:8008
+    volumes:
+      - ./matrix:/data
+    environment:
+      SYNAPSE_SERVER_NAME: "matrix"
+      SYNAPSE_REPORT_STATS: "yes"
+    depends_on:
+      - db
+
+  minio:
+    image: minio/minio
+    depends_on:
+      - broker
+    command: "server /data --console-address ':9001'"
+    environment:
+      MINIO_ROOT_USER: minio
+      MINIO_ROOT_PASSWORD: password
+    volumes:
+      - minio-data:/data
+    ports:
+      - 9000:9000
+      - 9001:9001
+
+  mc:
+    image: minio/mc:latest
+    depends_on:
+      - minio
+      - broker
+    entrypoint: >
+      /bin/sh -c "
+      /usr/bin/mc config host rm local;
+      /usr/bin/mc config host add --quiet --api s3v4 local http://minio:9000 minio password;
+      /usr/bin/mc rb --force local/social-media-bucket/;
+      /usr/bin/mc mb --quiet local/social-media-bucket/;
+      /usr/bin/mc anonymous set download local/social-media-bucket;
+      /usr/bin/mc admin config set local notify_kafka:1 tls_skip_verify="off" queue_dir="" queue_limit="0" sasl="off" sasl_password="" sasl_username="" tls_client_auth="0" tls="off" client_tls_cert="" client_tls_key="" brokers="broker:29092" topic="ShortVideoNotificationTopic";
+      /usr/bin/mc admin service restart local;
+      /usr/bin/mc mb local/social-media-short-videos;
+      /usr/bin/mc event add  local/social-media-short-videos arn:minio:sqs::1:kafka --event put;
+      /usr/bin/mc event list local/social-media-short-videos;
+      "
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.4.0.arm64
+    container_name: zookeeper
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+  kafka-ui:
+    image: provectuslabs/kafka-ui
+    container_name: kafka-ui
+    ports:
+      - "8097:8080"
+    restart: always
+    environment:
+      - KAFKA_CLUSTERS_0_NAME=local
+      - KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS=broker:29092
+  broker:
+    image: confluentinc/cp-kafka:7.4.0.arm64
+    container_name: broker
+    ports:
+      # To learn about configuring Kafka for access across networks see
+      # https://www.confluent.io/blog/kafka-client-cannot-connect-to-broker-on-aws-on-docker-etc/
+      - "9092:9092"
+      - "29092:29092"
+    depends_on:
+      - zookeeper
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: 'zookeeper:2181'
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_INTERNAL:PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092,PLAINTEXT_INTERNAL://broker:29092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_SOCKET_REQUEST_MAX_BYTES: 2000000000
+
+  schema-registry:
+    image: confluentinc/cp-schema-registry:5.0.1
+    hostname: schema-registry
+    depends_on:
+      - zookeeper
+      - broker
+    ports:
+      - 8077:8081
+    environment:
+      SCHEMA_REGISTRY_HOST_NAME: schema-registry
+      SCHEMA_REGISTRY_LISTENERS: "http://0.0.0.0:8081"
+      SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: PLAINTEXT://broker:29092
+
+  control-center:
+    image: confluentinc/cp-enterprise-control-center:5.4.0
+    hostname: control-center
+    container_name: control-center
+    depends_on:
+      - zookeeper
+      - broker
+      - schema-registry
+    ports:
+      - "9021:9021"
+    environment:
+      CONTROL_CENTER_BOOTSTRAP_SERVERS: 'broker:29092'
+      CONTROL_CENTER_ZOOKEEPER_CONNECT: 'zookeeper:2181'
+      CONTROL_CENTER_SCHEMA_REGISTRY_URL: "http://schema-registry:8081"
+      CONTROL_CENTER_REPLICATION_FACTOR: 1
+      CONTROL_CENTER_INTERNAL_TOPICS_PARTITIONS: 1
+      CONTROL_CENTER_MONITORING_INTERCEPTOR_TOPIC_PARTITIONS: 1
+      CONFLUENT_METRICS_TOPIC_REPLICATION: 1
+      PORT: 9021
+
+  kafka-connect:
+    image: confluentinc/cp-kafka-connect
+    hostname: kafka-connect
+    depends_on:
+      - zookeeper
+      - broker
+      - schema-registry
+    ports:
+      - 8083:8083
+      - 5005:5005 # KAFKA_DEBUG port
+    environment:
+      CONNECT_REST_ADVERTISED_HOST_NAME: kafka-connect
+      CONNECT_BOOTSTRAP_SERVERS: broker:9092
+      CONNECT_ZOOKEEPER_CONNECT: "zookeeper:2181/kafka"
+
+      CONNECT_GROUP_ID: cg_kafka-connect
+      CONNECT_CONFIG_STORAGE_TOPIC: kafka-connect_connect_config
+      CONNECT_OFFSET_STORAGE_TOPIC: kafka-connect_connect_offsets
+      CONNECT_STATUS_STORAGE_TOPIC: kafka-connect_connect_status
+      # Cannot be higher than the number of brokers in the Kafka cluster
+      CONNECT_CONFIG_STORAGE_REPLICATION_FACTOR: 1
+      CONNECT_OFFSET_STORAGE_REPLICATION_FACTOR: 1
+      CONNECT_STATUS_STORAGE_REPLICATION_FACTOR: 1
+
+      CONNECT_KEY_CONVERTER: org.apache.kafka.connect.converters.ByteArrayConverter
+      CONNECT_VALUE_CONVERTER: org.apache.kafka.connect.converters.ByteArrayConverter
+      # The internal topics aren't needed anymore in newer Kafka versions
+      CONNECT_INTERNAL_KEY_CONVERTER: org.apache.kafka.connect.json.JsonConverter
+      CONNECT_INTERNAL_VALUE_CONVERTER: org.apache.kafka.connect.json.JsonConverter
+
+      CONNECT_PLUGIN_PATH: /usr/share/java,/etc/kafka-connect/uber/,/etc/kafka-connect/plugins
+
+      # Logging
+      CONNECT_LOG4J_ROOT_LOGLEVEL: INFO
+      CONNECT_LOG4J_LOGGERS: org.reflections=ERROR
+      # Connect client overrides
+      CONNECT_TASK_SHUTDOWN_GRACEFUL_TIMEOUT_MS: 30000
+      CONNECT_OFFSET_FLUSH_INTERVAL_MS: 900000
+      CONNECT_CONSUMER_MAX_POLL_RECORDS: 500
+      # AWS SDK Variables - For S3 Connect
+      AWS_ACCESS_KEY_ID: minio
+      AWS_SECRET_ACCESS_KEY: password
+      # JVM Options
+      KAFKA_DEBUG: ${KAFKA_DEBUG}
+      # Some things just need to be on the classpath, not as plugins, like JDBC Drivers
+      CLASSPATH: /usr/share/java/kafka-connect-jdbc/lib/*.jar
+    volumes:
+      - ./kafka-connect/jars:/etc/kafka-connect/uber/
+      - ./kafka-connect/plugins/:/etc/kafka-connect/plugins/
+      - ./kafka-connect/jdbc-jars:/usr/share/java/kafka-connect-jdbc/lib:ro
+      # Alternative AWS SDK solution for S3 Connect - use 'aws configure'
+      # - ~/.aws:/root/.aws
+
+  kafka-connect-ui:
+    image: landoop/kafka-connect-ui:0.9.6
+    hostname: kafka-connect-ui
+    depends_on:
+      - kafka-connect
+    ports:
+      - 8003:8000
+    environment:
+      CONNECT_URL: "http://kafka-connect:8083/"
+      PROXY: "true"
+
+  elasticsearch:
+    image: elasticsearch:8.9.0
+    container_name: elasticsearch
+    ports:
+      - "9200:9200"
+    environment:
+      - discovery.type=single-node
+      - cluster.name=elasticsearch
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
+      # Since ES 8, SSL is on by default, disabling on local
+      - xpack.security.enabled=false
+  kibana:
+    image: kibana:8.7.0
+    ports:
+      - "5601:5601"
+volumes:
+  cache:
+    driver: local
+  minio-data:
+  postgres-data:
+  cassandra_data:
+    driver: local
+
+networks:
+  redis_cluster_net:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 173.18.0.0/16

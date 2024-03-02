@@ -1,0 +1,51 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot'
+}
+
+springBoot {
+    mainClass = 'iq.earthlink.social.userfeedaggregatorservice.UserFeedAggregatorApplication'
+    buildInfo()
+}
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+    implementation 'org.springframework.boot:spring-boot-starter-aop'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
+    implementation 'com.auth0:java-jwt:3.18.2'
+    compileOnly 'org.projectlombok:lombok'
+
+    implementation project(':social-common-classes')
+    implementation project(':social-error-handling')
+    implementation (project(':services:group-client'))
+    implementation (project(':services:post-client'))
+    implementation (project(':social-common-security')) {
+        exclude group: 'org.springframework.boot', module: 'spring-boot-starter-data-jpa'
+    }
+
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+    runtimeOnly 'io.micrometer:micrometer-registry-prometheus'
+    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+    annotationProcessor 'org.projectlombok:lombok'
+    testImplementation ('org.springframework.boot:spring-boot-starter-test') {
+        exclude group: "org.junit.vintage", module: "junit-vintage-engine"
+    }
+    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.3.1'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.3.1'
+    testImplementation 'org.springframework.security:spring-security-test'
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}

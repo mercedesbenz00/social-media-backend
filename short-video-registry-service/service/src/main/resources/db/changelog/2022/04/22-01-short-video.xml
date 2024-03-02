@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet id="1650639968730-1" author="jermakova">
+        <createTable tableName="short_video_categories">
+            <column name="short_video_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="category_id" type="BIGINT"/>
+        </createTable>
+        <addForeignKeyConstraint baseColumnNames="short_video_id" baseTableName="short_video_categories" constraintName="fk_short_video_categories_on_short_video" referencedColumnNames="id" referencedTableName="short_video"/>
+    </changeSet>
+    <changeSet id="1650639968730-2" author="jermakova">
+        <createTable tableName="short_video_tags">
+            <column name="short_video_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="tag_id" type="BIGINT"/>
+        </createTable>
+        <addForeignKeyConstraint baseColumnNames="short_video_id" baseTableName="short_video_tags" constraintName="fk_short_video_tags_on_short_video" referencedColumnNames="id" referencedTableName="short_video"/>
+    </changeSet>
+
+
+</databaseChangeLog>

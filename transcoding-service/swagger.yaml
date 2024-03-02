@@ -1,0 +1,105 @@
+basePath: /
+definitions:
+  TranscodeResponseBody:
+    properties:
+      error:
+        description: Error
+        type: string
+        x-go-name: Error
+      status:
+        description: Status
+        type: boolean
+        x-go-name: Status
+    type: object
+    x-go-package: bitbucket.org/creativeadvtech/taleem-transcode/master/controllers/web
+  transcodeBody:
+    description: transcodeBody represents transcode body to transcode by URL
+    properties:
+      callback_url:
+        description: Callback URL
+        type: string
+        x-go-name: CallbackURL
+      id:
+        description: ID
+        type: string
+        x-go-name: ID
+      url:
+        description: File URL
+        type: string
+        x-go-name: URL
+    required:
+    - id
+    - url
+    type: object
+    x-go-package: bitbucket.org/creativeadvtech/taleem-transcode/master/controllers/web
+  transcodeBodyBucket:
+    description: transcodeBodyBucket represents transcode body to transcode by Object
+      in bucket
+    properties:
+      bucket:
+        description: Bucket name
+        type: string
+        x-go-name: Bucket
+      callback_url:
+        description: Callback URL
+        type: string
+        x-go-name: CallbackURL
+      id:
+        description: ID
+        type: string
+        x-go-name: ID
+      object_name:
+        description: Object name
+        type: string
+        x-go-name: ObjectName
+    required:
+    - id
+    - object_name
+    type: object
+    x-go-package: bitbucket.org/creativeadvtech/taleem-transcode/master/controllers/web
+host: localhost:8033
+info:
+  description: |-
+    The service is responsible for transcoding a source video to one or more result videos
+    of various formats/resolutions/bitrate/etc.
+  title: REST API of taleem-transcode service
+  version: "1.0"
+paths:
+  /transcode:
+    post:
+      description: Transcode object by URL.
+      operationId: getTranscodeBody
+      parameters:
+      - in: body
+        name: Body
+        schema:
+          $ref: '#/definitions/transcodeBody'
+      responses:
+        "200":
+          $ref: '#/responses/getTranscodeResponseBody'
+      summary: Transcode object by URL.
+      tags:
+      - transcoding
+  /transcode/from_bucket:
+    post:
+      description: Transcode object from bucket.
+      operationId: getTranscodeBodyBucket
+      parameters:
+      - in: body
+        name: Body
+        schema:
+          $ref: '#/definitions/transcodeBodyBucket'
+      responses:
+        "200":
+          $ref: '#/responses/getTranscodeResponseBody'
+      summary: Transcode object from bucket.
+      tags:
+      - transcoding
+responses:
+  getTranscodeResponseBody:
+    description: ""
+    schema:
+      $ref: '#/definitions/TranscodeResponseBody'
+schemes:
+- http
+swagger: "2.0"

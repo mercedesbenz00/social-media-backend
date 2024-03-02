@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+    <changeSet id="004-person-service" author="janna.ermakova">
+        <dropUniqueConstraint constraintName="uc_a86e14a27e51f514da70d8efb"
+                              tableName="following"
+                              uniqueColumns="subscriber_id"/>
+    </changeSet>
+    <changeSet id="005-person-service" author="janna.ermakova">
+        <addUniqueConstraint constraintName="uc_a86e14a27e51f514da70d8efb"
+                             tableName="following"
+                             columnNames="subscriber_id, subscribed_to_id"/>
+    </changeSet>
+    <changeSet id="006-person-service" author="janna.ermakova">
+        <dropUniqueConstraint constraintName="uc_8e9146294029127a99f492a80"
+                              tableName="person_block"
+                              uniqueColumns="person_id"/>
+    </changeSet>
+    <changeSet id="007-person-service" author="janna.ermakova">
+        <addUniqueConstraint constraintName="uc_8e9146294029127a99f492a80"
+                             tableName="person_block"
+                             columnNames="person_id, blocked_person_id"/>
+    </changeSet>
+    <changeSet id="008-person-service" author="janna.ermakova">
+        <dropUniqueConstraint constraintName="uc_da5233ea0e166e7da7d5c7d54"
+                              tableName="person_mute"
+                              columnNames="person_id"/>
+    </changeSet>
+    <changeSet id="009-person-service" author="janna.ermakova">
+        <addUniqueConstraint constraintName="uc_da5233ea0e166e7da7d5c7d54"
+                             tableName="person_mute"
+                             columnNames="person_id, muted_person_id"/>
+    </changeSet>
+</databaseChangeLog>

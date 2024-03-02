@@ -1,0 +1,133 @@
+# Default values for synapse-matrix.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+image:
+  repository: registry.earthlink.iq/internal/synapse
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: "centos7"
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: false
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+podAnnotations: {}
+
+podSecurityContext:
+  supplementalGroups: [1000]
+  runAsNonRoot: true
+  # runAsUser: 1000
+  # runAsGroup: 1000110010
+  # fsGroup: 1000
+
+securityContext:
+  {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+service:
+  type: ClusterIP
+  httpPort: 8008
+  httpsPort: 8443
+  supPort: 8009
+
+storage:
+  upload:
+    enabled: true
+    capacity: 10Gi
+  media:
+    enabled: true
+    capacity: 10Gi
+
+ingress:
+  enabled: false
+  annotations:
+    {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  hosts:
+    - host: chart-example.local
+      paths:
+        - path: /
+          backend:
+            serviceName: chart-example.local
+            servicePort: 80
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
+
+postgres:
+  postgres:
+    username: social
+    password: UzBjLWEnM2NyM1Q
+    name: matrix
+
+server:
+  tls_certificate_path: "/data/cert/matrix.tls.crt"
+  tls_private_key_path: "/data/cert/matrix.tls.key"
+  signingKey: "ed25519 a_rTAa LvqnDRWDdDd77cDcTo61R33bJ1EcEjID1RlsP/IGYWk"
+  media_store_path: "/data/media"
+  uploads_path: "/data/uploads"
+  max_upload_size: 10M
+  max_image_pixels: 32M
+  dynamic_thumbnails: false
+  recaptcha_public_key: "YOUR_PUBLIC_KEY"
+  recaptcha_private_key: "YOUR_PRIVATE_KEY"
+  enable_registration_captcha: False
+  turn:
+    uris: []
+    shared_secret: "YOUR_SHARED_SECRET"
+    user_lifetime: "1h"
+    allow_guests: True
+  registration:
+    enabled: False
+    shared_secret: "ab447310d429e5a6f31ae63ba0d903e178c6fb5c9d4308114fdf8c4db81fd398"
+    allow_guest_access: False
+    enable_group_creation: True
+  macaroon_secret_key: "53b1ccb73628e288b34aeff464ba23bdff7503486bd567b6d0807b88f2360a73"
+  expire_access_token: False
+  signing_key_path: "/data/synapse.elcld.net.signing.key"
+  key_refresh_interval: "1d"
+  password_config:
+    enabled: true
+  password_providers:
+    module: "rest_auth_provider.RestAuthProvider"
+    endpoint: "https://sn.earthlink.iq/api/person-service"
+
+resources:
+  limits:
+    cpu: 1000m
+    memory: 1000Mi
+  requests:
+    cpu: 300m
+    memory: 100Mi
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+  # targetMemoryUtilizationPercentage: 80
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}

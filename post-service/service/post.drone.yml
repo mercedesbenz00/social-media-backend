@@ -1,0 +1,30 @@
+# Drone for post service
+kind: pipeline
+name: default
+clone:
+type: docker
+steps:
+  - name: list
+    image: alpine
+    commands:
+      - ls -l
+      - ls -l identity-server-spring-security/
+  - name: Clone
+    image: plugins/git
+    commands:
+      - git submodule update --init
+      - git submodule update --init --recursive
+  - name: push
+    image: plugins/docker
+    settings:
+      tags:
+        - latest
+        - "0.1"
+        - ${DRONE_COMMIT:0:7}
+      repo: registry.earthlink.iq/social/post-service
+      dockerfile: Dockerfile
+      registry: registry.earthlink.iq
+      username:
+        from_secret: docker_username
+      password:
+        from_secret: docker_password

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+
+    <changeSet id="1652357326914-1" author="jermakova">
+        <createTable tableName="short_video_stats">
+            <column name="id" type="UUID">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_shortvideostats"/>
+            </column>
+            <column name="video_id" type="UUID"/>
+            <column defaultValueNumeric="0" name="up_votes_count" type="int8">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValueNumeric="0" name="down_votes_count" type="int8">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValueNumeric="0" name="views_count" type="int8">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValueNumeric="0" name="comments_count" type="int8">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint baseColumnNames="video_id" baseTableName="short_video_stats" constraintName="FK_SHORTVIDEOSTATS_ON_VIDEO" referencedColumnNames="id" referencedTableName="short_video"/>
+    </changeSet>
+</databaseChangeLog>

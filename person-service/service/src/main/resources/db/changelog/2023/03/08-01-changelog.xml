@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd"
+        objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
+    <changeSet id="1678234811154-49" author="falah (generated)">
+        <createSequence incrementBy="1" sequenceName="person_notification_settings_seq_gen" startValue="1"/>
+    </changeSet>
+    <changeSet id="1678234811154-50" author="falah (generated)">
+        <createTable tableName="follower_notification_settings">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_followernotificationsettings"/>
+            </column>
+            <column name="person_id" type="BIGINT"/>
+            <column name="follower_id" type="BIGINT"/>
+            <column name="is_muted" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1678234811154-51" author="falah (generated)">
+        <addUniqueConstraint tableName="follower_notification_settings" columnNames="person_id, follower_id"
+                             constraintName="uk_followernotificationsettings"/>
+    </changeSet>
+</databaseChangeLog>

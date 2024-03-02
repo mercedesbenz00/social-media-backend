@@ -1,0 +1,26 @@
+plugins {
+    id 'java-library'
+}
+
+apply plugin: 'io.spring.dependency-management'
+
+dependencies {
+
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+
+
+    implementation 'com.auth0:java-jwt:3.18.2'
+    implementation 'org.jetbrains:annotations:20.1.0'
+    implementation project(':social-error-handling')
+
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+}
+
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:2021.0.3"
+    }
+}

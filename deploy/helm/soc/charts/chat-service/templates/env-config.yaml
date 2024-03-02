@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-env-config
+data:
+  DB_URL: jdbc:postgresql://{{ .Release.Name }}-postgres-svc:5432/{{ .Values.postgres.name }}
+  DB_USER: {{ .Values.postgres.username }}
+  DB_PASSWORD: {{ .Values.postgres.password }}
+  RABBIT_HOST: {{ .Release.Name }}-rabbit-svc

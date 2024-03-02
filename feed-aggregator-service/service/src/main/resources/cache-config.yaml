@@ -1,0 +1,6 @@
+spring.cache.feed.recent:
+  ttl: 60000
+  maxIdleTime: 60000
+spring.cache.feed.topk:
+  ttl: 60000
+  maxIdleTime: 60000

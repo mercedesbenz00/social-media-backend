@@ -1,0 +1,18 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.0.xsd">
+
+
+    <changeSet id="1705405132129-1" author="bauyrzhanibraimov">
+        <delete tableName="group_member">
+            <where>state != 'APPROVED' OR permissions = '[]'::jsonb</where>
+        </delete>
+    </changeSet>
+
+    <changeSet id="1705405132129-2" author="bauyrzhanibraimov">
+        <dropColumn tableName="group_member">
+            <column name="state"/>
+        </dropColumn>
+    </changeSet>
+
+</databaseChangeLog>

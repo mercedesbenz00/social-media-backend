@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd"
+        objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
+    <changeSet id="1669283342486-31" author="bauyrzhanibraimov (generated)">
+        <createSequence incrementBy="1" sequenceName="group_post_collection_seq_gen" startValue="1"/>
+    </changeSet>
+    <changeSet id="1669283342486-32" author="bauyrzhanibraimov (generated)">
+        <createSequence incrementBy="1" sequenceName="media_file_seq_gen" startValue="1"/>
+    </changeSet>
+    <changeSet id="1669283342486-33" author="bauyrzhanibraimov (generated)">
+        <createSequence incrementBy="1" sequenceName="media_file_transcoded_seq_gen" startValue="1"/>
+    </changeSet>
+</databaseChangeLog>

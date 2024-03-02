@@ -1,0 +1,32 @@
+plugins {
+    id 'org.springframework.boot' version '2.7.14-SNAPSHOT'
+    id 'io.spring.dependency-management' version '1.0.15.RELEASE'
+}
+
+ext['spring-security.version']='5.8.4'
+
+subprojects {
+    group = 'iq.earthlink.social'
+    version = '0.0.1'
+
+    apply plugin: 'io.spring.dependency-management'
+
+
+    repositories {
+        mavenCentral()
+        maven { url 'https://repo.spring.io/milestone' }
+        maven { url 'https://repo.spring.io/snapshot' }
+    }
+
+    dependencyManagement {
+        imports {
+            mavenBom "org.springframework.boot:spring-boot-dependencies:2.7.14-SNAPSHOT"
+            mavenBom "org.springframework.cloud:spring-cloud-dependencies:2021.0.3"
+        }
+    }
+
+    tasks.withType(JavaCompile) {
+        sourceCompatibility = "17"
+        targetCompatibility = "17"
+    }
+}

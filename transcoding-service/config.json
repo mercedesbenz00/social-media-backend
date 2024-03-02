@@ -1,0 +1,59 @@
+{
+  "master_info": {
+    "temp_folder": "tmp",
+    "storage_secrets": {
+      "access_key": "minio",
+      "secret_key": "password",
+      "end_point": "minio:9000",
+      "public_end_point": "https://s3-api.snp.creativeadvtech.ml",
+      "secure": false
+    },
+    "db_config": {
+      "dialect": "postgres",
+      "connection_string": "host=db port=5432 user=earthlink dbname=transcoder_service password=example sslmode=disable"
+    }
+  },
+  "node_info": {
+    "temp_folder": "tmp",
+    "storage_secrets": {
+      "access_key": "minio",
+      "secret_key": "password",
+      "end_point": "minio:9000",
+      "public_end_point": "https://s3-api.snp.creativeadvtech.ml",
+      "secure": false
+    }
+  },
+  "event_bus": {
+    "ip": "rabbit",
+    "port": "5672",
+    "management_port": "15672",
+    "user_name": "guest",
+    "password": "guest"
+  },
+  "default_storage_locations": [
+    {
+      "type": "TYPE_LOCATION_TRANSCODED_FULL",
+      "bucket": "social-media-bucket",
+      "path":  "processed"
+    },
+    {
+      "type": "TYPE_LOCATION_TRANSCODED_CHUNK",
+      "bucket": "social-media-bucket",
+      "path": "chunks"
+    },
+    {
+      "type": "TYPE_LOCATION_SOURCE",
+      "bucket": "social-media-bucket",
+      "path": "raw"
+    },
+    {
+      "type": "TYPE_LOCATION_M3U8",
+      "bucket": "social-media-bucket",
+      "path": "m3u8"
+    }
+  ],
+  "callback_info": {
+    "callback_url": "http://localhost",
+    "security_header": "my secret value"
+  }
+}

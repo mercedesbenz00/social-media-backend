@@ -1,0 +1,46 @@
+version: '3.5'
+
+services:
+
+  etcd0:
+    image: quay.io/coreos/etcd:v3.2.25
+    environment:
+      - ETCD_LISTEN_CLIENT_URLS=http://0.0.0.0:2379
+      - ETCD_ADVERTISE_CLIENT_URLS=http://etcd0:2379
+
+  mon0:
+    image: flaviostutz/ceph-monitor
+    pid: host
+    ports:
+      - 16789:6789
+    environment:
+      - CREATE_CLUSTER=true
+      - ETCD_URL=http://etcd0:2379
+
+  osd1:
+    image: flaviostutz/ceph-osd
+    pid: host
+    environment:
+      - MONITOR_HOSTS=mon0
+      - OSD_EXT4_SUPPORT=true
+      - OSD_JOURNAL_SIZE=512
+      - ETCD_URL=http://etcd0:2379
+
+  osd2:
+    image: flaviostutz/ceph-osd
+    pid: host
+    environment:
+      - MONITOR_HOSTS=mon0
+      - OSD_EXT4_SUPPORT=true
+      - OSD_JOURNAL_SIZE=512
+      - ETCD_URL=http://etcd0:2379
+
+  restapi:
+    image: ceph/daemon:v3.2.15-stable-3.2-luminous-centos-7
+    pid: host
+    command: "restapi"
+    environment:
+      - KV_TYPE=etcd
+      - KV_IP=etcd0
+    ports:
+    - 5000

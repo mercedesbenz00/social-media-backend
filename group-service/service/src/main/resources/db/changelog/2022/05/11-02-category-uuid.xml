@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd"
+        objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
+    <changeSet id="1652213497932-1" author="bauyrzhanibraimov (generated)">
+        <sql>
+            create table category_new as
+            select uuid_in(md5(random()::text || clock_timestamp()::text)::cstring) as category_uuid, cl.*
+            from category cl;
+
+        </sql>
+    </changeSet>
+    <changeSet id="1652213497932-2" author="bauyrzhanibraimov (generated)">
+        <addColumn tableName="category">
+            <column name="category_uuid" type="UUID"/>
+        </addColumn>
+    </changeSet>
+    <changeSet id="1652213497932-3" author="bauyrzhanibraimov (generated)">
+        <addUniqueConstraint columnNames="category_uuid" constraintName="uc_category_category_uuid" tableName="category"/>
+    </changeSet>
+    <changeSet id="1652213497932-4" author="bauyrzhanibraimov (generated)">
+        <sql>
+            update category c set category_uuid = (select category_uuid from category_new cn where cn.id=c.id);
+            drop table category_new;
+        </sql>
+    </changeSet>
+    <changeSet id="1652213497932-5" author="bauyrzhanibraimov (generated)">
+        <addNotNullConstraint columnName="category_uuid" tableName="category"/>
+    </changeSet>
+</databaseChangeLog>

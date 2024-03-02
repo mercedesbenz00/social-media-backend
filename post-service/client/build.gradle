@@ -1,0 +1,18 @@
+plugins {
+    id 'java-library'
+}
+
+dependencies {
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
+
+    implementation 'io.springfox:springfox-swagger2:2.10.5'
+    implementation 'io.springfox:springfox-swagger-ui:2.10.5'
+    implementation 'io.springfox:springfox-bean-validators:2.10.5'
+
+    implementation (project(':services:group-client'))
+    implementation (project(':social-common-classes'))
+}

@@ -1,0 +1,129 @@
+---
+kind: secret
+name: aws_secret_access_key
+get:
+  path: drone-cred-secrets
+  name: aws_secret_access_key
+
+---
+kind: secret
+name: aws_access_key_id
+get:
+  path: drone-cred-secrets
+  name: aws_access_key_id
+
+---
+kind: secret
+name: ssh_key
+get:
+  path: drone-ssh-rw-key
+  name: drone-aws-rw-key
+
+---
+kind: secret
+name: argocd-username
+get:
+  path: argocd-credentials
+  name: username
+
+---
+kind: secret
+name: argocd-password
+get:
+  path: argocd-credentials
+  name: password
+  
+---
+kind: pipeline
+name: build-transcode-master
+type: kubernetes
+
+trigger:
+  branch:
+  - master
+  event:
+  - push
+
+workspace:
+  path: /openedx/edx-platform
+
+steps:
+
+- name: build-ta3leem-transcode-master
+  image: plugins/ecr
+  settings:
+    access_key:
+      from_secret: aws_access_key_id
+    secret_key:
+      from_secret: aws_secret_access_key
+    registry: 310830963532.dkr.ecr.eu-central-1.amazonaws.com
+    region: eu-central-1
+    repo: ta3leem-transcode-master
+    tags: ["${DRONE_COMMIT_SHA:0:7}"]
+    dockerfile: ./master.Dockerfile
+    context: ./
+    build_args:
+      - CONFIG_LOCATION=./config/docker.json
+
+---
+kind: pipeline
+name: build-transcode-node
+type: kubernetes
+
+trigger:
+  branch:
+  - master
+  event:
+  - push
+
+workspace:
+  path: /openedx/edx-platform
+
+steps:
+
+- name: build-ta3leem-transcode-node
+  image: plugins/ecr
+  settings:
+    access_key:
+      from_secret: aws_access_key_id
+    secret_key:
+      from_secret: aws_secret_access_key
+    registry: 310830963532.dkr.ecr.eu-central-1.amazonaws.com
+    region: eu-central-1
+    repo: ta3leem-transcode-node
+    tags: ["${DRONE_COMMIT_SHA:0:7}"]
+    dockerfile: ./node.Dockerfile
+    context: ./
+    build_args:
+      - CONFIG_LOCATION=./config/docker.json
+
+---
+kind: pipeline
+name: deploy_staging
+type: kubernetes
+
+trigger:
+  event:
+  - promote
+  target:
+  - staging
+
+steps:
+- name: update-helm
+  image: 310830963532.dkr.ecr.eu-central-1.amazonaws.com/drone-pipeline-img:25a4090
+  environment:
+    PROJECT: ta3leem
+    SERVICE: transcode
+    ENV: staging
+    SSH_KEY:
+      from_secret: ssh_key
+    ARGOCD_USERNAME:
+      from_secret: argocd-username
+    ARGOCD_PASSWORD:
+      from_secret: argocd-password
+  commands:
+    - ./.drone.sh
+
+depends_on:
+- build-transcode-master
+- build-transcode-node

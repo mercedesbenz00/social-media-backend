@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+     <changeSet id="1637338794847-1" author="agurov">
+          <createTable tableName="media_file">
+               <column name="id" type="BIGINT">
+                    <constraints nullable="false" primaryKey="true" primaryKeyName="pk_mediafile"/>
+               </column>
+               <column name="path" type="VARCHAR(255)">
+                    <constraints nullable="false"/>
+               </column>
+               <column name="storage_type" type="VARCHAR(255)">
+                    <constraints nullable="false"/>
+               </column>
+               <column name="file_type" type="VARCHAR(255)">
+                    <constraints nullable="false"/>
+               </column>
+               <column name="mime_type" type="VARCHAR(255)">
+                    <constraints nullable="false"/>
+               </column>
+               <column name="created_at" type="DATETIME">
+                    <constraints nullable="false"/>
+               </column>
+               <column name="owner_id" type="BIGINT">
+                    <constraints nullable="false"/>
+               </column>
+               <column name="size" type="BIGINT">
+                    <constraints nullable="false"/>
+               </column>
+          </createTable>
+     </changeSet>
+     <changeSet id="1637338794847-2" author="agurov">
+          <createIndex indexName="unique_owner_file_idx" tableName="media_file">
+               <column name="owner_id"/>
+               <column name="file_type"/>
+               <column name="path"/>
+          </createIndex>
+     </changeSet>
+</databaseChangeLog>

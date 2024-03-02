@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+    <changeSet id="1687348225919-1" author="aakinin">
+        <sql>
+            DELETE FROM person_complaint
+            WHERE (owner_id, person_id, id) NOT IN (
+                SELECT owner_id, person_id, MAX(id)
+            FROM person_complaint
+            GROUP BY owner_id, person_id
+            ) AND state = 'PENDING';
+        </sql>
+    </changeSet>
+</databaseChangeLog>

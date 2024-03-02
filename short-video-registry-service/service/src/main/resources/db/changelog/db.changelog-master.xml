@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+    <include file="db/changelog/2022/03/30-01-initial-changelog.xml"/>
+    <include file="db/changelog/2022/04/11-01-short-video-configuration.xml"/>
+    <include file="db/changelog/2022/04/22-01-short-video.xml"/>
+    <include file="db/changelog/2022/05/03-01-short-video-update.xml"/>
+    <include file="db/changelog/2022/05/10-01-categories-tags-updates.xml"/>
+    <include file="db/changelog/2022/05/10-02-category-pk.xml"/>
+    <include file="db/changelog/2022/05/12-01-short-video-stats.xml"/>
+
+</databaseChangeLog>

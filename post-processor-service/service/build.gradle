@@ -1,0 +1,70 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot'
+    id 'io.spring.dependency-management'
+    id 'au.com.dius.pact' version '4.1.36'
+}
+
+springBoot {
+    mainClass = 'iq.earthlink.social.postprocessorservice.PostProcessorApplication'
+    buildInfo()
+}
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+    implementation 'org.springframework.boot:spring-boot-starter-aop'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.kafka:spring-kafka'
+    compileOnly 'org.projectlombok:lombok'
+
+
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+    runtimeOnly 'io.micrometer:micrometer-registry-prometheus'
+    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+    annotationProcessor 'org.projectlombok:lombok'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.kafka:spring-kafka-test'
+    testImplementation 'org.springframework.security:spring-security-test'
+    testImplementation 'au.com.dius.pact.consumer:junit5:4.1.36'
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
+
+def getGitHash = { ->
+    def stdout = new ByteArrayOutputStream()
+    exec {
+        commandLine 'git', 'rev-parse', '--short', 'HEAD'
+        standardOutput = stdout
+    }
+    return stdout.toString().trim()
+}
+
+def getGitBranch = { ->
+    def stdout = new ByteArrayOutputStream()
+    exec {
+        commandLine 'git', 'rev-parse', '--abbrev-ref', 'HEAD'
+        standardOutput = stdout
+    }
+    return stdout.toString().trim()
+}
+
+pact {
+    publish {
+        pactDirectory = "${buildDir}/pacts"
+        pactBrokerUrl = System.getenv("PACT_BROKER_URL") ?:'http://localhost:8000/'
+        pactBrokerUsername = System.getenv("PACT_BROKER_USERNAME") ?:'pact_workshop'
+        pactBrokerPassword = System.getenv("PACT_BROKER_PASSWORD") ?:'pact_workshop'
+        tags = [getGitBranch(), 'test', 'dev']
+        consumerVersion = getGitHash()
+    }
+}

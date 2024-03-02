@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd"
+        objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
+    <changeSet id="1636294238166-1" author="bauyrzhanibraimov (generated)">
+        <createSequence incrementBy="1" sequenceName="category_localized_seq_gen" startValue="1"/>
+    </changeSet>
+    <changeSet id="1636294238166-2" author="bauyrzhanibraimov (generated)">
+        <createSequence incrementBy="1" sequenceName="category_seq_gen" startValue="1"/>
+    </changeSet>
+    <changeSet id="1636294238166-3" author="bauyrzhanibraimov (generated)">
+        <createSequence incrementBy="1" sequenceName="group_member_seq" startValue="1"/>
+    </changeSet>
+    <changeSet id="1636294238166-4" author="bauyrzhanibraimov (generated)">
+        <createSequence incrementBy="1" sequenceName="group_perm_seq" startValue="1"/>
+    </changeSet>
+    <changeSet id="1636294238166-5" author="bauyrzhanibraimov (generated)">
+        <createSequence incrementBy="1" sequenceName="hibernate_sequence" startValue="1"/>
+    </changeSet>
+    <changeSet id="1636294238166-6" author="bauyrzhanibraimov (generated)">
+        <createSequence incrementBy="1" sequenceName="person_cat_seq_gen" startValue="1"/>
+    </changeSet>
+    <changeSet id="1636294238166-7" author="bauyrzhanibraimov (generated)">
+        <createSequence incrementBy="1" sequenceName="user_group_seq_gen" startValue="1"/>
+    </changeSet>
+    <changeSet id="1636294238166-8" author="bauyrzhanibraimov (generated)">
+        <createSequence incrementBy="1" sequenceName="user_group_stats_gen" startValue="1"/>
+    </changeSet>
+    <changeSet id="1636294238166-9" author="bauyrzhanibraimov (generated)">
+        <createTable tableName="category">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_category"/>
+            </column>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValueBoolean="false" name="deleted" type="bool">
+                <constraints nullable="false"/>
+            </column>
+            <column name="parent_category_id" type="BIGINT"/>
+            <column name="created_at" type="DATETIME"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="1636294238166-10" author="bauyrzhanibraimov (generated)">
+        <createTable tableName="category_localized">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_categorylocalized"/>
+            </column>
+            <column name="category_id" type="BIGINT"/>
+            <column name="locale" type="VARCHAR(255)"/>
+            <column name="name" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="1636294238166-11" author="bauyrzhanibraimov (generated)">
+        <createTable tableName="group_member">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_groupmember"/>
+            </column>
+            <column name="person_id" type="BIGINT"/>
+            <column name="group_id" type="BIGINT"/>
+            <column name="created_at" type="DATETIME"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="1636294238166-12" author="bauyrzhanibraimov (generated)">
+        <createTable tableName="group_permission">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_grouppermission"/>
+            </column>
+            <column name="user_group_id" type="BIGINT"/>
+            <column name="person_id" type="BIGINT"/>
+            <column name="author_id" type="BIGINT"/>
+            <column name="permission" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="1636294238166-13" author="bauyrzhanibraimov (generated)">
+        <createTable tableName="person_category">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_personcategory"/>
+            </column>
+            <column name="person_id" type="BIGINT"/>
+            <column name="created_at" type="DATETIME"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="1636294238166-14" author="bauyrzhanibraimov (generated)">
+        <createTable tableName="person_category_categories">
+            <column name="person_category_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_personcategory_categories"/>
+            </column>
+            <column name="categories_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_personcategory_categories"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1636294238166-15" author="bauyrzhanibraimov (generated)">
+        <createTable tableName="tag">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_tag"/>
+            </column>
+            <column name="tag" type="VARCHAR(255)"/>
+            <column name="created_at" type="DATETIME"/>
+            <column name="author_id" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="1636294238166-16" author="bauyrzhanibraimov (generated)">
+        <createTable tableName="user_group">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_usergroup"/>
+            </column>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(2000)"/>
+            <column name="rules" type="VARCHAR(4000)"/>
+            <column name="created_at" type="DATETIME"/>
+            <column name="parent_group_id" type="BIGINT"/>
+            <column name="owner_id" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="1636294238166-17" author="bauyrzhanibraimov (generated)">
+        <createTable tableName="user_group_categories">
+            <column name="user_group_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_usergroup_categories"/>
+            </column>
+            <column name="categories_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_usergroup_categories"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1636294238166-18" author="bauyrzhanibraimov (generated)">
+        <createTable tableName="user_group_post_type_allowed">
+            <column name="user_group_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="post_type_allowed" type="VARCHAR"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="1636294238166-19" author="bauyrzhanibraimov (generated)">
+        <createTable tableName="user_group_stats">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_usergroupstats"/>
+            </column>
+            <column name="group_id" type="BIGINT"/>
+            <column defaultValueNumeric="0" name="published_posts_count" type="int8">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValueNumeric="0" name="members_count" type="int8">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValueNumeric="0" name="score" type="int8">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1636294238166-20" author="bauyrzhanibraimov (generated)">
+        <createTable tableName="user_group_tags">
+            <column name="user_group_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_usergroup_tags"/>
+            </column>
+            <column name="tags_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_usergroup_tags"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1636294238166-21" author="bauyrzhanibraimov (generated)">
+        <addUniqueConstraint columnNames="name" constraintName="uc_11bf5dd4f6db5221aa3d8ee91" tableName="category"/>
+    </changeSet>
+    <changeSet id="1636294238166-22" author="bauyrzhanibraimov (generated)">
+        <addUniqueConstraint columnNames="name, locale" constraintName="uc_32521efd4efc9c4f87f1537e7"
+                             tableName="category_localized"/>
+    </changeSet>
+    <changeSet id="1636294238166-23" author="bauyrzhanibraimov (generated)">
+        <addUniqueConstraint columnNames="name" constraintName="uc_6bd7ab41cb6da3c2e92a37f03" tableName="user_group"/>
+    </changeSet>
+    <changeSet id="1636294238166-24" author="bauyrzhanibraimov (generated)">
+        <addUniqueConstraint columnNames="user_group_id, person_id, permission" constraintName="uc_c59ff385418a5543d3a6f7023"
+                             tableName="group_permission"/>
+    </changeSet>
+    <changeSet id="1636294238166-25" author="bauyrzhanibraimov (generated)">
+        <addUniqueConstraint columnNames="tag" constraintName="uc_tag_tag" tableName="tag"/>
+    </changeSet>
+    <changeSet id="1636294238166-26" author="bauyrzhanibraimov (generated)">
+        <createIndex indexName="group_member_unique_idx" tableName="group_member" unique="true">
+            <column name="group_id"/>
+            <column name="person_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet id="1636294238166-27" author="bauyrzhanibraimov (generated)">
+        <createIndex indexName="person_id_idx" tableName="person_category" unique="true">
+            <column name="person_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet id="1636294238166-28" author="bauyrzhanibraimov (generated)">
+        <addForeignKeyConstraint baseColumnNames="category_id" baseTableName="category_localized"
+                                 constraintName="FK_CATEGORYLOCALIZED_ON_CATEGORY" referencedColumnNames="id"
+                                 referencedTableName="category"/>
+    </changeSet>
+    <changeSet id="1636294238166-29" author="bauyrzhanibraimov (generated)">
+        <addForeignKeyConstraint baseColumnNames="parent_category_id" baseTableName="category"
+                                 constraintName="FK_CATEGORY_ON_PARENTCATEGORY" referencedColumnNames="id"
+                                 referencedTableName="category"/>
+    </changeSet>
+    <changeSet id="1636294238166-30" author="bauyrzhanibraimov (generated)">
+        <addForeignKeyConstraint baseColumnNames="group_id" baseTableName="group_member"
+                                 constraintName="FK_GROUPMEMBER_ON_GROUP" referencedColumnNames="id"
+                                 referencedTableName="user_group"/>
+    </changeSet>
+    <changeSet id="1636294238166-31" author="bauyrzhanibraimov (generated)">
+        <addForeignKeyConstraint baseColumnNames="user_group_id" baseTableName="group_permission"
+                                 constraintName="FK_GROUPPERMISSION_ON_USERGROUP" referencedColumnNames="id"
+                                 referencedTableName="user_group"/>
+    </changeSet>
+    <changeSet id="1636294238166-32" author="bauyrzhanibraimov (generated)">
+        <addForeignKeyConstraint baseColumnNames="group_id" baseTableName="user_group_stats"
+                                 constraintName="FK_USERGROUPSTATS_ON_GROUP" referencedColumnNames="id"
+                                 referencedTableName="user_group"/>
+    </changeSet>
+    <changeSet id="1636294238166-33" author="bauyrzhanibraimov (generated)">
+        <addForeignKeyConstraint baseColumnNames="parent_group_id" baseTableName="user_group"
+                                 constraintName="FK_USERGROUP_ON_PARENTGROUP" referencedColumnNames="id"
+                                 referencedTableName="user_group"/>
+    </changeSet>
+    <changeSet id="1636294238166-34" author="bauyrzhanibraimov (generated)">
+        <addForeignKeyConstraint baseColumnNames="categories_id" baseTableName="person_category_categories"
+                                 constraintName="fk_percatcat_on_category" referencedColumnNames="id"
+                                 referencedTableName="category"/>
+    </changeSet>
+    <changeSet id="1636294238166-35" author="bauyrzhanibraimov (generated)">
+        <addForeignKeyConstraint baseColumnNames="person_category_id" baseTableName="person_category_categories"
+                                 constraintName="fk_percatcat_on_person_category" referencedColumnNames="id"
+                                 referencedTableName="person_category"/>
+    </changeSet>
+    <changeSet id="1636294238166-36" author="bauyrzhanibraimov (generated)">
+        <addForeignKeyConstraint baseColumnNames="categories_id" baseTableName="user_group_categories"
+                                 constraintName="fk_usegrocat_on_category" referencedColumnNames="id"
+                                 referencedTableName="category"/>
+    </changeSet>
+    <changeSet id="1636294238166-37" author="bauyrzhanibraimov (generated)">
+        <addForeignKeyConstraint baseColumnNames="user_group_id" baseTableName="user_group_categories"
+                                 constraintName="fk_usegrocat_on_user_group" referencedColumnNames="id"
+                                 referencedTableName="user_group"/>
+    </changeSet>
+    <changeSet id="1636294238166-38" author="bauyrzhanibraimov (generated)">
+        <addForeignKeyConstraint baseColumnNames="tags_id" baseTableName="user_group_tags"
+                                 constraintName="fk_usegrotag_on_tag" referencedColumnNames="id"
+                                 referencedTableName="tag"/>
+    </changeSet>
+    <changeSet id="1636294238166-39" author="bauyrzhanibraimov (generated)">
+        <addForeignKeyConstraint baseColumnNames="user_group_id" baseTableName="user_group_tags"
+                                 constraintName="fk_usegrotag_on_user_group" referencedColumnNames="id"
+                                 referencedTableName="user_group"/>
+    </changeSet>
+    <changeSet id="1636294238166-40" author="bauyrzhanibraimov (generated)">
+        <addForeignKeyConstraint baseColumnNames="user_group_id" baseTableName="user_group_post_type_allowed"
+                                 constraintName="fk_usergroup_posttypeallowed_on_user_group" referencedColumnNames="id"
+                                 referencedTableName="user_group"/>
+    </changeSet>
+
+</databaseChangeLog>

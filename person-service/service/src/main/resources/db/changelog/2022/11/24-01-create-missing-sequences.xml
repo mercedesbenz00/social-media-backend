@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd"
+        objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
+    <changeSet id="1669276556305-49" author="bauyrzhanibraimov (generated)">
+        <createSequence incrementBy="1" sequenceName="authority_seq_gen" startValue="1"/>
+    </changeSet>
+    <changeSet id="1669276556305-50" author="bauyrzhanibraimov (generated)">
+        <createSequence incrementBy="1" sequenceName="following_seq_gen" startValue="1"/>
+    </changeSet>
+    <changeSet id="1669276556305-52" author="bauyrzhanibraimov (generated)">
+        <createSequence incrementBy="1" sequenceName="media_file_seq_gen" startValue="1"/>
+    </changeSet>
+    <changeSet id="1669276556305-53" author="bauyrzhanibraimov (generated)">
+        <createSequence incrementBy="1" sequenceName="media_file_transcoded_seq_gen" startValue="1"/>
+    </changeSet>
+    <changeSet id="1669276556305-54" author="bauyrzhanibraimov (generated)">
+        <createSequence incrementBy="1" sequenceName="person_configuration_gen" startValue="1"/>
+    </changeSet>
+    <changeSet id="1669276556305-55" author="bauyrzhanibraimov (generated)">
+        <createSequence incrementBy="1" sequenceName="person_group_ban_seq_gen" startValue="1"/>
+    </changeSet>
+    <changeSet id="1669276556305-56" author="bauyrzhanibraimov (generated)">
+        <createSequence incrementBy="1" sequenceName="person_mute_seq_gen" startValue="1"/>
+    </changeSet>
+    <changeSet id="1669276556305-57" author="bauyrzhanibraimov (generated)">
+        <createSequence incrementBy="1" sequenceName="role_seq_gen" startValue="1"/>
+    </changeSet>
+    <changeSet id="1669278837239-49" author="bauyrzhanibraimov (generated)">
+        <createSequence incrementBy="1" sequenceName="person_complaint_seq_gen" startValue="1"/>
+    </changeSet>
+</databaseChangeLog>

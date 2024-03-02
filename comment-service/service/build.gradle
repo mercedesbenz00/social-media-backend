@@ -1,0 +1,50 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot'
+}
+
+springBoot {
+    mainClass = 'iq.earthlink.social.commentservice.CommentServiceApplication'
+    buildInfo()
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-log4j2'
+    modules {
+        module("org.springframework.boot:spring-boot-starter-logging") {
+            replacedBy("org.springframework.boot:spring-boot-starter-log4j2", "Use Log4j2 instead of Logback")
+        }
+    }
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+    implementation "org.liquibase:liquibase-core"
+
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'org.springframework.security.oauth.boot:spring-security-oauth2-autoconfigure'
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+
+    implementation 'org.jsoup:jsoup:1.12.1'
+
+    implementation project(':social-common')
+    implementation project(':social-common-classes')
+    implementation project(":social-error-handling")
+    implementation project(":social-common-security")
+    implementation project(':services:comment-client')
+    implementation project(':services:person-client')
+
+    implementation 'org.postgresql:postgresql'
+    implementation 'com.squareup.okhttp3:okhttp:4.8.1'
+
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
+    implementation 'com.google.code.gson:gson:2.8.6'
+    implementation 'com.github.dozermapper:dozer-core:6.1.0'
+
+    testImplementation 'org.mockito:mockito-core:1.10.19'
+    testImplementation 'org.assertj:assertj-core:3.5.2'
+    testImplementation "org.powermock:powermock-api-mockito:1.6.5"
+    testImplementation "org.powermock:powermock-module-junit4:1.6.5"
+    testImplementation "org.powermock:powermock-module-testng:1.6.5"
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+}

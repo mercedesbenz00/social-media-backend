@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet id="1644510712298-1" author="jermakova">
+        <sql>
+            <![CDATA[
+            DELETE FROM person_group_ban gb1
+            USING person_group_ban gb2
+            WHERE gb1.id < gb2.id
+                AND gb1.user_group_id = gb2.user_group_id
+                AND gb1.author_id = gb2.author_id
+                AND gb1.banned_person_id = gb2.banned_person_id
+            ]]>
+        </sql>
+    </changeSet>
+    <changeSet id="1644510712298-2" author="jermakova">
+        <createIndex indexName="person_group_ban_unique_idx" tableName="person_group_ban" unique="true">
+            <column name="author_id"/>
+            <column name="banned_person_id"/>
+            <column name="user_group_id"/>
+        </createIndex>
+    </changeSet>
+</databaseChangeLog>

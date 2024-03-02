@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet id="1676497393541-1" author="jermakova">
+        <addColumn tableName="person">
+            <column name="state" type="VARCHAR(255)" defaultValue="ACCOUNT_CREATED"/>
+        </addColumn>
+    </changeSet>
+    <changeSet id="1676559794495-1" author="jermakova">
+        <update tableName="person">
+            <column name="state" value="REGISTRATION_COMPLETED"/>
+            <where>is_registration_completed = true and is_confirmed = true</where>
+        </update>
+    </changeSet>
+
+</databaseChangeLog>

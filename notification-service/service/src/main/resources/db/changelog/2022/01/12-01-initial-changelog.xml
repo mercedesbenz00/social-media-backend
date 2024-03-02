@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+
+    <changeSet id="1642006056759-1" author="jermakova">
+        <createTable tableName="person_token">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_persontoken"/>
+            </column>
+            <column name="push_token" type="VARCHAR(255)"/>
+            <column name="person_id" type="BIGINT"/>
+            <column name="device" type="VARCHAR(255)"/>
+            <column name="created_at" type="DATETIME"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="1642006087956-1" author="jermakova">
+        <createSequence sequenceName="person_token_seq_gen" startValue="1" incrementBy="1"/>
+    </changeSet>
+
+    <changeSet id="1642184835497-1" author="jermakova">
+        <createTable tableName="notification_event">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_notificationevent"/>
+            </column>
+            <column name="event_date" type="DATETIME"/>
+            <column name="event_id" type="VARCHAR(255)"/>
+            <column name="receiver_id" type="BIGINT"/>
+            <column name="notification_type" type="VARCHAR(255)"/>
+            <column name="body" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="1642184870096-1" author="jermakova">
+        <createSequence sequenceName="notification_event_seq_gen" startValue="1" incrementBy="1"/>
+    </changeSet>
+    <changeSet id="1642191102787-1" author="jermakova">
+        <createTable tableName="notification_view">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_notificationview"/>
+            </column>
+            <column name="event_id" type="BIGINT"/>
+            <column name="view_date" type="DATETIME"/>
+            <column name="receiver_id" type="BIGINT"/>
+            <column name="state" type="INT"/>
+        </createTable>
+        <addForeignKeyConstraint baseColumnNames="event_id" baseTableName="notification_view" constraintName="FK_NOTIFICATIONVIEW_ON_EVENT" referencedColumnNames="id" referencedTableName="notification_event"/>
+    </changeSet>
+    <changeSet id="1642191135890-1" author="jermakova">
+        <createSequence sequenceName="notification_view_seq_gen" startValue="1" incrementBy="1"/>
+    </changeSet>
+
+</databaseChangeLog>

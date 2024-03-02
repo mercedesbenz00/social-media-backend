@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd"
+        objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
+    <changeSet id="1677050928837-30" author="bauyrzhanibraimov (generated)">
+        <addColumn tableName="post_statistics">
+            <column name="last_activity_at" type="DATETIME"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="bauyrzhan.ibraimov" id="1677050928837-31" labels="Migrating last activity date to the new table">
+        <sql>
+            UPDATE post_statistics ps
+            SET last_activity_at = (SELECT last_activity_at FROM post p WHERE p.id=ps.post_id)
+        </sql>
+    </changeSet>
+    <changeSet id="1677050928837-32" author="bauyrzhanibraimov (generated)" failOnError="false">
+        <dropForeignKeyConstraint baseTableName="post_comments" constraintName="fk_poscom_on_comment"/>
+    </changeSet>
+    <changeSet id="1677050928837-33" author="bauyrzhanibraimov (generated)" failOnError="false">
+        <dropForeignKeyConstraint baseTableName="post_comments" constraintName="fk_poscom_on_post"/>
+    </changeSet>
+    <changeSet id="1677050928837-36" author="bauyrzhanibraimov (generated)" failOnError="false">
+        <dropTable cascadeConstraints="true" tableName="post_comments"/>
+    </changeSet>
+    <changeSet id="1677050928837-38" author="bauyrzhanibraimov (generated)">
+        <dropColumn columnName="last_activity_at" tableName="post"/>
+    </changeSet>
+
+</databaseChangeLog>

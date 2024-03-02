@@ -1,0 +1,92 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "group-service.fullname" . }}
+  labels:
+    {{- include "group-service.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "group-service.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "group-service.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "group-service.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            - name: SERVER_PORT
+              value: {{ .Values.application.server.port | quote }}
+            - name: SOCIAL_URL_PREFIX
+              value: {{ .Values.application.social.url.prefix }}
+            - name: SOCIAL_OPENID_KEY_ID
+              value: "{{ .Values.application.social.openid.keyid }}"
+            - name: SOCIAL_OPENID_JWKS_URL
+              value: {{ .Values.application.social.openid.jwksurl }}
+            - name: SOCIAL_FILESERVICE_URL
+              value: {{ .Values.application.social.fileservice.url }}
+            - name: SOCIAL_FILESERVICE_TUS_URL
+              value: {{ .Values.application.social.fileservice.tusUrl }}
+            - name: SOCIAL_FILESERVICE_CONFIGURATION_KEY
+              value: {{ .Values.application.social.fileservice.configurationKey }}
+            - name: SOCIAL_FILESERVICE_IMAGES_URL_POSTFIX
+              value: {{ .Values.application.social.fileservice.imagesUrlPostfix }}
+            - name: SOCIAL_FILESERVICE_FILES_URL_POSTFIX
+              value: {{ .Values.application.social.fileservice.filesUrlPostfix }}
+            - name: SOCIAL_FILESERVICE_FILE_SERVICE_DOMAIN_REPLACE_FROM_RE
+              value: {{ .Values.application.social.fileservice.domainreplacefromre | quote }}
+            - name: SOCIAL_FILESERVICE_FILE_SERVICE_DOMAIN_REPLACE_TO
+              value: {{ .Values.application.social.fileservice.domainreplaceto }}
+            - name: SOCIAL_FILESERVICE_FILESERVICEDOMAINFORTUS
+              value: {{ .Values.application.social.fileservice.fileservicedomainfortus }}
+            - name: SOCIAL_RABBIT_HOST
+              value: "{{ include "group-service.rabbitMQURL" . | replace "\n" "" }}"
+            - name: SPRING_CLOUD_ZOOKEEPER_CONNECT_STRING
+              value: "{{ include "group-service.zookeeperConnectString" . | replace "\n" "" }}"
+            - name: POSTGRES_URL
+              value: "{{ include "group-service.postgresURL" . | replace "\n" "" }}"
+          ports:
+            - name: http
+              containerPort: {{ .Values.service.port }}
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

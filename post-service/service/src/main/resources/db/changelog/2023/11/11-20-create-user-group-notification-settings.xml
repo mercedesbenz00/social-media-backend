@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet id="1700495013039-1" author="aakinin">
+        <createTable tableName="user_group_notification_settings">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="person_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="group_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="is_muted" type="boolean">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1700495013039-2" author="aakinin">
+        <addUniqueConstraint columnNames="person_id, group_id" constraintName="uk_person_group"
+                             tableName="user_group_notification_settings"/>
+    </changeSet>
+    <changeSet id="1700495013039-3" author="aakinin">
+        <createSequence incrementBy="1" sequenceName="user_group_notification_settings_seq_gen" startValue="1"/>
+    </changeSet>
+    <changeSet id="1700495013039-4" author="aakinin">
+        <addForeignKeyConstraint baseColumnNames="group_id" baseTableName="user_group_notification_settings"
+                                 constraintName="FK_GROUP_MEMBER_ON_GROUP" referencedColumnNames="id"
+                                 referencedTableName="user_group"/>
+    </changeSet>
+    <changeSet id="1700495013039-5" author="aakinin">
+        <addForeignKeyConstraint baseColumnNames="person_id" baseTableName="user_group_notification_settings"
+                                 constraintName="FK_GROUP_MEMBER_ON_PERSON" referencedColumnNames="id"
+                                 referencedTableName="person"/>
+    </changeSet>
+</databaseChangeLog>

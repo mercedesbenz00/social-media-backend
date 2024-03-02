@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <property name="uuid_function" value="uuid_in(md5(random()::text || clock_timestamp()::text)::cstring)" dbms="postgresql"/>
+
+    <changeSet id="1696922443129-1" author="bauyrzhanibraimov">
+        <createTable tableName="person">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_person"/>
+            </column>
+            <column name="person_uuid" type="UUID" defaultValueComputed="${uuid_function}">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="display_name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValueBoolean="false" name="is_verified_account" type="boolean"/>
+            <column name="avatar_id" type="BIGINT"/>
+            <column name="person_roles" type="jsonb"/>
+            <column name="created_at" type="DATETIME"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="1696922443129-2" author="bauyrzhanibraimov (generated)">
+        <createSequence incrementBy="1" sequenceName="person_seq_gen" startValue="1"/>
+    </changeSet>
+    <changeSet id="1696922443129-3" author="bauyrzhanibraimov (generated)">
+        <addForeignKeyConstraint baseColumnNames="avatar_id" baseTableName="person" constraintName="FK_PERSON_ON_AVATAR"
+                                 referencedColumnNames="id" referencedTableName="media_file"/>
+    </changeSet>
+    <changeSet id="1696922443129-4" author="bauyrzhanibraimov (generated)">
+        <createIndex indexName="person_generated_displayName_idx" tableName="person">
+            <column name="display_name"/>
+        </createIndex>
+    </changeSet>
+</databaseChangeLog>

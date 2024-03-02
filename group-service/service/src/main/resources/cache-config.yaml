@@ -1,0 +1,12 @@
+spring.cache.person.subscriptions:
+  ttl: 120000
+  maxIdleTime: 60000
+spring.cache.person.subscribers:
+  ttl: 120000
+  maxIdleTime: 60000
+#  localCacheOptions:
+#    invalidationPolicy: "ON_CHANGE"
+#    evictionPolicy: "NONE"
+#    cacheSize: 0
+#    timeToLiveInMillis: 0
+#    maxIdleInMillis: 0

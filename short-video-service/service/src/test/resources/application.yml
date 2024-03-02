@@ -1,0 +1,35 @@
+server:
+  auth:
+    apiAuthHeader: X-API-KEY
+    apiSecretKey: ${API_SECRET_KEY:secret}
+spring:
+  main:
+    allow-bean-definition-overriding: true
+openapi:
+  shortVideoService:
+    base-path: /api/v1/
+filestorage:
+  minio:
+    endpoint: ${MINIO_ENDPOINT:http://localhost:9000}
+    externalEndpoint: ${MINIO_EXTERNAL_ENDPOINT:http://localhost:9000}
+    accessKey: ${MINIO_ACCESS_KEY:minio}
+    secretKey: ${MINIO_SECRET_KEY:password}
+    bucketName: ${MINIO_BUCKET:social-media-short-videos}
+
+short-video-registry:
+  service:
+    url: ${SHORT_VIDEO_REGISTRY_SERVICE_URL:http://localhost:8091}
+
+comment:
+  service:
+    url: ${COMMENT_SERVICE_URL:http://localhost:8097}
+
+person:
+  service:
+    url: ${PERSON_SERVICE_URL:http://localhost:8081}
+
+pactbroker:
+  url: ${PACT_BROKER_URL:http://localhost:8000}
+  auth:
+    username: ${PACT_BROKER_USERNAME:pact_workshop}
+    password:  ${PACT_BROKER_PASSWORD:pact_workshop}

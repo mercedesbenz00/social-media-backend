@@ -1,0 +1,148 @@
+replicaCount: 1
+
+image:
+  repository: 310830963532.dkr.ecr.eu-central-1.amazonaws.com/sn-group-service
+  pullPolicy: IfNotPresent
+  tag: "latest"
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+podAnnotations: {}
+
+podSecurityContext:
+  {}
+  # fsGroup: 2000
+
+securityContext:
+  {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+service:
+  type: ClusterIP
+  port: 80
+
+ingress:
+  enabled: false
+  annotations:
+    {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  hosts:
+    - host: chart-example.local
+      paths:
+        - path: /
+          backend:
+            serviceName: chart-example.local
+            servicePort: 80
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
+
+resources:
+  {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+  # targetMemoryUtilizationPercentage: 80
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+postgres:
+  enabled: false
+
+application:
+  server:
+    port: 8010
+  social:
+    url:
+      prefix: ""
+    openid:
+      keyid: 8810EE7F53ABDB0065EF6417FDEB7C20060E04D5
+      jwksurl: https://social.identity.apps.okd.earthlink.iq/core/.well-known/openid-configuration/jwks
+      access-token-header-name: access-token
+      role-claim-name: socialnetwork.role
+
+    fileservice:
+      domainreplacefromre: https\://sn-fs\.earthlink\.iq
+      domainreplaceto: https://nc.earthlink.iq
+      fileservicedomainfortus: "https://sn-fs.earthlink.iq"
+      url: https://sn-fs.earthlink.iq
+      tusUrl: http://10.4.13.82:5000/files
+      configurationKey: social
+      imagesUrlPostfix: "/api/image"
+      filesUrlPostfix: "/api/files"
+      fileServiceDomainForTUS: http://10.4.13.82:5000/api/files/
+      # uploaded image sizes:
+      small:
+        max-height: 100
+        max-width: 100
+      medium:
+        max-height: 500
+        max-width: 500
+      big:
+        max-height: 1200
+        max-width: 1200
+      xl:
+        max-height: 3000
+        max-width: 3000
+
+    rabbit:
+      host: localhost
+
+  spring:
+    cloud:
+      zookeeper:
+        connectString: localhost:2181
+        discovery:
+          enabled: true
+    datasource:
+      url: jdbc:postgresql://localhost:5432/earthlink
+      driver-class-name: org.postgresql.Driver
+      username: earthlink
+      password: password
+
+  elasticsearch:
+    home: /usr/local/Cellar/elasticsearch/5.6.0
+    cluster-name: elasticsearch
+    host: localhost
+    port: 9300
+
+  management:
+    endpoints:
+      web:
+        exposure:
+          include: "*"

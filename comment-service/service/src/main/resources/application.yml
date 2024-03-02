@@ -1,0 +1,87 @@
+server:
+  port: ${PORT:8080}
+  auth:
+    secret: ${SECRET_KEY:EkQCe8jwME187iyzqpxNPUlwu9MaMkXY}
+    apiAuthHeader: X-API-KEY
+    apiSecretKey: ${API_SECRET_KEY:secret}
+social:
+
+  # URL prefix for all controllers in the service
+  #  url-prefix: comment-service
+
+  commentservice:
+
+  openid:
+    key-id: 8810EE7F53ABDB0065EF6417FDEB7C20060E04D5
+    jwks-url: https://sn-ident.earthlink.iq/core/.well-known/openid-configuration/jwks
+    #    key-id: A285DC6845EC6F04415FB60D6A70EC2F9D192AE0
+    #    jwks-url: https://account4.shabakaty.com/core/.well-known/openid-configuration/jwks
+    #    key-id: 8810EE7F53ABDB0065EF6417FDEB7C20060E04D5
+    #    jwks-url: https://social.identity.apps.okd.earthlink.iq/core/.well-known/openid-configuration/jwks
+
+    access-token-header-name: access-token
+    role-claim-name: socialnetwork.role
+
+  restclient:
+    connectionTimeout: 30000
+    readTimeout: 30000
+
+spring:
+  application:
+    name: comment-service
+  servlet:
+    multipart:
+      max-request-size: ${MAX_REQUEST_SIZE:250MB}
+      max-file-size: ${MAX_FILE_SIZE:250MB}
+  rabbitmq:
+    host: ${RABBIT_HOST:localhost}
+    port: ${RABBIT_PORT:5672}
+    username: ${RABBIT_USER:guest}
+    password: ${RABBIT_PASS:guest}
+  main:
+    allow-bean-definition-overriding: true
+  jpa:
+    open-in-view: false
+    database-platform: org.hibernate.dialect.PostgreSQL82Dialect
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate:
+        jdbc:
+          lob:
+            non_contextual_creation: true
+  liquibase:
+    change-log: classpath:/db/changelog/db.changelog-master.xml
+  # Data source configuration for user groups
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/comment_service}
+    driver-class-name: org.postgresql.Driver
+    username: ${DB_USER:earthlink}
+    password: ${DB_PASSWORD:example}
+  autoconfigure:
+    exclude: org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration
+  jackson:
+    serialization:
+      write_dates_as_timestamps: true
+  redis:
+    host: ${REDIS_HOST:localhost}
+    port: ${REDIS_PORT:6379}
+    password: ${REDIS_PASS:guest}
+    database: ${REDIS_DB:0}
+
+feign:
+  client:
+    config:
+      default:
+        connect-timeout: 60000
+        read-timeout: 60000
+        loggerLevel: FULL
+
+person:
+  service:
+    url: ${PERSON_SERVICE_URL:http://localhost:8081}
+
+sentry:
+  dsn: ${SENTRY_DSN:https://5807e19a3a2943f6862270d23262508f@o4505390493073408.ingest.sentry.io/4505390512340992}
+  environment: ${SENTRY_ENVIRONMENT:local}
+

@@ -1,0 +1,279 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd"
+        objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
+    <changeSet id="1680785657485-57" author="bauyrzhanibraimov (generated)">
+        <createSequence incrementBy="50" sequenceName="sized_image_seq_gen" startValue="1"/>
+    </changeSet>
+    <changeSet id="1680785657485-58" author="bauyrzhanibraimov (generated)">
+        <createTable tableName="media_file_sized_images">
+            <column name="media_file_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_mediafile_sizedimages"/>
+            </column>
+            <column name="sized_images_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_mediafile_sizedimages"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1680785657485-59" author="bauyrzhanibraimov (generated)">
+        <addColumn tableName="sized_image">
+            <column name="created_at" type="DATETIME"/>
+            <column name="mime_type" type="VARCHAR(255)"/>
+            <column name="path" type="VARCHAR(255)"/>
+            <column name="size" type="BIGINT"/>
+            <column name="storage_type" type="VARCHAR(255)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet id="1680785657485-60" author="bauyrzhanibraimov (generated)">
+        <addNotNullConstraint columnName="created_at" tableName="sized_image"/>
+    </changeSet>
+    <changeSet id="1680785657485-64" author="bauyrzhanibraimov (generated)">
+        <addNotNullConstraint columnName="mime_type" tableName="sized_image"/>
+    </changeSet>
+    <changeSet id="1680785657485-66" author="bauyrzhanibraimov (generated)">
+        <addNotNullConstraint columnName="path" tableName="sized_image"/>
+    </changeSet>
+    <changeSet id="1680785657485-68" author="bauyrzhanibraimov (generated)">
+        <addNotNullConstraint columnName="size" tableName="sized_image"/>
+    </changeSet>
+    <changeSet id="1680785657485-70" author="bauyrzhanibraimov (generated)">
+        <addNotNullConstraint columnName="storage_type" tableName="sized_image"/>
+    </changeSet>
+    <changeSet id="1680785657485-75" author="bauyrzhanibraimov (generated)">
+        <addUniqueConstraint columnNames="sized_images_id" constraintName="uc_media_file_sized_images_sizedimages"
+                             tableName="media_file_sized_images"/>
+    </changeSet>
+    <changeSet id="1680785657485-76" author="bauyrzhanibraimov (generated)">
+        <addUniqueConstraint columnNames="person_uuid" constraintName="uc_person_person_uuid" tableName="person"/>
+    </changeSet>
+    <changeSet id="1680785657485-79" author="bauyrzhanibraimov (generated)">
+        <addForeignKeyConstraint baseColumnNames="media_file_id" baseTableName="media_file_sized_images"
+                                 constraintName="fk_medfilsizima_on_media_file" referencedColumnNames="id"
+                                 referencedTableName="media_file"/>
+    </changeSet>
+    <changeSet id="1680785657485-82" author="bauyrzhanibraimov (generated)">
+        <dropTable cascadeConstraints="true" tableName="image"/>
+    </changeSet>
+    <changeSet id="1680785657485-88" author="bauyrzhanibraimov (generated)">
+        <dropColumn columnName="file_name" tableName="sized_image"/>
+
+        <dropColumn columnName="file_size" tableName="sized_image"/>
+
+        <dropColumn columnName="image_id" tableName="sized_image"/>
+
+        <dropColumn columnName="permanent_url" tableName="sized_image"/>
+
+        <dropColumn columnName="upload_status" tableName="sized_image"/>
+
+        <dropColumn columnName="id" tableName="sized_image"/>
+    </changeSet>
+    <changeSet id="1680785657485-1" author="bauyrzhanibraimov (generated)">
+        <addNotNullConstraint columnDataType="boolean" columnName="account_non_locked" tableName="person"
+                              validate="true"/>
+    </changeSet>
+    <changeSet id="1680785657485-2" author="bauyrzhanibraimov (generated)">
+        <addNotNullConstraint columnDataType="integer" columnName="attempts_number" tableName="email" validate="true"/>
+    </changeSet>
+    <changeSet id="1680785657485-3" author="bauyrzhanibraimov (generated)">
+        <addNotNullConstraint columnDataType="BIGINT" columnName="author_id" tableName="person_ban" validate="true"/>
+    </changeSet>
+    <changeSet id="1680785657485-4" author="bauyrzhanibraimov (generated)">
+        <addNotNullConstraint columnDataType="BIGINT" columnName="author_id" tableName="person_group_ban"
+                              validate="true"/>
+    </changeSet>
+    <changeSet id="1680785657485-5" author="bauyrzhanibraimov (generated)">
+        <addNotNullConstraint columnDataType="BIGINT" columnName="banned_person_id" tableName="person_ban"
+                              validate="true"/>
+    </changeSet>
+    <changeSet id="1680785657485-6" author="bauyrzhanibraimov (generated)">
+        <addNotNullConstraint columnDataType="BIGINT" columnName="banned_person_id" tableName="person_group_ban"
+                              validate="true"/>
+    </changeSet>
+    <changeSet id="1680785657485-7" author="bauyrzhanibraimov (generated)">
+        <addNotNullConstraint columnDataType="BIGINT" columnName="blocked_person_id" tableName="person_block"
+                              validate="true"/>
+    </changeSet>
+    <changeSet id="1680785657485-8" author="bauyrzhanibraimov (generated)">
+        <addNotNullConstraint columnDataType="TEXT" columnName="body" tableName="email" validate="true"/>
+    </changeSet>
+    <changeSet id="1680785657485-9" author="bauyrzhanibraimov (generated)">
+        <addNotNullConstraint columnDataType="DATETIME" columnName="created_at" tableName="change_email_request"
+                              validate="true"/>
+    </changeSet>
+    <changeSet id="1680785657485-10" author="bauyrzhanibraimov (generated)">
+        <addNotNullConstraint columnDataType="DATETIME" columnName="created_at" tableName="email" validate="true"/>
+    </changeSet>
+    <changeSet id="1680785657485-11" author="bauyrzhanibraimov (generated)">
+        <addNotNullConstraint columnDataType="DATETIME" columnName="created_at" tableName="following" validate="true"/>
+    </changeSet>
+    <changeSet id="1680785657485-12" author="bauyrzhanibraimov (generated)">
+        <addNotNullConstraint columnDataType="DATETIME" columnName="created_at" tableName="invitation" validate="true"/>
+    </changeSet>
+    <changeSet id="1680785657485-13" author="bauyrzhanibraimov (generated)">
+        <addNotNullConstraint columnDataType="DATETIME" columnName="created_at" tableName="jwtblacklist"
+                              validate="true"/>
+    </changeSet>
+    <changeSet id="1680785657485-14" author="bauyrzhanibraimov (generated)">
+        <addNotNullConstraint columnDataType="DATETIME" columnName="created_at" tableName="person" validate="true"/>
+    </changeSet>
+    <changeSet id="1680785657485-15" author="bauyrzhanibraimov (generated)">
+        <addNotNullConstraint columnDataType="DATETIME" columnName="created_at" tableName="person_ban" validate="true"/>
+    </changeSet>
+    <changeSet id="1680785657485-16" author="bauyrzhanibraimov (generated)">
+        <addNotNullConstraint columnDataType="DATETIME" columnName="created_at" tableName="person_block"
+                              validate="true"/>
+    </changeSet>
+    <changeSet id="1680785657485-17" author="bauyrzhanibraimov (generated)">
+        <addNotNullConstraint columnDataType="DATETIME" columnName="created_at" tableName="person_complaint"
+                              validate="true"/>
+    </changeSet>
+    <changeSet id="1680785657485-18" author="bauyrzhanibraimov (generated)">
+        <addNotNullConstraint columnDataType="DATETIME" columnName="created_at" tableName="person_group_ban"
+                              validate="true"/>
+    </changeSet>
+    <changeSet id="1680785657485-19" author="bauyrzhanibraimov (generated)">
+        <addNotNullConstraint columnDataType="DATETIME" columnName="created_at" tableName="person_mute"
+                              validate="true"/>
+    </changeSet>
+    <changeSet id="1680785657485-20" author="bauyrzhanibraimov (generated)">
+        <addNotNullConstraint columnDataType="DATETIME" columnName="created_at" tableName="resource_provider"
+                              validate="true"/>
+    </changeSet>
+    <changeSet id="1680785657485-21" author="bauyrzhanibraimov (generated)">
+        <addNotNullConstraint columnDataType="VARCHAR(255)" columnName="email" tableName="invitation" validate="true"/>
+    </changeSet>
+    <changeSet id="1680785657485-22" author="bauyrzhanibraimov (generated)">
+        <addNotNullConstraint columnDataType="DATETIME" columnName="expired_at" tableName="person_ban" validate="true"/>
+    </changeSet>
+    <changeSet id="1680785657485-23" author="bauyrzhanibraimov (generated)">
+        <addNotNullConstraint columnDataType="DATETIME" columnName="expired_at" tableName="person_group_ban"
+                              validate="true"/>
+    </changeSet>
+    <changeSet id="1680785657485-24" author="bauyrzhanibraimov (generated)">
+        <addNotNullConstraint columnDataType="INT" columnName="failed_attempt" tableName="person" validate="true"/>
+    </changeSet>
+    <changeSet id="1680785657485-25" author="bauyrzhanibraimov (generated)">
+        <addNotNullConstraint columnDataType="VARCHAR(255)" columnName="first_name" tableName="invitation"
+                              validate="true"/>
+    </changeSet>
+    <changeSet id="1680785657485-27" author="bauyrzhanibraimov (generated)">
+        <addColumn tableName="sized_image">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_sizedimage" validateNullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet id="1680785657485-80" author="bauyrzhanibraimov (generated)">
+        <addForeignKeyConstraint baseColumnNames="sized_images_id" baseTableName="media_file_sized_images"
+                                 constraintName="fk_medfilsizima_on_sized_image" referencedColumnNames="id"
+                                 referencedTableName="sized_image"/>
+    </changeSet>
+    <changeSet id="1680785657485-28" author="bauyrzhanibraimov (generated)">
+        <addNotNullConstraint columnDataType="VARCHAR(255)" columnName="image_size_type" tableName="sized_image"
+                              validate="true"/>
+    </changeSet>
+    <changeSet id="1680785657485-29" author="bauyrzhanibraimov (generated)">
+        <addNotNullConstraint columnDataType="BIGINT" columnName="inviter_id" tableName="invitation" validate="true"/>
+    </changeSet>
+    <changeSet id="1680785657485-30" author="bauyrzhanibraimov (generated)">
+        <addNotNullConstraint columnDataType="boolean" columnName="is_confirmed" tableName="person" validate="true"/>
+    </changeSet>
+    <changeSet id="1680785657485-32" author="bauyrzhanibraimov (generated)">
+        <addNotNullConstraint columnDataType="boolean" columnName="is_registration_completed" tableName="person"
+                              validate="true"/>
+    </changeSet>
+    <changeSet id="1680785657485-33" author="bauyrzhanibraimov (generated)">
+        <addNotNullConstraint columnDataType="boolean" columnName="is_sent" tableName="email" validate="true"/>
+    </changeSet>
+    <changeSet id="1680785657485-34" author="bauyrzhanibraimov (generated)">
+        <addNotNullConstraint columnDataType="boolean" columnName="is_verified_account" tableName="person"
+                              validate="true"/>
+    </changeSet>
+    <changeSet id="1680785657485-35" author="bauyrzhanibraimov (generated)">
+        <addNotNullConstraint columnDataType="VARCHAR(255)" columnName="last_name" tableName="invitation"
+                              validate="true"/>
+    </changeSet>
+    <changeSet id="1680785657485-36" author="bauyrzhanibraimov (generated)">
+        <addNotNullConstraint columnDataType="BIGINT" columnName="muted_person_id" tableName="person_mute"
+                              validate="true"/>
+    </changeSet>
+    <changeSet id="1680785657485-37" author="bauyrzhanibraimov (generated)">
+        <addNotNullConstraint columnDataType="TEXT" columnName="new_email" tableName="change_email_request"
+                              validate="true"/>
+    </changeSet>
+    <changeSet id="1680785657485-38" author="bauyrzhanibraimov (generated)">
+        <addNotNullConstraint columnDataType="BOOLEAN" columnName="notification_mute" tableName="person_configuration"
+                              validate="true"/>
+    </changeSet>
+    <changeSet id="1680785657485-39" author="bauyrzhanibraimov (generated)">
+        <addNotNullConstraint columnDataType="TEXT" columnName="old_email" tableName="change_email_request"
+                              validate="true"/>
+    </changeSet>
+    <changeSet id="1680785657485-40" author="bauyrzhanibraimov (generated)">
+        <addNotNullConstraint columnDataType="BIGINT" columnName="owner_id" tableName="person_complaint"
+                              validate="true"/>
+    </changeSet>
+    <changeSet id="1680785657485-41" author="bauyrzhanibraimov (generated)">
+        <addNotNullConstraint columnDataType="BIGINT" columnName="person_id" tableName="person_block" validate="true"/>
+    </changeSet>
+    <changeSet id="1680785657485-42" author="bauyrzhanibraimov (generated)">
+        <addNotNullConstraint columnDataType="BIGINT" columnName="person_id" tableName="person_complaint"
+                              validate="true"/>
+    </changeSet>
+    <changeSet id="1680785657485-43" author="bauyrzhanibraimov (generated)">
+        <addNotNullConstraint columnDataType="BIGINT" columnName="person_id" tableName="person_mute" validate="true"/>
+    </changeSet>
+    <changeSet id="1680785657485-44" author="bauyrzhanibraimov (generated)">
+        <addNotNullConstraint columnDataType="BIGINT" columnName="person_id" tableName="resource_provider"
+                              validate="true"/>
+    </changeSet>
+    <changeSet id="1680785657485-45" author="bauyrzhanibraimov (generated)">
+        <addNotNullConstraint columnDataType="VARCHAR(255)" columnName="provider_id" tableName="resource_provider"
+                              validate="true"/>
+    </changeSet>
+    <changeSet id="1680785657485-46" author="bauyrzhanibraimov (generated)">
+        <addNotNullConstraint columnDataType="VARCHAR(255)" columnName="provider_name" tableName="resource_provider"
+                              validate="true"/>
+    </changeSet>
+    <changeSet id="1680785657485-47" author="bauyrzhanibraimov (generated)">
+        <modifyDataType columnName="reason" newDataType="VARCHAR(1000)" tableName="person_ban"/>
+    </changeSet>
+    <changeSet id="1680785657485-48" author="bauyrzhanibraimov (generated)">
+        <addNotNullConstraint columnDataType="VARCHAR(1000)" columnName="reason" tableName="person_ban"
+                              validate="true"/>
+    </changeSet>
+    <changeSet id="1680785657485-49" author="bauyrzhanibraimov (generated)">
+        <addNotNullConstraint columnDataType="VARCHAR(1000)" columnName="reason" tableName="person_group_ban"
+                              validate="true"/>
+    </changeSet>
+    <changeSet id="1680785657485-50" author="bauyrzhanibraimov (generated)">
+        <addNotNullConstraint columnDataType="VARCHAR(255)" columnName="recipient_email" tableName="email"
+                              validate="true"/>
+    </changeSet>
+    <changeSet id="1680785657485-51" author="bauyrzhanibraimov (generated)">
+        <addNotNullConstraint columnDataType="char(20)" columnName="state" tableName="person_complaint"
+                              validate="true"/>
+    </changeSet>
+    <changeSet id="1680785657485-52" author="bauyrzhanibraimov (generated)">
+        <addNotNullConstraint columnDataType="BIGINT" columnName="subscribed_to_id" tableName="following"
+                              validate="true"/>
+    </changeSet>
+    <changeSet id="1680785657485-53" author="bauyrzhanibraimov (generated)">
+        <addNotNullConstraint columnDataType="BIGINT" columnName="subscriber_id" tableName="following" validate="true"/>
+    </changeSet>
+    <changeSet id="1680785657485-54" author="bauyrzhanibraimov (generated)">
+        <addNotNullConstraint columnDataType="TEXT" columnName="token" tableName="change_email_request"
+                              validate="true"/>
+    </changeSet>
+    <changeSet id="1680785657485-55" author="bauyrzhanibraimov (generated)">
+        <addNotNullConstraint columnDataType="VARCHAR(255)" columnName="type" tableName="email" validate="true"/>
+    </changeSet>
+    <changeSet id="1680785657485-56" author="bauyrzhanibraimov (generated)">
+        <addNotNullConstraint columnDataType="BIGINT" columnName="user_group_id" tableName="person_group_ban"
+                              validate="true"/>
+    </changeSet>
+
+</databaseChangeLog>

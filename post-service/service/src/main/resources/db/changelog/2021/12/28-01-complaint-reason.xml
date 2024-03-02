@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet id="1640721481627-1" author="jermakova">
+        <createTable tableName="reason">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_reason"/>
+            </column>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addUniqueConstraint columnNames="name" constraintName="UC_BCC537683620097D30BC8B055" tableName="reason"/>
+    </changeSet>
+    <changeSet id="1640721481627-2" author="jermakova">
+        <createTable tableName="reason_localized">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_reasonlocalized"/>
+            </column>
+            <column name="reason_id" type="BIGINT"/>
+            <column name="locale" type="VARCHAR(255)"/>
+            <column name="name" type="VARCHAR(255)"/>
+        </createTable>
+        <addUniqueConstraint columnNames="name, locale" constraintName="UC_6654960B922B6ED2B4A8D0212" tableName="reason_localized"/>
+        <addForeignKeyConstraint baseColumnNames="reason_id" baseTableName="reason_localized"
+                                 constraintName="FK_REASON_LOCALIZED_ON_REASON" referencedColumnNames="id" referencedTableName="reason"/>
+    </changeSet>
+    <changeSet id="1640721481627-3" author="jermakova">
+        <renameColumn tableName="post_complaint" oldColumnName="reason" newColumnName="reason_other"/>
+    </changeSet>
+    <changeSet id="1640721481627-4" author="jermakova">
+        <addColumn tableName="post_complaint">
+            <column name="reason_id" type="BIGINT"/>
+        </addColumn>
+    </changeSet>
+    <changeSet id="1640721481627-5" author="jermakova">
+        <addForeignKeyConstraint baseTableName="post_complaint" baseColumnNames="reason_id" referencedTableName="reason"
+                                 referencedColumnNames="id" constraintName="FK_POST_COMPLAINT_ON_REASON"/>
+    </changeSet>
+    <changeSet id="1640721481627-6" author="jermakova">
+        <createSequence sequenceName="reason_seq_gen" startValue="1" incrementBy="1"/>
+    </changeSet>
+    <changeSet id="1640721481627-7" author="jermakova">
+        <createSequence sequenceName="reason_localized_seq_gen" startValue="1" incrementBy="1"/>
+    </changeSet>
+    <changeSet id="1640721481627-8" author="jermakova">
+        <renameColumn tableName="comment_complaint" oldColumnName="reason" newColumnName="reason_other"/>
+    </changeSet>
+    <changeSet id="1640721481627-9" author="jermakova">
+        <addColumn tableName="comment_complaint">
+            <column name="reason_id" type="BIGINT"/>
+        </addColumn>
+    </changeSet>
+    <changeSet id="1640721481627-10" author="jermakova">
+        <addForeignKeyConstraint baseTableName="comment_complaint" baseColumnNames="reason_id" referencedTableName="reason"
+                                 referencedColumnNames="id" constraintName="FK_COMMENT_COMPLAINT_ON_REASON"/>
+    </changeSet>
+    <changeSet id="1640721481627-11" author="jermakova">
+        <dropNotNullConstraint tableName="post_complaint" columnName="reason_other"/>
+    </changeSet>
+    <changeSet id="1640721481627-12" author="jermakova">
+        <dropNotNullConstraint tableName="comment_complaint" columnName="reason_other"/>
+    </changeSet>
+
+</databaseChangeLog>

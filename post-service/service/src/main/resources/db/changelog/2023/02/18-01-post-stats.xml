@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd"
+        objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
+    <changeSet id="1676712265704-30" author="bauyrzhan.ibraimov">
+        <createSequence incrementBy="1" sequenceName="post_stat_seq_gen" startValue="1"/>
+    </changeSet>
+    <changeSet id="1676712265704-31" author="bauyrzhan.ibraimov">
+        <createTable tableName="post_statistics">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_poststatistics"/>
+            </column>
+            <column name="post_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValueNumeric="0.0" name="score" type="decimal">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValueNumeric="0" name="comments_count" type="int8">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValueNumeric="0" name="comments_upvotes_count" type="int8">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValueNumeric="0" name="comments_downvotes_count" type="int8">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValueNumeric="0" name="upvotes_count" type="int8">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValueNumeric="0" name="downvotes_count" type="int8">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1676712265704-32" author="bauyrzhan.ibraimov">
+        <addForeignKeyConstraint baseColumnNames="post_id" baseTableName="post_statistics"
+                                 constraintName="FK_POSTSTATISTICS_ON_POST" referencedColumnNames="id"
+                                 referencedTableName="post"/>
+    </changeSet>
+    <changeSet id="1676734644938-30" author="bauyrzhan.ibraimov">
+        <addUniqueConstraint columnNames="post_id"
+                             constraintName="uc_e301f81893a37a45088aa8d4e"
+                             tableName="post_statistics"/>
+    </changeSet>
+    <changeSet author="bauyrzhan.ibraimov" id="1676712265704-33" labels="Migrating post stats to the new table">
+        <sql>
+            INSERT INTO post_statistics
+            SELECT nextval('post_stat_seq_gen'),
+                   id,
+                   score,
+                   comments_count,
+                   comments_upvotes_count,
+                   comments_downvotes_count,
+                   upvotes_count,
+                   downvotes_count
+            FROM post
+        </sql>
+    </changeSet>
+    <changeSet id="1676712265704-34" author="bauyrzhan.ibraimov" failOnError="false">
+        <dropForeignKeyConstraint baseTableName="post_files" constraintName="fk_posfil_on_media_file"/>
+    </changeSet>
+    <changeSet id="1676712265704-35" author="bauyrzhan.ibraimov" failOnError="false">
+        <dropForeignKeyConstraint baseTableName="post_files" constraintName="fk_posfil_on_post"/>
+    </changeSet>
+    <changeSet id="1676712265704-37" author="bauyrzhan.ibraimov">
+        <dropTable cascadeConstraints="true" tableName="post_files"/>
+    </changeSet>
+    <changeSet id="1676712265704-38" author="bauyrzhan.ibraimov">
+        <dropColumn columnName="comments_count" tableName="post"/>
+
+        <dropColumn columnName="comments_downvotes_count" tableName="post"/>
+
+        <dropColumn columnName="comments_upvotes_count" tableName="post"/>
+
+        <dropColumn columnName="downvotes_count" tableName="post"/>
+
+        <dropColumn columnName="score" tableName="post"/>
+
+        <dropColumn columnName="upvotes_count" tableName="post"/>
+    </changeSet>
+
+</databaseChangeLog>

@@ -1,0 +1,50 @@
+server:
+  port: ${PORT:8080}
+social:
+  event-weight:
+    post-viewed: 1
+    post-liked: 10
+    post-commented: 100
+spring:
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+    consumer:
+      group-id: post-event-processor-service
+      auto-offset-reset: earliest
+    admin:
+      properties:
+        postEventTopics:
+          partitions: ${POST_EVENT_TOPICS_PARTITIONS:10}
+          replicas: ${POST_EVENT_TOPICS_REPLICAS:1}
+  redis:
+    host: ${REDIS_HOST:localhost}
+    port: ${REDIS_PORT:6379}
+    password: ${REDIS_PASS:guest}
+    database: ${REDIS_DB:0}
+    cluster:
+      nodes: ${REDIS_ClUSTER_NODES:173.18.0.2:6379,173.18.0.3:6379,173.18.0.4:6379}
+    mode: ${REDIS_MODE:standalone}
+
+web:
+  cors:
+    allowedOrigins: ${ALLOWED_ORIGINS:*}
+    allowedHeaders: ${ALLOWED_HEADERS:*}
+    allowedMethods: ${ALLOWED_METHODS:*}
+    allowCredentials: ${ALLOWED_CREDENTIALS:false}
+
+management:
+  endpoint:
+    health:
+      show-details: always
+    prometheus:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: ['health', 'metrics', 'prometheus']
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+        pushgateway:
+          enabled: true

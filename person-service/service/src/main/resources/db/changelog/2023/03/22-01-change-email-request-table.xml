@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+
+    <changeSet id="1679509428691-1" author="jermakova">
+        <createTable tableName="change_email_request">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_changeemailrequest"/>
+            </column>
+            <column name="person_id" type="BIGINT"/>
+            <column name="new_email" type="TEXT"/>
+            <column name="old_email" type="TEXT"/>
+            <column name="token" type="TEXT"/>
+            <column name="state" type="VARCHAR(255)"/>
+            <column name="created_at" type="DATETIME"/>
+            <column name="expires_at" type="DATETIME"/>
+        </createTable>
+        <addForeignKeyConstraint baseColumnNames="person_id" baseTableName="change_email_request" constraintName="FK_CHANGEEMAILREQUEST_ON_PERSON" referencedColumnNames="id" referencedTableName="person"/>
+    </changeSet>
+    <changeSet id="1679585563587-1" author="jermakova">
+        <createSequence sequenceName="change_email_request_seq_gen" startValue="1" incrementBy="1"/>
+    </changeSet>
+</databaseChangeLog>

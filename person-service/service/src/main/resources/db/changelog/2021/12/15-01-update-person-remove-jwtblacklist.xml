@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet id="1639589119430-1" author="jermakova">
+        <dropColumn tableName="person">
+            <column name="token"/>
+            <column name="refresh_token"/>
+        </dropColumn>
+    </changeSet>
+    <changeSet id="1639589244654-1" author="jermakova">
+        <dropTable tableName="jwtblacklist"/>
+    </changeSet>
+
+</databaseChangeLog>

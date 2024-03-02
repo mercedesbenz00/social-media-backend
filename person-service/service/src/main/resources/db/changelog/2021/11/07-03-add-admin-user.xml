@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+    <changeSet author="bauyrzhan.ibraimov" id="003-person-service" labels="Importing admin user">
+        <sql>
+            INSERT INTO person(id, first_name, last_name, display_name, username, birth_date, created_at, email, password, is_confirmed)
+            VALUES (nextval('person_seq_gen'), 'Admin', 'Admin', 'Admin', 'admin', '2021-01-01', current_timestamp,
+                    'admin@creativeadvtech.com',
+                    '$2a$10$CBUnLMifCC51zF.sTG6jc.XW8u3sf268mHRb414gl8LmLAoOtfJvi', true);
+
+            INSERT INTO public.person_person_roles(person_id, person_roles_id)
+                (select id, (select id from role where code = 'ADMIN') FROM person WHERE email = 'admin@creativeadvtech.com');
+        </sql>
+    </changeSet>
+</databaseChangeLog>

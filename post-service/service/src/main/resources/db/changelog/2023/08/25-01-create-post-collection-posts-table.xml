@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet id="1692946485119-1" author="aakinin">
+        <dropTable tableName="post_collection_posts"/>
+    </changeSet>
+
+    <changeSet id="1692946485119-2" author="aakinin">
+        <createTable tableName="post_collection_posts">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="post_collection_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="post_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint baseTableName="post_collection_posts"
+                                 baseColumnNames="post_collection_id"
+                                 constraintName="fk_post_collection_id"
+                                 referencedTableName="post_collection"
+                                 referencedColumnNames="id"/>
+
+        <addForeignKeyConstraint baseTableName="post_collection_posts"
+                                 baseColumnNames="post_id"
+                                 constraintName="fk_post_id"
+                                 referencedTableName="post"
+                                 referencedColumnNames="id"/>
+    </changeSet>
+    <changeSet id="1692946485119-3" author="aakinin">
+        <addUniqueConstraint columnNames="post_collection_id, post_id" constraintName="uc_post_collection_post"
+                             tableName="post_collection_posts"/>
+    </changeSet>
+</databaseChangeLog>

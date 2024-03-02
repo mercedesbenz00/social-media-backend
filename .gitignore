@@ -1,0 +1,11 @@
+.idea/
+.gradle/
+build/
+out/
+*.iml
+.DS_Store
+.vscode
+**/bin
+cassandra_data/
+
+.drone/

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+    <changeSet id="1694686067119-1" author="aakinin">
+        <sql>
+            DELETE FROM post_collection_posts pcp
+            WHERE pcp.id NOT IN (
+                SELECT MIN(pcp.id)
+                FROM post_collection_posts pcp
+                         JOIN post_collection pc ON pcp.post_collection_id = pc.id
+                GROUP BY pc.owner_id, pcp.post_id
+            )
+        </sql>
+    </changeSet>
+</databaseChangeLog>

@@ -1,0 +1,763 @@
+kind: secret
+name: aws_secret_access_key
+get:
+  path: drone-cred-secrets
+  name: aws_secret_access_key
+---
+kind: secret
+name: aws_access_key_id
+get:
+  path: drone-cred-secrets
+  name: aws_access_key_id
+---
+kind: secret
+name: ssh_key
+get:
+  path: drone-ssh-rw-key
+  name: drone-aws-rw-key
+---
+kind: secret
+name: pact_username
+get:
+  path: drone-pact-secrets
+  name: pact_basic_auth_username
+---
+kind: secret
+name: pact_password
+get:
+  path: drone-pact-secrets
+  name: pact_basic_auth_password
+---
+kind: secret
+name: pact_url
+get:
+  path: drone-pact-secrets
+  name: pact_url
+---
+kind: secret
+name: argocd-username
+get:
+  path: argocd-credentials
+  name: username
+---
+kind: secret
+name: argocd-password
+get:
+  path: argocd-credentials
+  name: password
+---
+kind: secret
+name: sonar_host
+get:
+  path: drone-cred-secrets
+  name: sonar_host
+
+---
+kind: secret
+name: sonar_token
+get:
+  path: drone-cred-secrets
+  name: sonar_token
+# ---
+# kind: pipeline
+# name: static code analysis
+# type: kubernetes
+
+# trigger:
+#   event:
+#   - push
+#   - pull_request
+#   branch:
+#   - dev
+#   - drone
+#   - release/*
+
+# steps:
+# - name: static code analysis
+#   image: 310830963532.dkr.ecr.eu-central-1.amazonaws.com/drone-sonar-plugin:2022-08-14-180115
+#   settings:
+#     sonar_host:
+#       from_secret: sonar_host
+#     sonar_token:
+#       from_secret: sonar_token
+#     usingProperties: true
+---
+kind: pipeline
+name: "post-service"
+type: kubernetes
+
+clone:
+  depth: 50
+
+trigger:
+  branch:
+  - release/*
+  - drone
+  - dev
+  event:
+  - push
+  - custom
+  - cron
+
+# depends_on:
+# - static code analysis
+
+# services:
+# - name: minio
+#   image: public.ecr.aws/bitnami/minio:latest
+#   environment:
+#     MINIO_ROOT_USER: minio
+#     MINIO_ROOT_PASSWORD: password
+#     MINIO_DEFAULT_BUCKETS: social-media-bucket
+# - name: postgresql
+#   image: public.ecr.aws/bitnami/postgresql:13.11.0-debian-11-r71
+#   environment:
+#     POSTGRESQL_USERNAME: earthlink
+#     POSTGRESQL_PASSWORD: example
+#     POSTGRESQL_DATABASE: post_service
+#     POSTGRESQL_POSTGRES_PASSWORD: example
+# - name: rabbitmq
+#   image: public.ecr.aws/bitnami/rabbitmq
+#   environment:
+#     RABBITMQ_USERNAME: social
+#     RABBITMQ_PASSWORD: social
+# - name: redis
+#   image: public.ecr.aws/bitnami/redis
+#   environment:
+#     REDIS_PASSWORD: guest
+# - name: zookeeper
+#   image: public.ecr.aws/bitnami/zookeeper:latest
+#   environment:
+#     ALLOW_ANONYMOUS_LOGIN: yes
+# - name: kafka
+#   image: 310830963532.dkr.ecr.eu-central-1.amazonaws.com/confluentinc-cp-kafka:7.4.0
+#   environment:
+#     KAFKA_BROKER_ID: 1
+#     KAFKA_ZOOKEEPER_CONNECT: 'zookeeper:2181'
+#     KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_INTERNAL:PLAINTEXT
+#     KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092,PLAINTEXT_INTERNAL://kafka:29092
+#     KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+#     KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+#     KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+#     KAFKA_SOCKET_REQUEST_MAX_BYTES: 2000000000
+
+steps:
+# - name: wait-for-services
+#   image: public.ecr.aws/docker/library/busybox:1.36
+#   commands:
+#     - 'until nc -zv postgresql 5432 -w1; do echo waiting for postgresql; sleep 5; done;'
+#     - 'until nc -zv kafka 9092 -w1; do echo waiting for kafka; sleep 5; done;'
+- name: "build"
+  image: public.ecr.aws/docker/library/openjdk:17-jdk-slim
+  settings:
+    access_key:
+      from_secret: aws_access_key_id
+    secret_key:
+      from_secret: aws_secret_access_key
+    build_args:
+    - service=post-service
+    registry: 681372973860.dkr.ecr.eu-central-1.amazonaws.com
+    repo: snp_post-service
+    region: eu-central-1
+    tags:
+    - "${DRONE_COMMIT_SHA:0:7}_ci_build_${DRONE_BUILD_NUMBER}"
+  commands:
+  - apt-get update && apt-get install -y make git
+  - make service=post-service compile
+  environment:
+    PORT: "9090"
+    PACT_BROKER_URL:
+      from_secret: pact_url
+    PACT_BROKER_USERNAME:
+      from_secret: pact_username
+    PACT_BROKER_PASSWORD:
+      from_secret: pact_password
+    REDIS_HOST: redis
+    MINIO_ENDPOINT: http://minio:9000
+    RABBIT_HOST: rabbitmq
+    RABBIT_USER: social
+    RABBIT_PASS: social
+    DB_URL: "jdbc:postgresql://postgresql:5432/post_service"
+    DB_USER: earthlink
+    DB_PASSWORD: example
+    KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+- name: "publish"
+  image: 310830963532.dkr.ecr.eu-central-1.amazonaws.com/drone-plugin-ecr:1694603248
+  settings:
+    access_key:
+      from_secret: aws_access_key_id
+    secret_key:
+      from_secret: aws_secret_access_key
+    dockerfile: docker/Dockerfile.aws
+    build_args:
+    - service=post-service
+    registry: 681372973860.dkr.ecr.eu-central-1.amazonaws.com
+    repo: snp_post-service
+    region: eu-central-1
+    tags:
+    - "${DRONE_COMMIT_SHA:0:7}_ci_build_${DRONE_BUILD_NUMBER}"
+---
+kind: pipeline
+name: "person-service"
+type: kubernetes
+
+clone:
+  depth: 50
+
+trigger:
+  branch:
+  - release/*
+  - drone
+  - dev
+  event:
+  - push
+  - custom
+  - cron
+
+# depends_on:
+# - static code analysis
+steps:
+- name: "build"
+  image: public.ecr.aws/docker/library/openjdk:17-jdk-slim
+  commands:
+  - apt-get update && apt-get install -y make git
+  - make service=person-service compile
+
+- name: "publish"
+  image: 310830963532.dkr.ecr.eu-central-1.amazonaws.com/drone-plugin-ecr:1694603248
+  settings:
+    access_key:
+      from_secret: aws_access_key_id
+    secret_key:
+      from_secret: aws_secret_access_key
+    dockerfile: docker/Dockerfile.aws
+    build_args:
+    - service=person-service
+    registry: 681372973860.dkr.ecr.eu-central-1.amazonaws.com
+    repo: snp_person-service
+    region: eu-central-1
+    tags:
+    - "${DRONE_COMMIT_SHA:0:7}_ci_build_${DRONE_BUILD_NUMBER}"
+# ---
+# kind: pipeline
+# name: "short-video-service"
+# type: kubernetes
+
+# clone:
+#   depth: 50
+
+# # depends_on:
+# # - static code analysis
+
+# trigger:
+#   branch:
+#   - release/*
+#   - drone
+#   - dev
+#   event:
+#   - push
+#   - custom
+#   - cron
+
+# steps:
+# - name: "build"
+#   image: public.ecr.aws/docker/library/openjdk:17-jdk-slim
+#   commands:
+#   - apt-get update && apt-get install -y make git
+#   - make service=short-video-service compile
+# - name: "publish"
+#   image: 310830963532.dkr.ecr.eu-central-1.amazonaws.com/drone-plugin-ecr:1694603248
+#   settings:
+#     access_key:
+#       from_secret: aws_access_key_id
+#     secret_key:
+#       from_secret: aws_secret_access_key
+#     dockerfile: docker/Dockerfile.aws
+#     build_args:
+#     - service=short-video-service
+#     registry: 681372973860.dkr.ecr.eu-central-1.amazonaws.com
+#     repo: snp_short-videos-service
+#     region: eu-central-1
+#     tags:
+#     - "${DRONE_COMMIT_SHA:0:7}_ci_build_${DRONE_BUILD_NUMBER}"
+# ---
+# kind: pipeline
+# name: "short-video-registry-service"
+# type: kubernetes
+
+# clone:
+#   depth: 50
+
+# # depends_on:
+# # - static code analysis
+
+# trigger:
+#   branch:
+#   - release/*
+#   - drone
+#   - dev
+#   event:
+#   - push
+#   - custom
+#   - cron
+
+# steps:
+# - name: "build"
+#   image: public.ecr.aws/docker/library/openjdk:17-jdk-slim
+#   commands:
+#   - apt-get update && apt-get install -y make git
+#   - make service=short-video-registry-service compile
+# - name: "publish"
+#   image: 310830963532.dkr.ecr.eu-central-1.amazonaws.com/drone-plugin-ecr:1694603248
+#   settings:
+#     access_key:
+#       from_secret: aws_access_key_id
+#     secret_key:
+#       from_secret: aws_secret_access_key
+#     dockerfile: docker/Dockerfile.aws
+#     build_args:
+#     - service=short-video-registry-service
+#     registry: 681372973860.dkr.ecr.eu-central-1.amazonaws.com
+#     repo: snp_short-videos-registry
+#     region: eu-central-1
+#     tags:
+#     - "${DRONE_COMMIT_SHA:0:7}_ci_build_${DRONE_BUILD_NUMBER}"
+# ---
+# kind: pipeline
+# name: "matrix"
+# type: kubernetes
+
+# clone:
+#   depth: 50
+
+# # depends_on:
+# # - static code analysis
+
+# trigger:
+#   branch:
+#   - release/*
+#   - drone
+#   - dev
+#   event:
+#   - push
+#   - custom
+#   - cron
+# steps:
+# - name: "publish"
+#   image: 310830963532.dkr.ecr.eu-central-1.amazonaws.com/drone-plugin-ecr:1694603248
+#   settings:
+#     access_key:
+#       from_secret: aws_access_key_id
+#     secret_key:
+#       from_secret: aws_secret_access_key
+#     dockerfile: matrix/Dockerfile
+#     registry: 681372973860.dkr.ecr.eu-central-1.amazonaws.com
+#     repo: snp_synapse-matrix
+#     region: eu-central-1
+#     tags:
+#     - "${DRONE_COMMIT_SHA:0:7}_ci_build_${DRONE_BUILD_NUMBER}"
+# ---
+# kind: pipeline
+# name: "comment-service"
+# type: kubernetes
+
+# clone:
+#   depth: 50
+
+# trigger:
+#   branch:
+#   - release/*
+#   - drone
+#   - dev
+#   event:
+#   - push
+#   - custom
+#   - cron
+
+# # depends_on:
+# # - static code analysis
+
+# steps:
+# - name: "build"
+#   image: public.ecr.aws/docker/library/openjdk:17-jdk-slim
+#   commands:
+#   - apt-get update && apt-get install -y make git
+#   - make service=comment-service compile
+# - name: "publish"
+#   image: 310830963532.dkr.ecr.eu-central-1.amazonaws.com/drone-plugin-ecr:1694603248
+#   settings:
+#     access_key:
+#       from_secret: aws_access_key_id
+#     secret_key:
+#       from_secret: aws_secret_access_key
+#     dockerfile: docker/Dockerfile.aws
+#     build_args:
+#     - service=comment-service
+#     registry: 681372973860.dkr.ecr.eu-central-1.amazonaws.com
+#     repo: snp_comment-service
+#     region: eu-central-1
+#     tags:
+#     - "${DRONE_COMMIT_SHA:0:7}_ci_build_${DRONE_BUILD_NUMBER}"
+---
+kind: pipeline
+name: "group-service"
+type: kubernetes
+
+clone:
+  depth: 50
+
+trigger:
+  branch:
+  - release/*
+  - drone
+  - dev
+  event:
+  - push
+  - custom
+  - cron
+
+# depends_on:
+# - static code analysis
+
+steps:
+- name: "build"
+  image: public.ecr.aws/docker/library/openjdk:17-jdk-slim
+  commands:
+  - apt-get update && apt-get install -y make git
+  - make service=group-service compile
+- name: "publish"
+  image: 310830963532.dkr.ecr.eu-central-1.amazonaws.com/drone-plugin-ecr:1694603248
+  settings:
+    access_key:
+      from_secret: aws_access_key_id
+    secret_key:
+      from_secret: aws_secret_access_key
+    dockerfile: docker/Dockerfile.aws
+    build_args:
+    - service=group-service
+    registry: 681372973860.dkr.ecr.eu-central-1.amazonaws.com
+    repo: snp_group-service
+    region: eu-central-1
+    tags:
+    - "${DRONE_COMMIT_SHA:0:7}_ci_build_${DRONE_BUILD_NUMBER}"
+---
+kind: pipeline
+name: "audit-service"
+type: kubernetes
+
+clone:
+  depth: 50
+
+trigger:
+  branch:
+  - release/*
+  - drone
+  - dev
+  event:
+  - push
+  - custom
+  - cron
+
+# depends_on:
+# - static code analysis
+
+steps:
+- name: "build"
+  image: public.ecr.aws/docker/library/openjdk:17-jdk-slim
+  commands:
+  - apt-get update && apt-get install -y make git
+  - make service=audit-service compile
+- name: "publish"
+  image: 310830963532.dkr.ecr.eu-central-1.amazonaws.com/drone-plugin-ecr:1694603248
+  settings:
+    access_key:
+      from_secret: aws_access_key_id
+    secret_key:
+      from_secret: aws_secret_access_key
+    dockerfile: docker/Dockerfile.aws
+    build_args:
+    - service=audit-service
+    registry: 681372973860.dkr.ecr.eu-central-1.amazonaws.com
+    repo: snp_audit-service
+    region: eu-central-1
+    tags:
+    - "${DRONE_COMMIT_SHA:0:7}_ci_build_${DRONE_BUILD_NUMBER}"
+---
+kind: pipeline
+name: "post-processor-service"
+type: kubernetes
+
+clone:
+  depth: 50
+
+trigger:
+  branch:
+  - release/*
+  - drone
+  - dev
+  event:
+  - push
+  - custom
+  - cron
+
+# depends_on:
+# - static code analysis
+
+steps:
+- name: "build"
+  image: public.ecr.aws/docker/library/openjdk:17-jdk-slim
+  commands:
+  - apt-get update && apt-get install -y make git
+  - make service=post-processor-service compile
+- name: "publish"
+  image: 310830963532.dkr.ecr.eu-central-1.amazonaws.com/drone-plugin-ecr:1694603248
+  settings:
+    access_key:
+      from_secret: aws_access_key_id
+    secret_key:
+      from_secret: aws_secret_access_key
+    dockerfile: docker/Dockerfile.aws
+    build_args:
+    - service=post-processor-service
+    registry: 681372973860.dkr.ecr.eu-central-1.amazonaws.com
+    repo: snp_post-processor-service
+    region: eu-central-1
+    tags:
+    - "${DRONE_COMMIT_SHA:0:7}_ci_build_${DRONE_BUILD_NUMBER}"
+---
+kind: pipeline
+name: "post-event-processor-service"
+type: kubernetes
+
+clone:
+  depth: 50
+
+trigger:
+  branch:
+  - release/*
+  - drone
+  - dev
+  event:
+  - push
+  - custom
+  - cron
+
+# depends_on:
+# - static code analysis
+
+steps:
+- name: "build"
+  image: public.ecr.aws/docker/library/openjdk:17-jdk-slim
+  commands:
+  - apt-get update && apt-get install -y make git
+  - make service=post-event-processor-service compile
+- name: "publish"
+  image: 310830963532.dkr.ecr.eu-central-1.amazonaws.com/drone-plugin-ecr:1694603248
+  settings:
+    access_key:
+      from_secret: aws_access_key_id
+    secret_key:
+      from_secret: aws_secret_access_key
+    dockerfile: docker/Dockerfile.aws
+    build_args:
+    - service=post-event-processor-service
+    registry: 681372973860.dkr.ecr.eu-central-1.amazonaws.com
+    repo: snp_post-event-processor
+    region: eu-central-1
+    tags:
+    - "${DRONE_COMMIT_SHA:0:7}_ci_build_${DRONE_BUILD_NUMBER}"
+---
+kind: pipeline
+name: "post-feed-aggregator"
+type: kubernetes
+
+clone:
+  depth: 50
+
+trigger:
+  branch:
+  - release/*
+  - drone
+  - dev
+  event:
+  - push
+  - custom
+  - cron
+
+# depends_on:
+# - static code analysis
+
+steps:
+- name: "build"
+  image: public.ecr.aws/docker/library/openjdk:17-jdk-slim
+  commands:
+  - apt-get update && apt-get install -y make git
+  - make service=feed-aggregator-service compile
+- name: "publish"
+  image: 310830963532.dkr.ecr.eu-central-1.amazonaws.com/drone-plugin-ecr:1694603248
+  settings:
+    access_key:
+      from_secret: aws_access_key_id
+    secret_key:
+      from_secret: aws_secret_access_key
+    dockerfile: docker/Dockerfile.aws
+    build_args:
+    - service=feed-aggregator-service
+    registry: 681372973860.dkr.ecr.eu-central-1.amazonaws.com
+    repo: snp_post-feed-aggregator
+    region: eu-central-1
+    tags:
+    - "${DRONE_COMMIT_SHA:0:7}_ci_build_${DRONE_BUILD_NUMBER}"
+---
+kind: pipeline
+name: "user-feed-aggregator-service"
+type: kubernetes
+
+clone:
+  depth: 50
+
+trigger:
+  branch:
+  - release/*
+  - drone
+  - dev
+  event:
+  - push
+  - custom
+  - cron
+
+# depends_on:
+# - static code analysis
+
+steps:
+- name: "build"
+  image: public.ecr.aws/docker/library/openjdk:17-jdk-slim
+  commands:
+  - apt-get update && apt-get install -y make git
+  - make service=user-feed-aggregator-service compile
+- name: "publish"
+  image: 310830963532.dkr.ecr.eu-central-1.amazonaws.com/drone-plugin-ecr:1694603248
+  settings:
+    access_key:
+      from_secret: aws_access_key_id
+    secret_key:
+      from_secret: aws_secret_access_key
+    dockerfile: docker/Dockerfile.aws
+    build_args:
+    - service=user-feed-aggregator-service
+    registry: 681372973860.dkr.ecr.eu-central-1.amazonaws.com
+    repo: snp_user-feed-aggregator-service
+    region: eu-central-1
+    tags:
+    - "${DRONE_COMMIT_SHA:0:7}_ci_build_${DRONE_BUILD_NUMBER}"
+---
+kind: pipeline
+name: "notification-service"
+type: kubernetes
+
+clone:
+  depth: 50
+
+trigger:
+  branch:
+  - release/*
+  - drone
+  - dev
+  event:
+  - push
+  - custom
+  - cron
+
+# depends_on:
+# - static code analysis
+
+steps:
+- name: "build"
+  image: public.ecr.aws/docker/library/openjdk:17-jdk-slim
+  commands:
+  - apt-get update && apt-get install -y make git
+  - make service=notification-service compile
+- name: "publish"
+  image: 310830963532.dkr.ecr.eu-central-1.amazonaws.com/drone-plugin-ecr:1694603248
+  settings:
+    access_key:
+      from_secret: aws_access_key_id
+    secret_key:
+      from_secret: aws_secret_access_key
+    dockerfile: docker/Dockerfile.aws
+    build_args:
+    - service=notification-service
+    registry: 681372973860.dkr.ecr.eu-central-1.amazonaws.com
+    repo: snp_notification-service
+    region: eu-central-1
+    tags:
+    - "${DRONE_COMMIT_SHA:0:7}_ci_build_${DRONE_BUILD_NUMBER}"
+---
+kind: pipeline
+name: "deploy-staging"
+type: kubernetes
+trigger:
+  event:
+  - promote
+  target:
+  - staging
+  branch:
+  - release/*
+depends_on:
+- "person-service"
+# - "comment-service"
+- "post-service"
+- "group-service"
+- "notification-service"
+# - "short-video-registry-service"
+# - "short-video-service"
+# - "matrix"
+steps:
+- name: helm
+  image: 310830963532.dkr.ecr.eu-central-1.amazonaws.com/drone-pipeline-img:25a4090
+  environment:
+    SSH_KEY:
+      from_secret: ssh_key
+    ARGOCD_USERNAME:
+      from_secret: argocd-username
+    ARGOCD_PASSWORD:
+      from_secret: argocd-password
+    ENV: staging
+    PROJECT: link
+  commands:
+  - ./.drone.sh
+---
+kind: pipeline
+name: "deploy-dev"
+type: kubernetes
+trigger:
+  event:
+  - promote
+  branch:
+  - dev
+  target:
+  - dev
+depends_on:
+- "person-service"
+# - "comment-service"
+- "post-service"
+- "group-service"
+- "notification-service"
+# - "short-video-registry-service"
+# - "short-video-service"
+# - "matrix"
+steps:
+- name: helm-update
+  image: 310830963532.dkr.ecr.eu-central-1.amazonaws.com/drone-pipeline-img:25a4090
+  environment:
+    SSH_KEY:
+      from_secret: ssh_key
+    ARGOCD_USERNAME:
+      from_secret: argocd-username
+    ARGOCD_PASSWORD:
+      from_secret: argocd-password
+    ENV: dev
+    BUILD_NUMBER: ${DRONE_BUILD_PARENT}
+    PROJECT: link
+  commands:
+  - ./.drone.sh

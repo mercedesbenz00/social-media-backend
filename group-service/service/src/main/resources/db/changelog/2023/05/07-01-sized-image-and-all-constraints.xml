@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd"
+        objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
+    <changeSet id="1680851540292-23" author="bauyrzhanibraimov (generated)">
+        <createSequence incrementBy="50" sequenceName="sized_image_seq_gen" startValue="1"/>
+    </changeSet>
+    <changeSet id="1680851540292-24" author="bauyrzhanibraimov (generated)">
+        <createTable tableName="media_file_sized_images">
+            <column name="media_file_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_mediafile_sizedimages"/>
+            </column>
+            <column name="sized_images_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_mediafile_sizedimages"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1680851540292-25" author="bauyrzhanibraimov (generated)">
+        <createTable tableName="sized_image">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_sizedimage"/>
+            </column>
+            <column name="image_size_type" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="path" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="storage_type" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="mime_type" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="size" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1680851540292-26-1" author="bauyrzhanibraimov (generated)">
+        <sql>
+            DELETE
+            FROM PERSON_CATEGORY_CATEGORIES
+            WHERE CATEGORIES_ID in
+                  (SELECT A.ID
+                   FROM CATEGORY A,
+                        CATEGORY B
+                   WHERE A.ID > B.ID
+                     AND A.NAME = B.NAME);
+
+
+            DELETE
+            FROM USER_GROUP_CATEGORIES
+            WHERE CATEGORIES_ID in
+                  (SELECT A.ID
+                   FROM CATEGORY A,
+                        CATEGORY B
+                   WHERE A.ID > B.ID
+                     AND A.NAME = B.NAME);
+
+
+            DELETE
+            FROM CATEGORY_LOCALIZED
+            WHERE CATEGORY_ID in
+                  (SELECT A.ID
+                   FROM CATEGORY A,
+                        CATEGORY B
+                   WHERE A.ID > B.ID
+                     AND A.NAME = B.NAME);
+
+            DELETE
+            FROM category a USING category b
+            WHERE
+                a.id
+                > b.id
+              AND a.name = b.name;
+        </sql>
+    </changeSet>
+    <changeSet id="1680851540292-28-1" author="bauyrzhanibraimov (generated)">
+        <sql>
+
+            UPDATE USER_GROUP G
+            SET NAME = NAME || ' duplicate ' || G.ID
+            WHERE G.ID in
+                  (SELECT A.ID
+                   FROM USER_GROUP A,
+                        USER_GROUP B
+                   WHERE A.ID > B.ID
+                     AND A.NAME = B.NAME);
+        </sql>
+    </changeSet>
+    <changeSet id="1680851540292-31" author="bauyrzhanibraimov (generated)">
+        <addUniqueConstraint columnNames="sized_images_id" constraintName="uc_media_file_sized_images_sizedimages"
+                             tableName="media_file_sized_images"/>
+    </changeSet>
+    <changeSet id="1680851540292-34" author="bauyrzhanibraimov (generated)">
+        <addForeignKeyConstraint baseColumnNames="media_file_id" baseTableName="media_file_sized_images"
+                                 constraintName="fk_medfilsizima_on_media_file" referencedColumnNames="id"
+                                 referencedTableName="media_file"/>
+    </changeSet>
+    <changeSet id="1680851540292-35" author="bauyrzhanibraimov (generated)">
+        <addForeignKeyConstraint baseColumnNames="sized_images_id" baseTableName="media_file_sized_images"
+                                 constraintName="fk_medfilsizima_on_sized_image" referencedColumnNames="id"
+                                 referencedTableName="sized_image"/>
+    </changeSet>
+    <changeSet id="1680851540292-36" author="bauyrzhanibraimov (generated)">
+        <dropTable cascadeConstraints="true" tableName="image"/>
+    </changeSet>
+    <changeSet id="1680851540292-1" author="bauyrzhanibraimov (generated)">
+        <addNotNullConstraint columnDataType="BIGINT" columnName="author_id" tableName="group_permission"
+                              validate="true"/>
+    </changeSet>
+    <changeSet id="1680851540292-2" author="bauyrzhanibraimov (generated)">
+        <addNotNullConstraint columnDataType="BIGINT" columnName="author_id" tableName="tag" validate="true"/>
+    </changeSet>
+    <changeSet id="1680851540292-3" author="bauyrzhanibraimov (generated)">
+        <addNotNullConstraint columnDataType="DATETIME" columnName="created_at" tableName="category" validate="true"/>
+    </changeSet>
+    <changeSet id="1680851540292-4" author="bauyrzhanibraimov (generated)">
+        <addNotNullConstraint columnDataType="DATETIME" columnName="created_at" tableName="group_member"
+                              validate="true"/>
+    </changeSet>
+    <changeSet id="1680851540292-5" author="bauyrzhanibraimov (generated)">
+        <addNotNullConstraint columnDataType="DATETIME" columnName="created_at" tableName="person_category"
+                              validate="true"/>
+    </changeSet>
+    <changeSet id="1680851540292-6" author="bauyrzhanibraimov (generated)">
+        <addNotNullConstraint columnDataType="DATETIME" columnName="created_at" tableName="tag" validate="true"/>
+    </changeSet>
+    <changeSet id="1680851540292-7" author="bauyrzhanibraimov (generated)">
+        <addNotNullConstraint columnDataType="DATETIME" columnName="created_at" tableName="user_group" validate="true"/>
+    </changeSet>
+    <changeSet id="1680851540292-8" author="bauyrzhanibraimov (generated)">
+        <addNotNullConstraint columnDataType="VARCHAR(2000)" columnName="description" tableName="user_group"
+                              validate="true"/>
+    </changeSet>
+    <changeSet id="1680851540292-9" author="bauyrzhanibraimov (generated)">
+        <addNotNullConstraint columnDataType="BIGINT" columnName="group_id" tableName="group_member" validate="true"/>
+    </changeSet>
+    <changeSet id="1680851540292-11" author="bauyrzhanibraimov (generated)">
+        <addNotNullConstraint columnDataType="BIGINT" columnName="owner_id" tableName="user_group" validate="true"/>
+    </changeSet>
+    <changeSet id="1680851540292-12" author="bauyrzhanibraimov (generated)">
+        <addNotNullConstraint columnDataType="VARCHAR(255)" columnName="permission" tableName="group_permission"
+                              validate="true"/>
+    </changeSet>
+    <changeSet id="1680851540292-13" author="bauyrzhanibraimov (generated)">
+        <addNotNullConstraint columnDataType="BIGINT" columnName="person_id" tableName="group_member" validate="true"/>
+    </changeSet>
+    <changeSet id="1680851540292-14" author="bauyrzhanibraimov (generated)">
+        <addNotNullConstraint columnDataType="BIGINT" columnName="person_id" tableName="group_permission"
+                              validate="true"/>
+    </changeSet>
+    <changeSet id="1680851540292-15" author="bauyrzhanibraimov (generated)">
+        <addNotNullConstraint columnDataType="BIGINT" columnName="person_id" tableName="person_category"
+                              validate="true"/>
+    </changeSet>
+    <changeSet id="1680851540292-17" author="bauyrzhanibraimov (generated)">
+        <addNotNullConstraint columnDataType="BIGINT" columnName="published_posts_count" tableName="group_member"
+                              validate="true"/>
+    </changeSet>
+    <changeSet id="1680851540292-18" author="bauyrzhanibraimov (generated)">
+        <addNotNullConstraint columnDataType="VARCHAR(255)" columnName="state" tableName="group_member"
+                              validate="true"/>
+    </changeSet>
+    <changeSet id="1680851540292-19" author="bauyrzhanibraimov (generated)">
+        <addNotNullConstraint columnDataType="VARCHAR(255)" columnName="state" tableName="user_group" validate="true"/>
+    </changeSet>
+    <changeSet id="1680851540292-20" author="bauyrzhanibraimov (generated)">
+        <addNotNullConstraint columnDataType="VARCHAR(255)" columnName="tag" tableName="tag" validate="true"/>
+    </changeSet>
+    <changeSet id="1680851540292-21" author="bauyrzhanibraimov (generated)">
+        <addNotNullConstraint columnDataType="BIGINT" columnName="user_group_id" tableName="group_permission"
+                              validate="true"/>
+    </changeSet>
+    <changeSet id="1680851540292-22" author="bauyrzhanibraimov (generated)">
+        <addNotNullConstraint columnDataType="VARCHAR(255)" columnName="visibility" tableName="user_group"
+                              validate="true"/>
+    </changeSet>
+
+</databaseChangeLog>

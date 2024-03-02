@@ -1,0 +1,226 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "synapse-matrix.fullname" . }}
+  labels:
+    {{- include "synapse-matrix.labels" . | nindent 4 }}
+data:
+  log.config: |
+    version: 1
+    formatters:
+      precise:
+        format: '%(asctime)s - %(name)s - %(lineno)d - %(levelname)s - %(request)s - %(message)s'
+    filters:
+      context:
+        (): synapse.logging.context.LoggingContextFilter
+        request: ""
+
+    handlers:
+      console:
+        class: logging.StreamHandler
+        formatter: precise
+        filters: [context]
+
+    loggers:
+        synapse.storage.SQL:
+            # beware: increasing this to DEBUG will make synapse log sensitive
+            # information such as access tokens.
+            level: INFO
+
+    root:
+        level: INFO
+        handlers: [console]
+
+    disable_existing_loggers: false
+  synapse.elcld.net.signing.key: {{ .Values.server.signingKey }}
+  matrix.tls.crt: |
+    -----BEGIN CERTIFICATE-----
+    MIIDHzCCAgcCFFH6XImW2dhDW6oltG+Bb/rk/gZIMA0GCSqGSIb3DQEBCwUAMEwx
+    CzAJBgNVBAYTAklRMSEwHwYDVQQKDBhFYXJ0aGxpbmsgU29jaWFsIE5ldHdvcmsx
+    GjAYBgNVBAMMEXN5bmFwc2UuZWxjbGQubmV0MB4XDTIwMDYwODEwMTYwNVoXDTMw
+    MDYwNjEwMTYwNVowTDELMAkGA1UEBhMCSVExITAfBgNVBAoMGEVhcnRobGluayBT
+    b2NpYWwgTmV0d29yazEaMBgGA1UEAwwRc3luYXBzZS5lbGNsZC5uZXQwggEiMA0G
+    CSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQC4COhvE0aGkzQ7QV944T0TplvCG34I
+    BdMdry65/hRd/K9QIsvTisb5ZhY7ClAgprRw/hD63FNXtVLH6W8Q9fgg8eE4SCW8
+    oCialIZdRYopnJZdGuyBVrQAAuNSwAjtBVeDTGsxm9BJZ1fCA3Wwba/x3G8ez9ho
+    XRPDqoGSBysF9Kj+9Cqwyc7r9bej/QyQRe0HEe2jzolRQwy5MofY6osuNJz98zmn
+    EBwjcdkbcgT4xDuZuYJCdQuTta2QiJm4Je9ICpnFR4pfMQIWMjaXkwcZ66h29DHB
+    xMMmobqPayqR3r5ypMJSi0nthViqwanGQE7rvpNgP8tAGyFvm2YrmyaxAgMBAAEw
+    DQYJKoZIhvcNAQELBQADggEBAEVahKDJvaVJT1VcQtDkbaGCRIAcSt773bM8UGw1
+    uY+KUQv8ylRxitFb3ls1GjuPWjl7OnymTzrQcQ9JzSO6U1NtJG6DPnnPpdnsKNeU
+    S8OIdDDKe+V3RfcX4QJxvY2dC3prjOTluOom6Tn7hmdYu8AqJNrWBtRC+bsihQBx
+    r2xq82PzabKYNnjMioXKO1PulBKPVXnbRo8SSHbC9PFaz8yrNc2a/NNpOgXJkCEN
+    hkI9R1yym+FChG9uK4UYH30h1aUL1Ciay3Pz4UxXbS7v6q3EzaC42VXDW1p2gwoq
+    V1awsqLnCKB9TxM7jW2qAuSwTx7/oozOc1cje5sajmiBrfE=
+    -----END CERTIFICATE-----
+  matrix.tls.key: |
+    -----BEGIN PRIVATE KEY-----
+    MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQC4COhvE0aGkzQ7
+    QV944T0TplvCG34IBdMdry65/hRd/K9QIsvTisb5ZhY7ClAgprRw/hD63FNXtVLH
+    6W8Q9fgg8eE4SCW8oCialIZdRYopnJZdGuyBVrQAAuNSwAjtBVeDTGsxm9BJZ1fC
+    A3Wwba/x3G8ez9hoXRPDqoGSBysF9Kj+9Cqwyc7r9bej/QyQRe0HEe2jzolRQwy5
+    MofY6osuNJz98zmnEBwjcdkbcgT4xDuZuYJCdQuTta2QiJm4Je9ICpnFR4pfMQIW
+    MjaXkwcZ66h29DHBxMMmobqPayqR3r5ypMJSi0nthViqwanGQE7rvpNgP8tAGyFv
+    m2YrmyaxAgMBAAECggEBAIHGzlndxuMJlVCf5fpxI0fjDVvRVUvFB74sFhBUqvoo
+    QVyKXR/dAjlHEzApMp4D0MTJdSHiEueL10dgRtE4EvTwfPjab7oXWuq/CA1oB2kW
+    ojYf0V3XzXEgmDt3bhPuq2rMjd7a2MOam5kWJXz3rJYq8zVQLnRSBqj5aQuYAG/e
+    htqlUXFsmX5oityL4LJCBbjAgp9HvWbZ/JA2RAzcVf76uMShvqL6nyy3AkyTrUFj
+    /kSiPaoLJlDm78Rd4rlF/vjag7z9Vx9DS2XOjB/3ar9bQv1QPlPqgD5+mci453xY
+    +SU2sFY3949DgkzjR79vP92zWlFxXJQ9b7fNb4DoxcECgYEA80hyXTy9vZfvy9h0
+    yP5Cb7rj6Pn+rW5A35yZXglTrG1ewZYHk0SyHqRtV8m9dR528O9bqiBcRs1INaRB
+    Dxo4A//twebI6QZhIt6YpDgLdPssScBtHmIdo3qU5WQNK0lm1mgRekC3JRfXxtUH
+    62ghDGsHIRUhJ5xem832KlU2WDkCgYEAwaedytLUkGfnUJaREfQwTX6TRP4hLCdj
+    q+76MyZFqhVmeq0e18kWRY4u6gab2hcmabtrWmC4SceUEXzw32amACkF9P360NlO
+    MrupzWiRFsQeWdRk92vbXqjnlxrg2gCD+U/YdB5vPDWYu66qH+70D/wCfNSTBqEr
+    70mH0Au5kjkCgYAD7HozuMQSp72tWvtfNoKZzLjaTBXodCvFr3/lvV7FHCp4EtRi
+    cqwwxFQjI1TT677dWe7vioASgEMW4mROOw0GO315MCCzaW/toQtzMpg0tcxcECdy
+    YwC5X0PBg2CW/yMSeDE3+I07ouvPACaVjGNkEOHXjcCwI9x+xM6glik/OQKBgG8U
+    jlZBCNysPOrk8uGxh+Nrr13rx2tkTK/arHmagmtFSzsjAoYUOko7fH2QvOUkUkxj
+    zPhScmMfr7c4S5JZdu6wmVImPTB+9XP0YToJuO+uHxq30hJ6M6Lgj7cFG+TwVsMz
+    IZ25t2R5+dnuHneiwSxKCcNAy/UJjgH704Nqtk9BAoGAD93Ig2T2YYnvyRmyvlDh
+    PefaipzLxo5RV4twzfWkXK6EMfscW4u6n3VLRYpOAdI2AH3n34ZM19AgpauE9xSb
+    ym69Ha3R9FdpjbJ3VXMGYsIp9FLoGg3Y/Lb9f8/ilMaegMLSlNixrCf7zqSBKGbY
+    HYTvTcSr9UCBQVXqXzmA7UE=
+    -----END PRIVATE KEY-----
+  homeserver.yaml: |
+    # TLS Configuration
+    tls_certificate_path: {{ .Values.server.tls_certificate_path }}
+    tls_private_key_path: {{ .Values.server.tls_private_key_path }}
+
+    # Generate Configuration
+    server_name: "matrix"
+    pid_file: /data/homeserver.pid
+    web_client: False
+    soft_file_limit: 0
+    log_config: "/data/log.config"
+
+    listeners:
+      - port: {{ .Values.service.httpsPort }}
+        bind_addresses: ['::']
+        type: http
+        tls: true
+        x_forwarded: false
+        resources:
+          - names: [client]
+            compress: true
+          - names: [federation]
+            compress: false
+      
+      - port: {{ .Values.service.httpPort }}
+        bind_addresses: ['::']
+        type: http
+        tls: false
+        x_forwarded: true
+        resources:
+          - names: [client]
+            compress: true
+          - names: [federation]
+            compress: false
+
+    # Database
+    database:
+      name: "psycopg2"
+      args:
+        user: {{ .Values.postgres.postgres.username }}
+        password: {{ .Values.postgres.postgres.password }}
+        database: {{ .Values.postgres.postgres.name }}
+        host: {{ .Release.Name }}-postgres-svc
+        port: {{ .Values.postgres.service.port }}
+        cp_min: 5
+        cp_max: 10
+
+    event_cache_size: "10K"
+    # Rate limiting
+    rc_messages_per_second: 0.2
+    rc_message_burst_count: 10.0
+    federation_rc_window_size: 1000
+    federation_rc_sleep_limit: 10
+    federation_rc_sleep_delay: 500
+    federation_rc_reject_limit: 50
+    federation_rc_concurrent: 3
+
+    # Files
+    media_store_path: {{ .Values.server.media_store_path }}
+    uploads_path: {{ .Values.server.uploads_path }}
+    max_upload_size: {{ .Values.server.max_upload_size }}
+    max_image_pixels: {{ .Values.server.max_image_pixels }}
+    dynamic_thumbnails: {{ .Values.server.dynamic_thumbnails }}
+
+    # Thumbnails
+    thumbnail_sizes:
+    - width: 32
+      height: 32
+      method: crop
+    - width: 96
+      height: 96
+      method: crop
+    - width: 320
+      height: 240
+      method: scale
+    - width: 640
+      height: 480
+      method: scale
+    - width: 800
+      height: 600
+      method: scale
+
+    # Captcha
+    recaptcha_public_key: {{ .Values.server.recaptcha_public_key }}
+    recaptcha_private_key: {{ .Values.server.recaptcha_private_key }}
+    enable_registration_captcha: {{ .Values.server.enable_registration_captcha }}
+    recaptcha_siteverify_api: "https://www.google.com/recaptcha/api/siteverify"
+
+    # Turn
+    turn_uris: {{ .Values.server.turn.uris }}
+    turn_shared_secret: {{ .Values.server.turn.shared_secret }}
+    turn_user_lifetime: {{ .Values.server.turn.user_lifetime }}
+    turn_allow_guests: {{ .Values.server.turn.allow_guests }}
+
+    # Registration
+    enable_registration: {{ .Values.server.registration.enabled }}
+    registration_shared_secret: {{ .Values.server.registration.shared_secret }}
+    bcrypt_rounds: 12
+    allow_guest_access: {{ .Values.server.registration.allow_guest_access }}
+    enable_group_creation: {{ .Values.server.registration.enable_group_creation }}
+
+    trusted_third_party_id_servers:
+        - matrix.org
+        - vector.im
+
+    # Metrics
+    enable_metrics: False
+    report_stats: False
+
+    ## API Configuration ##
+    room_invite_state_types:
+        - "m.room.join_rules"
+        - "m.room.canonical_alias"
+        - "m.room.avatar"
+        - "m.room.name"
+
+    filter_timeline_limit: -1
+
+    app_service_config_files: []
+
+    macaroon_secret_key: {{ .Values.server.macaroon_secret_key }}
+    expire_access_token: {{ .Values.server.expire_access_token }}
+
+    ## Signing Keys ##
+    signing_key_path: {{ .Values.server.signing_key_path }}
+    old_signing_keys: {}
+    key_refresh_interval: {{ .Values.server.key_refresh_interval }}
+
+    # The trusted servers to download signing keys from.
+    perspectives:
+      servers:
+        "matrix.org":
+          verify_keys:
+            "ed25519:auto":
+              key: "Noi6WqcDj0QmPxCNQqgezwTlBKrfqehY1u2FyWP9uYw"
+    password_config:
+       enabled: {{ .Values.server.password_config.enabled }}
+    password_providers:
+      - module: {{ .Values.server.password_providers.module }}
+        config:
+          endpoint: {{ .Values.server.password_providers.endpoint }}
+    disable_existing_loggers: false

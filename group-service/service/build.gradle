@@ -1,0 +1,66 @@
+plugins {
+	id 'java'
+	id 'org.springframework.boot'
+}
+
+springBoot {
+	mainClass = 'iq.earthlink.social.groupservice.GroupServiceApplication'
+	buildInfo()
+}
+
+dependencies {
+	compileOnly 'org.springframework.cloud:spring-cloud-starter-sleuth'
+	implementation group: 'org.springframework.kafka', name: 'spring-kafka', version: '2.8.1'
+	implementation group: 'org.redisson', name: 'redisson-spring-boot-starter', version: '3.19.3'
+	implementation group: 'org.redisson', name: 'redisson-spring-data-22', version: '3.19.3'
+	implementation 'org.redisson:redisson-hibernate-53:3.10.2'
+
+	implementation 'org.springframework.boot:spring-boot-starter-log4j2'
+	modules {
+		module("org.springframework.boot:spring-boot-starter-logging") {
+			replacedBy("org.springframework.boot:spring-boot-starter-log4j2", "Use Log4j2 instead of Logback")
+		}
+	}
+
+	compileOnly 'org.projectlombok:lombok'
+	annotationProcessor 'org.projectlombok:lombok'
+	implementation "org.liquibase:liquibase-core"
+
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+	implementation 'org.postgresql:postgresql'
+
+	implementation project(':social-common')
+	implementation project(':social-common-classes')
+	implementation project(":social-error-handling")
+	implementation project(":social-common-security")
+	implementation project(':services:person-client')
+	implementation project(':services:group-client')
+	implementation project(':services:post-client')
+
+	implementation 'com.squareup.okhttp3:okhttp:4.8.1'
+	implementation 'org.apache.commons:commons-lang3:3.8.1'
+	implementation 'com.github.dozermapper:dozer-core:6.1.0'
+
+	testImplementation ('org.springframework.boot:spring-boot-starter-test') {
+		exclude group: "org.junit.vintage", module: "junit-vintage-engine"
+	}
+	testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.3.1'
+	testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.3.1'
+	testImplementation 'org.springframework.amqp:spring-rabbit-test'
+	testImplementation 'org.springframework.security:spring-security-test'
+
+	test {
+		useJUnitPlatform()
+	}
+
+	configurations {
+		all {
+			/* only junit 5 should be used */
+			exclude group: 'junit', module: 'junit'
+			exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+		}
+	}
+}

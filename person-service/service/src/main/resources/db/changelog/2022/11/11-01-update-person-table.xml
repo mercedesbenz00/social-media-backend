@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet id="1667930882155-1" author="jermakova">
+        <addColumn tableName="person">
+            <column name="account_non_locked" type="BOOLEAN" defaultValueBoolean="true"/>
+            <column name="failed_attempt" type="INT" defaultValue="0"/>
+            <column name="lock_time" type="DATETIME"/>
+        </addColumn>
+    </changeSet>
+</databaseChangeLog>

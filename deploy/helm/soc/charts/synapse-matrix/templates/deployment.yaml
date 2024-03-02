@@ -1,0 +1,107 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "synapse-matrix.fullname" . }}
+  labels:
+    {{- include "synapse-matrix.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "synapse-matrix.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "synapse-matrix.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "synapse-matrix.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          volumeMounts:
+            - mountPath: /data/synapse.elcld.net.signing.key
+              name: config-volume
+              subPath: synapse.elcld.net.signing.key
+            - mountPath: /config/homeserver.yaml
+              name: config-volume
+              subPath: homeserver.yaml
+            - mountPath: /data/log.config
+              name: config-volume
+              subPath: log.config
+            - mountPath: /data/cert/matrix.tls.crt
+              name: config-volume
+              subPath: matrix.tls.crt
+            - mountPath: /data/cert/matrix.tls.key
+              name: config-volume
+              subPath: matrix.tls.key
+            - mountPath: /data/upload
+              name: matrix-upload
+            - mountPath: /data/media
+              name: matrix-media
+          ports:
+            - name: http
+              containerPort: {{ .Values.service.httpPort }}
+              protocol: TCP
+            - name: https
+              containerPort: {{ .Values.service.httpsPort }}
+              protocol: TCP
+            - name: sup
+              containerPort: {{ .Values.service.supPort }}
+              protocol: TCP
+          livenessProbe:
+            # using tcp socket because there is no api endpoint for status/health
+            # https://matrix.org/docs/guides/client-server-api
+            tcpSocket:
+              port: http
+          readinessProbe:
+            # using tcp socket because there is no api endpoint for status/health
+            # https://matrix.org/docs/guides/client-server-api
+            tcpSocket:
+              port: http
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      volumes:
+        - name: config-volume
+          configMap:
+            name: "{{ include "synapse-matrix.fullname" . }}"
+        - name: matrix-media
+          {{- if .Values.storage.media.enabled }}
+          persistentVolumeClaim:
+            claimName: "{{ include "synapse-matrix.fullname" . }}-media"
+          {{- else }}
+          emptyDir: {}
+          {{- end }}
+        - name: matrix-upload
+          {{- if .Values.storage.upload.enabled }}
+          persistentVolumeClaim:
+            claimName: "{{ include "synapse-matrix.fullname" . }}-upload"
+          {{- else }}
+          emptyDir: {}
+          {{- end }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

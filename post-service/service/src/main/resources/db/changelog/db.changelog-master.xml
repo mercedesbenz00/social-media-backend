@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+    <include file="db/changelog/2021/11/07-01-initial-changelog.xml"/>
+    <include file="db/changelog/2021/11/17-01-comment-table-add-reply-count.xml"/>
+    <include file="db/changelog/2021/12/19-01-changelog.xml"/>
+    <include file="db/changelog/2021/12/22-01-story-viewer.xml"/>
+    <include file="db/changelog/2021/12/28-01-complaint-reason.xml"/>
+    <include file="db/changelog/2021/12/06-01-add-reasons.xml"/>
+    <include file="db/changelog/2022/01/10-01-comment-isDeleted.xml"/>
+    <include file="db/changelog/2022/04/22-01-drop-tag-table.xml"/>
+    <include file="db/changelog/2022/07/28-01-update-post-table.xml"/>
+    <include file="db/changelog/2022/08/11-01-add-media-file-transcoded-table.xml"/>
+    <include file="db/changelog/2022/11/24-01-create-missing-sequences.xml"/>
+    <include file="db/changelog/2022/11/24-01-set-sequence-values.xml"/>
+    <include file="db/changelog/2023/01/24-01-post-changes.xml"/>
+    <include file="db/changelog/2023/02/03-01-add-post-type.xml"/>
+    <include file="db/changelog/2023/01/09-01-add-post-uuid.xml"/>
+    <include file="db/changelog/2023/01/09-02-add-comment-uuid.xml"/>
+    <include file="db/changelog/2023/02/18-01-post-stats.xml"/>
+    <include file="/db/changelog/2023/02/22-01-change-last-activity.xml"/>
+    <include file="db/changelog/2023/03/09-01-add-user-group-notification-settings-table.xml"/>
+    <include file="db/changelog/2023/03/15-01-update-media-file-paths.xml"/>
+    <include file="db/changelog/2023/03/16-01-add-complaint-uuid.xml"/>
+    <include file="db/changelog/2023/04/03-01-update-comment-table.xml"/>
+    <include file="/db/changelog/2023/05/07-01-sized-image-and-all-constraints.xml"/>
+    <include file="/db/changelog/2023/05/08-01-media-file-state.xml"/>
+    <include file="db/changelog/2023/05/09-01-story-table-changes.xml"/>
+    <include file="db/changelog/2023/06/05-01-add-column-post-mentioned-person-ids.xml"/>
+    <include file="db/changelog/2023/06/06-01-add-pg-trgm-extension.xml"/>
+    <include file="db/changelog/2023/06/08-01-update-sized-image.xml"/>
+    <include file="db/changelog/2023/08/24-01-change-column-name.xml"/>
+    <include file="db/changelog/2023/08/24-01-update-post-with-linkMeta-column.xml"/>
+    <include file="db/changelog/2023/08/25-01-create-post-collection-posts-table.xml"/>
+    <include file="db/changelog/2023/09/14-01-delete-duplicated-posts-from-collections.xml"/>
+    <include file="db/changelog/2023/10/10-01-create-person.xml"/>
+    <include file="db/changelog/2023/10/10-26-update-post-add-authorUuid.xml"/>
+    <include file="db/changelog/2023/10/10-30-person-add-personId.xml"/>
+    <include file="db/changelog/2023/11/11-01-create-group.xml"/>
+    <include file="db/changelog/2023/11/11-06-create-group-member.xml"/>
+    <include file="db/changelog/2023/11/11-20-create-user-group-notification-settings.xml"/>
+    <include file="db/changelog/2023/12/12-07-update-comment-add-authorUuid.xml"/>
+    <include file="db/changelog/2023/12/12-07-fill-comments-with-authorUuid.xml"/>
+    <include file="db/changelog/2024/01/01-16-remove-state-from-member.xml"/>
+    <include file="db/changelog/2024/02/26-01-create-outbox-messages-table.xml"/>
+</databaseChangeLog>

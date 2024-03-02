@@ -1,0 +1,52 @@
+replicaCount: 1
+
+image:
+  repository: registry.earthlink.iq/soc/chat-service
+  pullPolicy: IfNotPresent
+  tag: "latest"
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  create: false
+  annotations: {}
+  name: ""
+
+podAnnotations: {}
+
+podSecurityContext: {}
+
+securityContext: {}
+
+service:
+  type: ClusterIP
+  port: 8087
+  annotations: {}
+
+resources: 
+  limits:
+    cpu: 500m
+    memory: 2000Mi
+  requests:
+    cpu: 200m
+    memory: 512Mi
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+  # targetMemoryUtilizationPercentage: 80
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+postgres:
+  username: postgres
+  password: postgres
+  name: postgres

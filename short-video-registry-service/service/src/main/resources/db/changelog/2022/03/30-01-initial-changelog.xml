@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet id="1648671620143-1" author="jermakova">
+        <createTable tableName="short_video">
+            <column name="id" type="UUID">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_shortvideo"/>
+            </column>
+            <column name="title" type="VARCHAR(255)"/>
+            <column name="file_name" type="VARCHAR(255)"/>
+            <column name="group_id" type="BIGINT"/>
+            <column name="author_id" type="BIGINT"/>
+            <column defaultValueBoolean="true" name="comments_allowed" type="boolean"/>
+            <column defaultValue="GROUP" name="privacy_level" type="char(20)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="DATETIME"/>
+            <column name="meta" type="jsonb"/>
+        </createTable>
+    </changeSet>
+</databaseChangeLog>

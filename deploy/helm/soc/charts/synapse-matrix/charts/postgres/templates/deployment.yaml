@@ -1,0 +1,111 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ include "postgres.fullname" . }}
+  labels:
+    {{- include "postgres.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replica }}
+  serviceName: "postgresql"
+  selector:
+    matchLabels:
+      {{- include "postgres.selectorLabels" . | nindent 6}}
+      service: postgres
+{{- if .Values.global.cloud }}
+  volumeClaimTemplates:
+    - metadata:
+        name: data
+      {{- with .Values.postgres.annotations }}
+        annotations:
+        {{- range $key, $value := . }}
+          {{ $key }}: {{ $value }}
+        {{- end }}
+      {{- end }}
+      spec:
+        accessModes:
+        {{- range .Values.postgres.accessModes }}
+          - {{ . | quote }}
+        {{- end }}
+        storageClassName: {{ .Values.postgres.storageClassName }}
+        resources:
+          requests:
+            storage: {{ .Values.postgres.capacity | quote }}
+{{- end }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "postgres.selectorLabels" . | nindent 8}}
+        service: postgres
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "postgres.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      volumes:
+      {{- if not .Values.global.cloud }}
+        - name: data
+          hostPath:
+            path: /tmp/postgres
+            type: DirectoryOrCreate
+      {{- end }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default "latest" }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          livenessProbe:
+            failureThreshold: 2
+            tcpSocket:
+              port: {{ .Values.service.port }}
+            initialDelaySeconds: 10
+            periodSeconds: 60
+          readinessProbe:
+            failureThreshold: 2
+            tcpSocket:
+              port: {{ .Values.service.port }}
+            periodSeconds: 60
+          ports:
+            - name: postgres
+              containerPort: {{ .Values.service.port }}
+              protocol: TCP
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          volumeMounts:
+          - name: data
+            mountPath: /var/lib/postgresql
+          env:
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "postgres.secretName" . }}
+                  key: postgres-password
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "postgres.secretName" . }}
+                  key: postgres-username
+            - name: POSTGRES_DB
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "postgres.secretName" . }}
+                  key: postgres-name
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

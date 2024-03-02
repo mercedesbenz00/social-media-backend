@@ -1,0 +1,61 @@
+replicaCount: 1
+
+image:
+  repository: postgres
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: "13.0-alpine"
+
+global:
+  cloud: true
+
+postgres:
+  username: postgres
+  password: postgres
+  name: postgres
+  storageClassName: gp2
+  capacity: 5Gi
+  accessModes:
+    - ReadWriteOnce
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  create: false
+  annotations: {}
+  name: ""
+
+podAnnotations: {}
+
+podSecurityContext:
+  {}
+  # fsGroup: 2000
+
+securityContext:
+  {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+service:
+  type: ClusterIP
+  port: 5432
+
+resources:
+  limits:
+    cpu: 300m
+    memory: 256Mi
+  requests:
+    cpu: 100m
+    memory: 128Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}

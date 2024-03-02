@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+    <changeSet author="bauyrzhan.ibraimov" id="05-01-add-missed-group-permissions" labels="Add missed user group permissions">
+        <sql>
+            insert into group_permission(id, user_group_id, person_id, author_id, permission)
+            select nextval('group_perm_seq'), group_id, person_id, person_id, 'USER' as permission from
+                (select group_id, person_id from group_member where state!='REJECTED'
+                    except
+                 select user_group_id as group_id, person_id from group_permission
+                ) as a
+        </sql>
+    </changeSet>
+</databaseChangeLog>

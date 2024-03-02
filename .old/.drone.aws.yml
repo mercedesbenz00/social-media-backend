@@ -1,0 +1,496 @@
+kind: secret
+name: aws_secret_access_key
+get:
+  path: drone-cred-secrets
+  name: aws_secret_access_key
+---
+kind: secret
+name: aws_access_key_id
+get:
+  path: drone-cred-secrets
+  name: aws_access_key_id
+---
+kind: secret
+name: ssh_key
+get:
+  path: drone-ssh-rw-key
+  name: drone-aws-rw-key
+---
+kind: secret
+name: pact_username
+get:
+  path: drone-pact-secrets
+  name: pact_basic_auth_username
+---
+kind: secret
+name: pact_password
+get:
+  path: drone-pact-secrets
+  name: pact_basic_auth_password
+---
+kind: secret
+name: pact_url
+get:
+  path: drone-pact-secrets
+  name: pact_url
+---
+kind: pipeline
+name: "person-service"
+type: kubernetes
+
+clone:
+  depth: 50
+
+trigger:
+  branch:
+  - release/*
+  - drone
+  event:
+  - push
+  - custom
+  - cron
+
+steps:
+- name: "Build Backend Service"
+  resources:
+  limits:
+    cpu: 1000
+    memory: 1Gi
+  image: openjdk:11.0.12-slim-buster
+  commands:
+  - apt-get update && apt-get install -y make git
+  - echo "pact available at $PACT_BROKER_URL"
+  - make service=person-service compile
+
+- name: "Publish Person Service"
+  resources:
+  limits:
+    cpu: 1000
+    memory: 1Gi
+  image: plugins/ecr
+  settings:
+    access_key:
+      from_secret: aws_access_key_id
+    secret_key:
+      from_secret: aws_secret_access_key
+    dockerfile: Dockerfile-aws
+    build_args:
+    - service=person-service
+    registry: 681372973860.dkr.ecr.eu-central-1.amazonaws.com
+    repo: snp_person-service
+    region: eu-central-1
+    tags:
+    - "${DRONE_COMMIT_SHA:0:7}_ci_build_${DRONE_BUILD_NUMBER}"
+---
+kind: pipeline
+name: "comment-service"
+type: kubernetes
+
+clone:
+  depth: 50
+
+trigger:
+  branch:
+  - release/*
+  - drone
+  event:
+  - push
+  - custom
+  - cron
+
+steps:
+- name: "Build Backend Service"
+  resources:
+  limits:
+    cpu: 1000
+    memory: 1Gi
+  image: openjdk:11.0.12-slim-buster
+  commands:
+  - apt-get update && apt-get install -y make git
+  - echo "pact available at $PACT_BROKER_URL"
+  - make service=comment-service compile
+
+- name: "Publish Comment Service"
+  resources:
+  limits:
+    cpu: 1000
+    memory: 1Gi
+  image: plugins/ecr
+  settings:
+    access_key:
+      from_secret: aws_access_key_id
+    secret_key:
+      from_secret: aws_secret_access_key
+    dockerfile: Dockerfile-aws
+    build_args:
+    - service=comment-service
+    registry: 681372973860.dkr.ecr.eu-central-1.amazonaws.com
+    repo: snp_comment-service
+    region: eu-central-1
+    tags:
+    - "${DRONE_COMMIT_SHA:0:7}_ci_build_${DRONE_BUILD_NUMBER}"
+---
+kind: pipeline
+name: "post-service"
+type: kubernetes
+
+clone:
+  depth: 50
+
+trigger:
+  branch:
+  - release/*
+  - drone
+  event:
+  - push
+  - custom
+  - cron
+# depends_on:
+#   - "person-service"
+steps:
+- name: "Build Backend Services"
+  image: openjdk:11.0.12-slim-buster
+  commands:
+  - apt-get update && apt-get install -y make git
+  - make service=post-service compile
+
+- name: "Publish Post Service"
+  resources:
+  limits:
+    cpu: 1000
+    memory: 1Gi
+  image: plugins/ecr
+  settings:
+    access_key:
+      from_secret: aws_access_key_id
+    secret_key:
+      from_secret: aws_secret_access_key
+    dockerfile: Dockerfile-aws
+    build_args:
+    - service=post-service
+    registry: 681372973860.dkr.ecr.eu-central-1.amazonaws.com
+    repo: snp_post-service
+    region: eu-central-1
+    tags:
+    - "${DRONE_COMMIT_SHA:0:7}_ci_build_${DRONE_BUILD_NUMBER}"
+---
+kind: pipeline
+name: "group-service"
+type: kubernetes
+
+# depends_on:
+# - "post-service"
+
+clone:
+  depth: 50
+
+trigger:
+  branch:
+  - release/*
+  - drone
+  event:
+  - push
+  - custom
+  - cron
+
+steps:
+- name: "Build Backend Service"
+  resources:
+  limits:
+    cpu: 1000
+    memory: 1Gi
+  image: openjdk:11.0.12-slim-buster
+  commands:
+  - apt-get update && apt-get install -y make git
+  - echo "pact available at $PACT_BROKER_URL"
+  - make service=group-service compile
+- name: "Publish Group Service"
+  resources:
+  limits:
+    cpu: 1000
+    memory: 1Gi
+  image: plugins/ecr
+  settings:
+    access_key:
+      from_secret: aws_access_key_id
+    secret_key:
+      from_secret: aws_secret_access_key
+    dockerfile: Dockerfile-aws
+    build_args:
+    - service=group-service
+    registry: 681372973860.dkr.ecr.eu-central-1.amazonaws.com
+    repo: snp_group-service
+    region: eu-central-1
+    tags:
+    - "${DRONE_COMMIT_SHA:0:7}_ci_build_${DRONE_BUILD_NUMBER}"
+# ---
+# kind: pipeline
+# name: "Chat Service"
+# type: kubernetes
+
+# clone:
+#   depth: 50
+
+# trigger:
+#   branch:
+#     - staging
+#     - dev
+#     - drone
+#   event:
+#     - push
+#     - custom
+#     - cron
+
+# steps:
+#   - name: "Build Backend Services"
+#     image: openjdk:11.0.12-slim-buster
+#     commands:
+#       - apt-get update && apt-get install -y make git
+#       - make service=chat-service compile
+
+#   - name: "Publish Chat Service"
+#     resources:
+#     limits:
+#       cpu: 500
+#       memory: 500MiB
+#     image: plugins/ecr
+#     settings:
+#       access_key:
+#         from_secret: aws_access_key_id
+#       secret_key:
+#         from_secret: aws_secret_access_key
+#       dockerfile: Dockerfile-aws
+#       build_args:
+#         - service=chat-service
+#       registry: 681372973860.dkr.ecr.eu-central-1.amazonaws.com
+#       repo: snp_chat-service
+#       region: eu-central-1
+#       tags:
+#         - "${DRONE_COMMIT_SHA:0:7}_ci_build_${DRONE_BUILD_NUMBER}"
+---
+kind: pipeline
+name: "notification-service"
+type: kubernetes
+
+clone:
+  depth: 50
+# depends_on:
+# - "group-service"
+trigger:
+  branch:
+  - release/*
+  - drone
+  event:
+  - push
+  - custom
+  - cron
+
+steps:
+- name: "Build Backend Services"
+  image: openjdk:11.0.12-slim-buster
+  commands:
+  - apt-get update && apt-get install -y make git
+  - make service=notification-service compile
+
+- name: "Publish Notification Service"
+  resources:
+  limits:
+    cpu: 1000
+    memory: 1Gi
+  image: plugins/ecr
+  settings:
+    access_key:
+      from_secret: aws_access_key_id
+    secret_key:
+      from_secret: aws_secret_access_key
+    dockerfile: Dockerfile-aws
+    build_args:
+    - service=notification-service
+    registry: 681372973860.dkr.ecr.eu-central-1.amazonaws.com
+    repo: snp_notification-service
+    region: eu-central-1
+    tags:
+    - "${DRONE_COMMIT_SHA:0:7}_ci_build_${DRONE_BUILD_NUMBER}"
+---
+kind: pipeline
+name: "short-video-registry-service"
+type: kubernetes
+
+clone:
+  depth: 50
+
+# depends_on:
+# - "notification-service"
+
+trigger:
+  branch:
+  - release/*
+  - drone
+  event:
+  - push
+  - custom
+  - cron
+
+steps:
+- name: "Build Backend Services"
+  image: openjdk:11.0.12-slim-buster
+  environment:
+    PACT_BROKER_URL:
+      from_secret: pact_url
+    PACT_BROKER_USERNAME:
+      from_secret: pact_username
+    PACT_BROKER_PASSWORD:
+      from_secret: pact_password
+  commands:
+  - apt-get update && apt-get install -y make git
+  - make service=short-video-registry-service compile
+
+- name: "Publish Service"
+  resources:
+  limits:
+    cpu: 1000
+    memory: 1Gi
+  image: plugins/ecr
+  settings:
+    access_key:
+      from_secret: aws_access_key_id
+    secret_key:
+      from_secret: aws_secret_access_key
+    dockerfile: Dockerfile-aws
+    build_args:
+    - service=short-video-registry-service
+    registry: 681372973860.dkr.ecr.eu-central-1.amazonaws.com
+    repo: snp_short-videos-registry
+    region: eu-central-1
+    tags:
+    - "${DRONE_COMMIT_SHA:0:7}_ci_build_${DRONE_BUILD_NUMBER}"
+---
+kind: pipeline
+name: "short-video-service"
+type: kubernetes
+
+clone:
+  depth: 50
+
+# depends_on:
+# - "short-video-registry-service"
+
+trigger:
+  branch:
+  - release/*
+  - drone
+  event:
+  - push
+  - custom
+  - cron
+
+steps:
+- name: "Build Backend Services"
+  image: openjdk:11.0.12-slim-buster
+  environment:
+    PACT_BROKER_URL:
+      from_secret: pact_url
+    PACT_BROKER_USERNAME:
+      from_secret: pact_username
+    PACT_BROKER_PASSWORD:
+      from_secret: pact_password
+  commands:
+  - apt-get update && apt-get install -y make git
+  - make service=short-video-service compile
+
+- name: "Publish"
+  resources:
+  limits:
+    cpu: 1000
+    memory: 1Gi
+  image: plugins/ecr
+  settings:
+    access_key:
+      from_secret: aws_access_key_id
+    secret_key:
+      from_secret: aws_secret_access_key
+    dockerfile: Dockerfile-aws
+    build_args:
+    - service=short-video-service
+    registry: 681372973860.dkr.ecr.eu-central-1.amazonaws.com
+    repo: snp_short-videos-service
+    region: eu-central-1
+    tags:
+    - "${DRONE_COMMIT_SHA:0:7}_ci_build_${DRONE_BUILD_NUMBER}"
+---
+kind: pipeline
+name: "matrix"
+type: kubernetes
+
+clone:
+  depth: 50
+
+trigger:
+  branch:
+  - release/*
+  - drone
+  event:
+  - push
+  - custom
+  - cron
+steps:
+- name: "Publish Matrix"
+  resources:
+  limits:
+    cpu: 1000
+    memory: 1Gi
+  image: plugins/ecr
+  settings:
+    access_key:
+      from_secret: aws_access_key_id
+    secret_key:
+      from_secret: aws_secret_access_key
+    dockerfile: matrix/Dockerfile
+    registry: 681372973860.dkr.ecr.eu-central-1.amazonaws.com
+    repo: snp_synapse-matrix
+    region: eu-central-1
+    tags:
+    - "${DRONE_COMMIT_SHA:0:7}_ci_build_${DRONE_BUILD_NUMBER}"
+---
+kind: pipeline
+name: deploy_staging
+type: kubernetes
+trigger:
+  event:
+  - promote
+  target:
+  - staging
+  branch:
+  - release/*
+steps:
+- name: clone extra repo
+  image: 310830963532.dkr.ecr.eu-central-1.amazonaws.com/drone-pipeline-img:81aee40
+  environment:
+    SSH_KEY:
+      from_secret: ssh_key
+  commands:
+  # init ssh to clone private repos
+  - mkdir -p $HOME/.ssh
+  - echo "$SSH_KEY" > $HOME/.ssh/ed25519
+  - chmod 600 $HOME/.ssh/ed25519
+  - ssh-keyscan bitbucket.org > /$HOME/.ssh/known_hosts
+  - |
+    cat <<EOT >> $HOME/.ssh/config
+      Host bitbucket.org
+        HostName bitbucket.org
+        User git
+        IdentityFile ~/.ssh/ed25519
+    EOT
+  # cloning helmchart manifests
+  - git clone git@bitbucket.org:creativeadvtech/soc-helm-charts.git
+  - cd ./soc-helm-charts
+  - git checkout staging && git branch --set-upstream-to=origin staging
+  - export TAG=${DRONE_COMMIT_SHA:0:7}_ci_build_${DRONE_BUILD_PARENT}
+  - yq e -i '(.person-service.image.tag, .post-service.image.tag, .group-service.image.tag, .notification-service.image.tag, .image-service.thumbor.image.tag, .short-videos-api.image.tag, .short-videos-registry.image.tag, .short-videos-service.image.tag) = strenv(TAG)' ./values-aws.yaml
+  - helm secrets lint ./ -f ./values-aws.yaml
+  - |
+    if git add --all && git commit -m "bump image tag to $TAG" && git push -u origin staging;  then
+      echo "**SUCCESS** SNP Backend Services will be deployed soon"
+    else
+      echo "**WARNING** nothing has changed"
+    fi

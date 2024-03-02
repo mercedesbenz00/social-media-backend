@@ -1,0 +1,442 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd"
+        objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
+    <changeSet id="1636294494657-1" author="bauyrzhanibraimov (generated)">
+        <createSequence incrementBy="1" sequenceName="comment_complaint_seq_gen" startValue="1"/>
+    </changeSet>
+    <changeSet id="1636294494657-2" author="bauyrzhanibraimov (generated)">
+        <createSequence incrementBy="1" sequenceName="comment_seq_gen" startValue="1"/>
+    </changeSet>
+    <changeSet id="1636294494657-3" author="bauyrzhanibraimov (generated)">
+        <createSequence incrementBy="1" sequenceName="hibernate_sequence" startValue="1"/>
+    </changeSet>
+    <changeSet id="1636294494657-4" author="bauyrzhanibraimov (generated)">
+        <createSequence incrementBy="1" sequenceName="post_collection_seq_gen" startValue="1"/>
+    </changeSet>
+    <changeSet id="1636294494657-5" author="bauyrzhanibraimov (generated)">
+        <createSequence incrementBy="1" sequenceName="post_complaint_seq_gen" startValue="1"/>
+    </changeSet>
+    <changeSet id="1636294494657-6" author="bauyrzhanibraimov (generated)">
+        <createSequence incrementBy="1" sequenceName="post_seq_gen" startValue="1"/>
+    </changeSet>
+    <changeSet id="1636294494657-7" author="bauyrzhanibraimov (generated)">
+        <createSequence incrementBy="1" sequenceName="story_seq_gen" startValue="1"/>
+    </changeSet>
+    <changeSet id="1636294494657-8" author="bauyrzhanibraimov (generated)">
+        <createSequence incrementBy="1" sequenceName="story_view_seq_gen" startValue="1"/>
+    </changeSet>
+    <changeSet id="1636294494657-9" author="bauyrzhanibraimov (generated)">
+        <createSequence incrementBy="1" sequenceName="tag_seq_gen" startValue="1"/>
+    </changeSet>
+    <changeSet id="1636294494657-10" author="bauyrzhanibraimov (generated)">
+        <createTable tableName="comment">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_comment"/>
+            </column>
+            <column name="content" type="VARCHAR(2000)"/>
+            <column name="author_id" type="BIGINT"/>
+            <column name="created_at" type="DATETIME"/>
+            <column name="modified_at" type="DATETIME"/>
+            <column name="deleted_at" type="DATETIME"/>
+            <column name="post_id" type="BIGINT"/>
+            <column name="reply_to_id" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="1636294494657-11" author="bauyrzhanibraimov (generated)">
+        <createTable tableName="comment_complaint">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_commentcomplaint"/>
+            </column>
+            <column name="comment_id" type="BIGINT"/>
+            <column name="created_at" type="DATETIME"/>
+            <column name="author_id" type="BIGINT"/>
+            <column name="reason" type="VARCHAR(1000)"/>
+            <column defaultValue="PENDING" name="state" type="char(20)"/>
+            <column name="resolver_id" type="BIGINT"/>
+            <column name="resolving_text" type="VARCHAR(1000)"/>
+            <column name="resolving_date" type="DATETIME"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="1636294494657-12" author="bauyrzhanibraimov (generated)">
+        <createTable tableName="comment_vote">
+            <column name="created_at" type="DATETIME"/>
+            <column name="vote_type" type="INT"/>
+            <column name="person_id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="pk_commentvote"/>
+            </column>
+            <column name="comment_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_commentvote"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1636294494657-13" author="bauyrzhanibraimov (generated)">
+        <createTable tableName="group_post_collection">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_grouppostcollection"/>
+            </column>
+            <column name="author_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="group_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="name" type="VARCHAR(255)"/>
+            <column name="created_at" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="default_collection" type="BOOLEAN"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="1636294494657-14" author="bauyrzhanibraimov (generated)">
+        <createTable tableName="group_post_collection_posts">
+            <column name="group_post_collection_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_grouppostcollection_posts"/>
+            </column>
+            <column name="posts_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_grouppostcollection_posts"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1636294494657-15" author="bauyrzhanibraimov (generated)">
+        <createTable tableName="image">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_image"/>
+            </column>
+            <column name="created_at" type="DATETIME"/>
+            <column name="author_id" type="VARCHAR(255)"/>
+            <column name="alias" type="VARCHAR(255)"/>
+            <column name="file_name" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="1636294494657-16" author="bauyrzhanibraimov (generated)">
+        <createTable tableName="media_file">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_mediafile"/>
+            </column>
+            <column name="path" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="storage_type" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="file_type" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="mime_type" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="owner_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="size" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1636294494657-17" author="bauyrzhanibraimov (generated)">
+        <createTable tableName="post">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_post"/>
+            </column>
+            <column name="title" type="VARCHAR(255)"/>
+            <column name="created_at" type="DATETIME"/>
+            <column name="published_at" type="DATETIME"/>
+            <column name="content" type="VARCHAR(4000)"/>
+            <column name="author_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="author_display_name" type="VARCHAR(255)"/>
+            <column name="user_group_id" type="BIGINT"/>
+            <column name="reposted_from_id" type="BIGINT"/>
+            <column defaultValue="DRAFT" name="state" type="char(32)"/>
+            <column defaultValue="TEXT" name="type" type="char(32)"/>
+            <column name="state_changed_date" type="DATETIME"/>
+            <column name="last_activity_at" type="DATETIME"/>
+            <column defaultValueBoolean="true" name="comments_allowed" type="bool"/>
+            <column defaultValueBoolean="false" name="pinned" type="bool"/>
+            <column defaultValueNumeric="0.0" name="score" type="decimal"/>
+            <column defaultValueNumeric="0" name="comments_count" type="int8">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValueNumeric="0" name="comments_upvotes_count" type="int8">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValueNumeric="0" name="comments_downvotes_count" type="int8">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValueNumeric="0" name="upvotes_count" type="int8">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValueNumeric="0" name="downvotes_count" type="int8">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1636294494657-18" author="bauyrzhanibraimov (generated)">
+        <createTable tableName="post_collection">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_postcollection"/>
+            </column>
+            <column name="owner_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="default_collection" type="BOOLEAN"/>
+            <column name="name" type="VARCHAR(255)"/>
+            <column name="created_at" type="DATETIME"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="1636294494657-19" author="bauyrzhanibraimov (generated)">
+        <createTable tableName="post_collection_posts">
+            <column name="post_collection_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_postcollection_posts"/>
+            </column>
+            <column name="posts_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_postcollection_posts"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1636294494657-20" author="bauyrzhanibraimov (generated)">
+        <createTable tableName="post_comments">
+            <column name="post_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="comments_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1636294494657-21" author="bauyrzhanibraimov (generated)">
+        <createTable tableName="post_complaint">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_postcomplaint"/>
+            </column>
+            <column name="post_id" type="BIGINT"/>
+            <column name="created_at" type="DATETIME"/>
+            <column name="author_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="reason" type="VARCHAR(1000)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="PENDING" name="state" type="char(20)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="resolver_id" type="BIGINT"/>
+            <column name="resolving_text" type="VARCHAR(1000)"/>
+            <column name="resolving_date" type="DATETIME"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="1636294494657-22" author="bauyrzhanibraimov (generated)">
+        <createTable tableName="post_files">
+            <column name="post_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="files_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1636294494657-23" author="bauyrzhanibraimov (generated)">
+        <createTable tableName="post_vote">
+            <column name="created_at" type="DATETIME"/>
+            <column name="vote_type" type="INT"/>
+            <column name="person_id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="pk_postvote"/>
+            </column>
+            <column name="post_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_postvote"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1636294494657-24" author="bauyrzhanibraimov (generated)">
+        <createTable tableName="sized_image">
+            <column name="id" type="VARCHAR(255)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_sizedimage"/>
+            </column>
+            <column name="image_size_type" type="VARCHAR(255)"/>
+            <column name="file_name" type="VARCHAR(255)"/>
+            <column name="permanent_url" type="VARCHAR(255)"/>
+            <column name="file_size" type="INT"/>
+            <column name="upload_status" type="VARCHAR(255)"/>
+            <column name="image_id" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="1636294494657-25" author="bauyrzhanibraimov (generated)">
+        <createTable tableName="story">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_story"/>
+            </column>
+            <column name="author_id" type="BIGINT"/>
+            <column name="media_file_id" type="BIGINT"/>
+            <column name="created_at" type="DATETIME"/>
+            <column name="person_references" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="1636294494657-26" author="bauyrzhanibraimov (generated)">
+        <createTable tableName="story_view">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_storyview"/>
+            </column>
+            <column name="story_id" type="BIGINT"/>
+            <column name="viewer_id" type="BIGINT"/>
+            <column name="created_at" type="DATETIME"/>
+            <column name="updated_at" type="DATETIME"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="1636294494657-27" author="bauyrzhanibraimov (generated)">
+        <createTable tableName="tag">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_tag"/>
+            </column>
+            <column name="tag" type="VARCHAR(255)"/>
+            <column name="created_at" type="DATETIME"/>
+            <column name="author_id" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="1636294494657-28" author="bauyrzhanibraimov (generated)">
+        <addUniqueConstraint columnNames="author_id, comment_id" constraintName="uc_144f9a2075e1b725f8e22abdc"
+                             tableName="comment_complaint"/>
+    </changeSet>
+    <changeSet id="1636294494657-29" author="bauyrzhanibraimov (generated)">
+        <addUniqueConstraint columnNames="author_id, post_id" constraintName="uc_d3b2532f6e64494d445c96cc7"
+                             tableName="post_complaint"/>
+    </changeSet>
+    <changeSet id="1636294494657-30" author="bauyrzhanibraimov (generated)">
+        <addUniqueConstraint columnNames="comments_id" constraintName="uc_post_comments_comments"
+                             tableName="post_comments"/>
+    </changeSet>
+    <changeSet id="1636294494657-31" author="bauyrzhanibraimov (generated)">
+        <addUniqueConstraint columnNames="files_id" constraintName="uc_post_files_files" tableName="post_files"/>
+    </changeSet>
+    <changeSet id="1636294494657-32" author="bauyrzhanibraimov (generated)">
+        <addUniqueConstraint columnNames="tag" constraintName="uc_tag_tag" tableName="tag"/>
+    </changeSet>
+    <changeSet id="1636294494657-33" author="bauyrzhanibraimov (generated)">
+        <createIndex indexName="comment_created_at_idx" tableName="comment">
+            <column name="created_at"/>
+        </createIndex>
+    </changeSet>
+    <changeSet id="1636294494657-35" author="bauyrzhanibraimov (generated)">
+        <createIndex indexName="image_alias_idx" tableName="image" unique="true">
+            <column name="alias"/>
+        </createIndex>
+    </changeSet>
+    <changeSet id="1636294494657-36" author="bauyrzhanibraimov (generated)">
+        <createIndex indexName="post_author_idx" tableName="post">
+            <column name="author_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet id="1636294494657-37" author="bauyrzhanibraimov (generated)">
+        <createIndex indexName="story_author_idx" tableName="story">
+            <column name="author_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet id="1636294494657-38" author="bauyrzhanibraimov (generated)">
+        <createIndex indexName="story_view_unique_idx" tableName="story_view" unique="true">
+            <column name="story_id"/>
+            <column name="viewer_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet id="1636294494657-39" author="bauyrzhanibraimov (generated)">
+        <createIndex indexName="unique_owner_file_idx" tableName="media_file">
+            <column name="owner_id"/>
+            <column name="file_type"/>
+            <column name="path"/>
+        </createIndex>
+    </changeSet>
+    <changeSet id="1636294494657-40" author="bauyrzhanibraimov (generated)">
+        <addForeignKeyConstraint baseColumnNames="comment_id" baseTableName="comment_complaint"
+                                 constraintName="FK_COMMENTCOMPLAINT_ON_COMMENT" referencedColumnNames="id"
+                                 referencedTableName="comment"/>
+    </changeSet>
+    <changeSet id="1636294494657-41" author="bauyrzhanibraimov (generated)">
+        <addForeignKeyConstraint baseColumnNames="comment_id" baseTableName="comment_vote"
+                                 constraintName="FK_COMMENTVOTE_ON_COMMENT" referencedColumnNames="id"
+                                 referencedTableName="comment"/>
+    </changeSet>
+    <changeSet id="1636294494657-42" author="bauyrzhanibraimov (generated)">
+        <addForeignKeyConstraint baseColumnNames="post_id" baseTableName="comment" constraintName="FK_COMMENT_ON_POST"
+                                 referencedColumnNames="id" referencedTableName="post"/>
+    </changeSet>
+    <changeSet id="1636294494657-43" author="bauyrzhanibraimov (generated)">
+        <addForeignKeyConstraint baseColumnNames="reply_to_id" baseTableName="comment"
+                                 constraintName="FK_COMMENT_ON_REPLYTO" referencedColumnNames="id"
+                                 referencedTableName="comment"/>
+
+        <createIndex indexName="comment_reply_to_idx" tableName="comment">
+            <column name="reply_to_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet id="1636294494657-44" author="bauyrzhanibraimov (generated)">
+        <addForeignKeyConstraint baseColumnNames="post_id" baseTableName="post_complaint"
+                                 constraintName="FK_POSTCOMPLAINT_ON_POST" referencedColumnNames="id"
+                                 referencedTableName="post"/>
+    </changeSet>
+    <changeSet id="1636294494657-45" author="bauyrzhanibraimov (generated)">
+        <addForeignKeyConstraint baseColumnNames="post_id" baseTableName="post_vote"
+                                 constraintName="FK_POSTVOTE_ON_POST" referencedColumnNames="id"
+                                 referencedTableName="post"/>
+    </changeSet>
+    <changeSet id="1636294494657-46" author="bauyrzhanibraimov (generated)">
+        <addForeignKeyConstraint baseColumnNames="image_id" baseTableName="sized_image"
+                                 constraintName="FK_SIZEDIMAGE_ON_IMAGE" referencedColumnNames="id"
+                                 referencedTableName="image"/>
+    </changeSet>
+    <changeSet id="1636294494657-47" author="bauyrzhanibraimov (generated)">
+        <addForeignKeyConstraint baseColumnNames="story_id" baseTableName="story_view"
+                                 constraintName="FK_STORYVIEW_ON_STORY" referencedColumnNames="id"
+                                 referencedTableName="story"/>
+    </changeSet>
+    <changeSet id="1636294494657-48" author="bauyrzhanibraimov (generated)">
+        <addForeignKeyConstraint baseColumnNames="media_file_id" baseTableName="story"
+                                 constraintName="FK_STORY_ON_MEDIA_FILE" referencedColumnNames="id"
+                                 referencedTableName="media_file"/>
+    </changeSet>
+    <changeSet id="1636294494657-49" author="bauyrzhanibraimov (generated)">
+        <addForeignKeyConstraint baseColumnNames="group_post_collection_id" baseTableName="group_post_collection_posts"
+                                 constraintName="fk_groposcolpos_on_group_post_collection" referencedColumnNames="id"
+                                 referencedTableName="group_post_collection"/>
+    </changeSet>
+    <changeSet id="1636294494657-50" author="bauyrzhanibraimov (generated)">
+        <addForeignKeyConstraint baseColumnNames="posts_id" baseTableName="group_post_collection_posts"
+                                 constraintName="fk_groposcolpos_on_post" referencedColumnNames="id"
+                                 referencedTableName="post"/>
+    </changeSet>
+    <changeSet id="1636294494657-51" author="bauyrzhanibraimov (generated)">
+        <addForeignKeyConstraint baseColumnNames="posts_id" baseTableName="post_collection_posts"
+                                 constraintName="fk_poscolpos_on_post" referencedColumnNames="id"
+                                 referencedTableName="post"/>
+    </changeSet>
+    <changeSet id="1636294494657-52" author="bauyrzhanibraimov (generated)">
+        <addForeignKeyConstraint baseColumnNames="post_collection_id" baseTableName="post_collection_posts"
+                                 constraintName="fk_poscolpos_on_post_collection" referencedColumnNames="id"
+                                 referencedTableName="post_collection"/>
+    </changeSet>
+    <changeSet id="1636294494657-53" author="bauyrzhanibraimov (generated)">
+        <addForeignKeyConstraint baseColumnNames="comments_id" baseTableName="post_comments"
+                                 constraintName="fk_poscom_on_comment" referencedColumnNames="id"
+                                 referencedTableName="comment"/>
+    </changeSet>
+    <changeSet id="1636294494657-54" author="bauyrzhanibraimov (generated)">
+        <addForeignKeyConstraint baseColumnNames="post_id" baseTableName="post_comments"
+                                 constraintName="fk_poscom_on_post" referencedColumnNames="id"
+                                 referencedTableName="post"/>
+    </changeSet>
+    <changeSet id="1636294494657-55" author="bauyrzhanibraimov (generated)">
+        <addForeignKeyConstraint baseColumnNames="files_id" baseTableName="post_files"
+                                 constraintName="fk_posfil_on_media_file" referencedColumnNames="id"
+                                 referencedTableName="media_file"/>
+    </changeSet>
+    <changeSet id="1636294494657-56" author="bauyrzhanibraimov (generated)">
+        <addForeignKeyConstraint baseColumnNames="post_id" baseTableName="post_files" constraintName="fk_posfil_on_post"
+                                 referencedColumnNames="id" referencedTableName="post"/>
+    </changeSet>
+
+</databaseChangeLog>

@@ -1,0 +1,177 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'au.com.dius.pact.provider:gradle:4.1.8'
+    }
+}
+
+
+plugins {
+    id 'org.springframework.boot'
+    id 'io.spring.dependency-management'
+    id "org.openapi.generator" version '5.4.0'
+    id 'org.jetbrains.gradle.plugin.idea-ext' version '1.1.3'
+    id("com.github.johnrengelman.processes") version "0.5.0"
+    id "org.springdoc.openapi-gradle-plugin" version "1.6.0"
+    id 'au.com.dius.pact' version '4.1.8'
+    id 'java'
+}
+
+springBoot {
+    mainClass = 'iq.earthlink.social.shortvideoservice.ShortVideoServiceApplication'
+    buildInfo()
+}
+
+repositories {
+    mavenCentral()
+    maven {
+        url "https://plugins.gradle.org/m2/"
+    }
+}
+
+dependencies {
+    implementation group: 'org.springframework.kafka', name: 'spring-kafka', version: '2.8.1'
+    implementation("org.springdoc:springdoc-openapi-javadoc:1.5.11")
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'org.springframework.boot:spring-boot-starter-log4j2'
+    implementation 'junit:junit:4.13.1'
+    modules {
+        module("org.springframework.boot:spring-boot-starter-logging") {
+            replacedBy("org.springframework.boot:spring-boot-starter-log4j2", "Use Log4j2 instead of Logback")
+        }
+    }
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
+    implementation 'org.springframework.boot:spring-boot-starter-amqp'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+    compileOnly 'org.projectlombok:lombok'
+    implementation 'org.postgresql:postgresql'
+    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+    annotationProcessor 'org.projectlombok:lombok'
+
+    implementation group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-yaml', version: '2.9.1'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'com.squareup.okhttp3:okhttp:4.8.1'
+    implementation 'org.openapitools:jackson-databind-nullable:0.2.1'
+    implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
+    implementation 'com.github.dozermapper:dozer-core:6.1.0'
+
+    implementation project(':social-common')
+    implementation project(':social-common-classes')
+    implementation project(":social-common-security")
+    implementation project(":social-error-handling")
+    implementation project(':services:person-client')
+    implementation project(':services:short-video-registry-client')
+    implementation project(':services:comment-client')
+
+    testImplementation 'org.apache.commons:commons-lang3:3.8.1'
+    testImplementation ('org.springframework.boot:spring-boot-starter-test') {
+        exclude group: "org.junit.vintage", module: "junit-vintage-engine"
+    }
+    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.3.1'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.3.1'
+    testImplementation 'au.com.dius.pact.consumer:java8:4.1.36'
+    testImplementation 'au.com.dius.pact.consumer:junit5:4.1.36'
+    testImplementation 'au.com.dius.pact.provider:junit5spring:4.1.36'
+    testImplementation 'org.springframework.amqp:spring-rabbit-test'
+    testImplementation 'org.springframework.security:spring-security-test'
+}
+
+test {
+    useJUnitPlatform()
+}
+
+configurations {
+    all {
+        /* only junit 5 should be used */
+        exclude group: 'junit', module: 'junit'
+        exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+    }
+}
+
+openApiGenerate {
+    generatorName = "spring"
+    inputSpec = "${projectDir}/src/main/resources/openapi.yaml" as Object
+    outputDir = "${buildDir}/generated/open-api" as Object
+    templateDir = "${projectDir}/src/main/resources/custom" as Object
+    apiPackage = "iq.earthlink.social.shortvideoservice.api"
+    invokerPackage = "iq.earthlink.social.shortvideoservice.handler"
+    modelPackage = "iq.earthlink.social.shortvideoservice.model"
+    modelNameSuffix = "DTO"
+    configOptions = [
+            "delegatePattern": "true",
+            "useSpringController": "true",
+            "useTags": "true",
+            "serializableModel": "true",
+            "additionalModelTypeAnnotations": "@lombok.Builder @lombok.NoArgsConstructor @lombok.AllArgsConstructor"
+    ]
+    languageSpecificPrimitives = ["PrivacyLevel"]
+    importMappings = [
+            'PrivacyLevelDTO': 'iq.earthlink.social.classes.enumeration.PrivacyLevel',
+            "java.time.OffsetDateTime": "java.sql.Timestamp"
+//            'ShortVideoResponseDTO': 'iq.earthlink.social.shortvideoregistryservice.dto.ShortVideoDTO'
+    ]
+    typeMappings = [
+            "PrivacyLevelDTO"      : "PrivacyLevel",
+            OffsetDateTime: "Timestamp"
+//            "ShortVideoResponseDTO": "ShortVideoDTO"
+    ]
+}
+
+compileJava {
+    dependsOn tasks.openApiGenerate
+    source "${buildDir}/generated/open-api/src/main/java"
+}
+
+if (idea.project) {
+    idea.project.settings {
+        taskTriggers {
+            beforeBuild tasks.getByName("openApiGenerate")
+            beforeRebuild tasks.getByName("openApiGenerate")
+            afterSync tasks.getByName("openApiGenerate")
+            beforeSync tasks.getByName("openApiGenerate")
+        }
+    }
+}
+
+
+def getGitHash = { ->
+    def stdout = new ByteArrayOutputStream()
+    exec {
+        commandLine 'git', 'rev-parse', '--short', 'HEAD'
+        standardOutput = stdout
+    }
+    return stdout.toString().trim()
+}
+
+def getGitBranch = { ->
+    def stdout = new ByteArrayOutputStream()
+    exec {
+        commandLine 'git', 'rev-parse', '--abbrev-ref', 'HEAD'
+        standardOutput = stdout
+    }
+    return stdout.toString().trim()
+}
+
+pact {
+    publish {
+        pactDirectory = "${buildDir}/pacts"
+        pactBrokerUrl = 'http://localhost:8000/'
+        pactBrokerUsername = 'pact_workshop'
+        pactBrokerPassword = 'pact_workshop'
+        tags = [getGitBranch(), 'dev', 'master']
+        consumerVersion = getGitHash()
+    }
+}
+
+
+sourceSets {
+    main {
+        java {
+            srcDir "${buildDir.absolutePath}/generated/open-api/src/main/java"
+        }
+    }
+}

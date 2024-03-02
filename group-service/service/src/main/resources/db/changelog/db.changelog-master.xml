@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+    <include file="db/changelog/2021/11/07-01-initial-changelog.xml"/>
+    <include file="db/changelog/2021/11/07-02-add-categories.xml" />
+    <include file="db/changelog/2021/11/19-01-add-media-files-table.xml" />
+    <include file="db/changelog/2021/11/22-01-user-group-privacy-level.xml"/>
+    <include file="db/changelog/2021/11/23-01-changelog.xml"/>
+    <include file="db/changelog/2021/11/23-02-drop_parent_group.xml"/>
+    <include file="db/changelog/2021/11/24-01-user_group_add_column.xml"/>
+    <include file="db/changelog/2021/11/28-01-group-member-state.xml"/>
+    <include file="db/changelog/2021/12/03-01-user-group-state.xml"/>
+    <include file="db/changelog/2021/12/05-01-group-member-display-name.xml"/>
+    <include file="db/changelog/2021/12/10-01-group-member-updated-date.xml"/>
+    <include file="db/changelog/2022/02/14-01-category-avatar-cover.xml"/>
+    <include file="db/changelog/2022/02/14-02-update-category-media-urls.xml"/>
+    <include file="db/changelog/2022/02/15-01-user-group-cover-avatar.xml"/>
+    <include file="db/changelog/2022/02/15-02-user-group-set-cover-avatar.xml"/>
+    <include file="db/changelog/2022/04/05-01-add-missed-group-permissions.xml"/>
+    <include file="db/changelog/2022/05/11-01-remove-sized-image.xml"/>
+    <include file="db/changelog/2022/05/11-02-category-uuid.xml"/>
+    <include file="db/changelog/2022/07/06-01-add-category-count-columns.xml"/>
+    <include file="db/changelog/2022/07/28-01-update-user-group-table.xml"/>
+    <include file="db/changelog/2022/08/09-01-update-group-member.xml"/>
+    <include file="db/changelog/2022/08/12-01-add-media-file-transcoded-table.xml"/>
+    <include file="db/changelog/2022/11/24-01-create-missing-sequences.xml"/>
+    <include file="db/changelog/2022/11/24-02-set-sequence-values.xml"/>
+    <include file="db/changelog/2022/12/13-01-update-category.xml"/>
+    <include file="db/changelog/2023/01/05-01-add-is-searchable-group.xml"/>
+    <include file="db/changelog/2023/01/25-01-add-group-visibility.xml"/>
+    <include file="db/changelog/2023/03/07-03-add-user-group-notification-settings-table.xml"/>
+    <include file="/db/changelog/2023/05/07-01-sized-image-and-all-constraints.xml"/>
+    <include file="/db/changelog/2023/05/07-02-media-file-state.xml"/>
+    <include file="/db/changelog/2023/05/18-01-group-invite-permission.xml"/>
+    <include file="/db/changelog/2023/06/06-01-add-pg-trgm-extension.xml"/>
+    <include file="db/changelog/2023/06/08-01-update-sized-image.xml"/>
+    <include file="db/changelog/2023/09/20-01-add-index-for-group-member.xml"/>
+    <include file="db/changelog/2024/01/08-01-revoke-permissions-for-non-members.xml"/>
+    <include file="db/changelog/2023/11/11-23-create-person.xml"/>
+    <include file="db/changelog/2024/02/07-01-create-processed-post-group-table.xml"/>
+    <include file="db/changelog/2024/02/07-02-reset-post-counts.xml"/>
+    <include file="db/changelog/2024/02/26-01-create-outbox-messages-table.xml"/>
+</databaseChangeLog>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <include file="db/changelog/2022/01/12-01-initial-changelog.xml"/>
+    <include file="db/changelog/2022/01/19-01-notification.xml"/>
+    <include file="db/changelog/2022/06/09-06-person-token-unique-index.xml"/>
+    <include file="db/changelog/2022/08/25-01-update-notification-table.xml"/>
+    <include file="db/changelog/2022/09/09-01-add-event-author-column.xml"/>
+    <include file="db/changelog/2023/02/08-01-add-columns.xml"/>
+    <include file="db/changelog/2023/03/02-03-add-column.xml"/>
+    <include file="/db/changelog/2023/05/23-01-remove-broken-notifications.xml"/>
+    <include file="/db/changelog/2023/07/05-01-remove-broken-notifications.xml"/>
+    <include file="db/changelog/2023/07/18-01-drop-event-author-column.xml"/>
+    <include file="db/changelog/2024/01/16-01-create-email-table.xml"/>
+    <include file="db/changelog/2024/01/22-01-add-eventid-column-to-email-table.xml"/>
+</databaseChangeLog>

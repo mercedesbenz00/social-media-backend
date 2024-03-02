@@ -1,0 +1,79 @@
+server:
+  port: ${PORT:8089}
+  auth:
+    secret: ${SECRET_KEY:EkQCe8jwME187iyzqpxNPUlwu9MaMkXY}
+    apiAuthHeader: X-API-KEY
+    apiSecretKey: ${API_SECRET_KEY:secret}
+social:
+
+  # URL prefix for all controllers in the service
+  #  url-prefix: audit-service
+
+  openid:
+    key-id: 8810EE7F53ABDB0065EF6417FDEB7C20060E04D5
+    jwks-url: https://sn-ident.earthlink.iq/core/.well-known/openid-configuration/jwks
+    #    key-id: A285DC6845EC6F04415FB60D6A70EC2F9D192AE0
+    #    jwks-url: https://account4.shabakaty.com/core/.well-known/openid-configuration/jwks
+    #    key-id: 8810EE7F53ABDB0065EF6417FDEB7C20060E04D5
+    #    jwks-url: https://social.identity.apps.okd.earthlink.iq/core/.well-known/openid-configuration/jwks
+
+    access-token-header-name: access-token
+    role-claim-name: socialnetwork.role
+
+  restclient:
+    connectionTimeout: 30000
+    readTimeout: 30000
+
+spring:
+  application:
+    name: audit-service
+  servlet:
+    multipart:
+      max-request-size: ${MAX_REQUEST_SIZE:250MB}
+      max-file-size: ${MAX_FILE_SIZE:250MB}
+  main:
+    allow-bean-definition-overriding: true
+
+  kafka:
+    consumer:
+      bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+      group-id: person-service-audit-logs-processing
+      auto-offset-reset: earliest
+
+  redis:
+    host: ${REDIS_HOST:localhost}
+    port: ${REDIS_PORT:6379}
+    password: ${REDIS_PASS:guest}
+    database: ${REDIS_DB:0}
+
+web:
+  cors:
+    allowedOrigins: ${ALLOWED_ORIGINS:*}
+    allowedHeaders: ${ALLOWED_HEADERS:*}
+    allowedMethods: ${ALLOWED_METHODS:*}
+    allowCredentials: ${ALLOWED_CREDENTIALS:false}
+
+elastic:
+  index: ${ES_INDEX:auditlogindex}
+es:
+  host: ${ES_HOST:localhost}
+  port: ${ES_PORT:9200}
+  username: ${ES_USERNAME:admin}
+  password: ${ES_PASSWORD:password}
+
+feign:
+  client:
+    config:
+      default:
+        connect-timeout: 60000
+        read-timeout: 60000
+        loggerLevel: FULL
+
+person:
+  service:
+    url: ${PERSON_SERVICE_URL:http://localhost:8081}
+
+sentry:
+  dsn: ${SENTRY_DSN:https://5807e19a3a2943f6862270d23262508f@o4505390493073408.ingest.sentry.io/4505390512340992}
+  environment: ${SENTRY_ENVIRONMENT:local}
+

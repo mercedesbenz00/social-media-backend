@@ -1,0 +1,65 @@
+pluginManagement {
+    repositories {
+        maven { url 'https://repo.spring.io/milestone' }
+        maven { url 'https://repo.spring.io/snapshot' }
+        gradlePluginPortal()
+    }
+}
+rootProject.name='social-media'
+
+include(
+        'social-common',
+        'social-common-classes',
+        'social-error-handling',
+        'social-common-security',
+        'services:person-client',
+        'services:person-service',
+        'services:group-client',
+        'services:group-service',
+        'services:post-client',
+        'services:post-service',
+        'services:notification-client',
+        'services:notification-service',
+        'services:short-video-service',
+        'services:short-video-registry-service',
+        'services:short-video-registry-client',
+        'services:comment-service',
+        'services:comment-client',
+        'services:audit-client',
+        'services:audit-service',
+        'services:short-video-usage-stats-service',
+        'services:post-processor-service',
+        'services:post-event-processor-service',
+        'services:feed-aggregator-service',
+        'services:user-feed-aggregator-service'
+)
+
+project(":services:person-client").projectDir = file("person-service/client")
+project(":services:person-service").projectDir = file("person-service/service")
+
+project(":services:group-client").projectDir = file("group-service/client")
+project(":services:group-service").projectDir = file("group-service/service")
+
+project(":services:post-client").projectDir = file("post-service/client")
+project(":services:post-service").projectDir = file("post-service/service")
+
+project(":services:notification-client").projectDir = file("notification-service/client")
+project(":services:notification-service").projectDir = file("notification-service/service")
+
+project(":services:short-video-service").projectDir = file("short-video-service/service")
+
+project(":services:short-video-registry-client").projectDir = file("short-video-registry-service/client")
+project(":services:short-video-registry-service").projectDir = file("short-video-registry-service/service")
+
+project(":services:comment-service").projectDir = file("comment-service/service")
+project(":services:comment-client").projectDir = file("comment-service/client")
+
+project(":services:audit-service").projectDir = file("audit-service/service")
+project(":services:audit-client").projectDir = file("audit-service/client")
+
+project(":services:short-video-usage-stats-service").projectDir = file("short-video-usage-stats-service/service")
+project(":services:post-processor-service").projectDir = file("post-processor-service/service")
+
+project(":services:post-event-processor-service").projectDir = file("post-event-processor-service/service")
+project(":services:feed-aggregator-service").projectDir = file("feed-aggregator-service/service")
+project(":services:user-feed-aggregator-service").projectDir = file("user-feed-aggregator-service/service")

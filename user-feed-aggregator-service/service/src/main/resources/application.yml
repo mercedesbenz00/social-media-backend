@@ -1,0 +1,53 @@
+server:
+  port: ${PORT:8080}
+  auth:
+    apiAuthHeader: X-API-KEY
+    apiSecretKey: ${API_SECRET_KEY:secret}
+    secret: ${SECRET_KEY:EkQCe8jwME187iyzqpxNPUlwu9MaMkXY}
+spring:
+  redis:
+    host: ${REDIS_HOST:localhost}
+    port: ${REDIS_PORT:6379}
+    password: ${REDIS_PASS:guest}
+    database: ${REDIS_DB:0}
+    cluster:
+      nodes: ${REDIS_ClUSTER_NODES:173.18.0.2:6379,173.18.0.3:6379,173.18.0.4:6379}
+    mode: ${REDIS_MODE:standalone}
+  jackson:
+    serialization:
+      write_dates_as_timestamps: true
+social:
+  mode: ${APP_MODE:recentMode}
+  config:
+    thresholdMinutes: ${CACHE_THRESHOLD_MINUTES:5}
+management:
+  endpoint:
+    health:
+      show-details: always
+    prometheus:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: [ 'health', 'metrics', 'prometheus' ]
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+        pushgateway:
+          enabled: true
+
+feed:
+  aggregator:
+    service:
+      url: ${FEED_AGGREGATOR_SERVICE:http://localhost:8086}
+post:
+  service:
+    url: ${POST_SERVICE:http://localhost:8083}
+group:
+  service:
+    url: ${GROUP_SERVICE:http://localhost:8082}
+
+sentry:
+  dsn: ${SENTRY_DSN:https://5807e19a3a2943f6862270d23262508f@o4505390493073408.ingest.sentry.io/4505390512340992}
+  environment: ${SENTRY_ENVIRONMENT:local}

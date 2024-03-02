@@ -1,0 +1,156 @@
+server:
+  port: ${PORT:8081}
+  auth:
+    host: ${SERVER_AUTH:localhost}
+    secret: ${SECRET_KEY:${random.value}}
+    # Spam protection method. Valid values - CAPTCHA, NA (default).
+    method: ${AUTH_METHOD:NA}
+    captcha:
+      googleReCaptchaSettings:
+        site: ${GOOGLE_SITE_KEY:6LdfgosiAAAAANyoBTU7Bv_xr9CBQL8VCkq-UOVe}
+        secret: ${GOOGLE_SECRET_KEY:6LdfgosiAAAAAMpzqLuxPDTxvLhiSr5kUe8gFRtq}
+        verifyUrl: ${GOOGLE_VERIFY_URL:https://www.google.com/recaptcha/api/siteverify}
+      maxAttempt: 4
+      # Attempt cache expiration time in hours
+      attemptCacheExpireAfter: 4
+    # Maximum failed user login attempts
+    maxLoginAttempts: ${MAX_FAILED_ATTEMPTS:3}
+    # Person account lock time in hours
+    lockTimeDuration: ${LOCK_TIME:1}
+social:
+  authentication:
+    codeExpirationInMinutes: 60
+    tokenExpirationInMinutes: 60
+    refreshTokenExpirationInMinutes: 1800
+    facebookURI: https://graph.facebook.com
+    google:
+      clientIds: 1055327503816-8lvvrs3q3a364fs0i3ikt9eqao5eru2h.apps.googleusercontent.com,
+        1055327503816-nq719rvg822g5dc1tqe7eltirmnpuqlf.apps.googleusercontent.com
+    appleKeyId: 3DBNSP9K49
+    appleTeamId: 338WRSHYXJ
+    appleURI: https://appleid.apple.com
+    ttl: 43200
+  default:
+    defaultDisplayName: "SN User"
+    deleteAfterDays: 30
+    minAge: 8
+    usernameGeneratorMaxAttempts: 10
+    webUrl: ${USER_UI_URL:http://localhost:3000}
+  job:
+    fixedDelay: "60000"
+    initialDelay: "120000"
+    cleanup:
+      cron: ${ACCOUNTS_CLEANUP_CRON:0 0 * * * *}
+
+spring:
+  kafka:
+    producer:
+      bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:host.docker.internal:9092}
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+  profiles:
+    active: ${PERSON_SERVICE_MODE:test} #possible values are "production", "test"
+  application:
+    name: person-service
+  rabbitmq:
+    listener:
+      simple:
+        retry:
+          enabled: true
+          initial-interval: 3s
+          max-attempts: 6
+          max-interval: 10s
+          multiplier: 2
+    host: ${RABBIT_HOST:localhost}
+    port: ${RABBIT_PORT:5672}
+    username: ${RABBIT_USER:guest}
+    password: ${RABBIT_PASS:guest}
+  liquibase:
+    enabled: false
+  main:
+    allow-bean-definition-overriding: true
+  jpa:
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate:
+        jdbc:
+          lob:
+            non_contextual_creation: true
+    database-platform: org.hibernate.dialect.PostgreSQL10Dialect
+    show-sql: false
+    open-in-view: false
+  redis:
+    host: ${REDIS_HOST:localhost}
+    port: ${REDIS_PORT:6379}
+    password: ${REDIS_PASS:guest}
+    database: ${REDIS_DB:0}
+  mail:
+    from: ${SMTP_FROM:creativeadvtechnologies@gmail.com}
+    host: ${SMTP_HOST:smtp.gmail.com}
+    port: ${SMTP_PORT:587}
+    username: ${SMTP_USERNAME:creativeadvtechnologies@gmail.com}
+    password: ${SMTP_PASSWORD:fmzrvluvaphjkwby}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+  # Data source configuration for user groups
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/person_service}
+    driver-class-name: org.postgresql.Driver
+    username: ${DB_USER:earthlink}
+    password: ${DB_PASSWORD:example}
+
+  servlet:
+    multipart:
+      maxFileSize: 20000000
+      maxRequestSize: 50000000
+
+filestorage:
+  minio:
+    endpoint: ${MINIO_ENDPOINT:http://localhost:9000}
+    externalEndpoint: ${MINIO_EXTERNAL_ENDPOINT:http://localhost:9000}
+    accessKey: ${MINIO_ACCESS_KEY:minio}
+    secretKey: ${MINIO_SECRET_KEY:password}
+    bucketName: ${MINIO_BUCKET:social-media-bucket}
+
+feign:
+  client:
+    config:
+      default:
+        connect-timeout: 60000
+        read-timeout: 60000
+
+post:
+  service:
+    url: ${POST_SERVICE_URL:http://localhost:8083}
+
+person:
+  service:
+    url: ${PERSON_SERVICE_URL:http://localhost:8081}
+    refresh:
+      secret:
+        # refresh JWT secret key on first day of every month at midnight:
+        cron: ${REFRESH_SECRET_CRON:0 0 1 * * ?}
+
+group:
+  service:
+    url: ${GROUP_SERVICE_URL:http://localhost:8082}
+
+chat:
+  synapse:
+    serverName: ${SYNAPSE_SERVER_NAME:matrix}
+    url: ${SYNAPSE_SERVER_URL:http://localhost:8008}
+    pusher:
+      url: ${PUSHER_URL:https://localhost:8008/_matrix/push/v1/notify}
+    adminToken: ${SYNAPSE_ADMIN_TOKEN:syt_dXNlci45OA_ukNjtybqXKpHdPwtmATK_0N3iVt}
+    pushAppName: social.media
+
+management:
+  endpoint:
+    health:
+      show-details: always

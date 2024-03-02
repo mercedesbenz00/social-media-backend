@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+    <changeSet author="bauyrzhan.ibraimov" id="1669278205464-1" labels="set_new_sequence_values">
+        <sql>
+            select setval('authority_seq_gen', (select COALESCE(max(id), 1) from authority), true);
+            select setval('following_seq_gen', (select COALESCE(max(id), 1) from following), true);
+            select setval('media_file_seq_gen', (select COALESCE(max(id), 1) from media_file), true);
+            select setval('media_file_transcoded_seq_gen', (select COALESCE(max(id), 1) from media_file_transcoded), true);
+            select setval('person_configuration_gen', (select COALESCE(max(id), 1) from person_configuration), true);
+            select setval('person_group_ban_seq_gen', (select COALESCE(max(id), 1) from person_group_ban), true);
+            select setval('person_mute_seq_gen', (select COALESCE(max(id), 1) from person_mute), true);
+            select setval('role_seq_gen', (select COALESCE(max(id), 1) from role), true);
+            select setval('person_complaint_seq_gen', (select COALESCE(max(id), 1) from person_complaint), true);
+        </sql>
+    </changeSet>
+</databaseChangeLog>

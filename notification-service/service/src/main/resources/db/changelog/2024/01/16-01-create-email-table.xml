@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd">
+
+    <changeSet id="1705420346059-1" author="aakinin">
+        <createTable tableName="email">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_email"/>
+            </column>
+            <column name="recipient_email" type="VARCHAR(255)"/>
+            <column name="subject" type="VARCHAR(255)"/>
+            <column name="template_model" type="JSONB"/>
+            <column defaultValueBoolean="false" name="is_sent" type="boolean"/>
+            <column name="sent_at" type="DATETIME"/>
+            <column name="type" type="VARCHAR(255)"/>
+            <column defaultValueNumeric="0" name="attempts_number" type="integer"/>
+            <column name="created_at" type="DATETIME"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="1705420346059-2" author="aakinin">
+        <createSequence incrementBy="1" sequenceName="email_seq_gen" startValue="1"/>
+    </changeSet>
+</databaseChangeLog>

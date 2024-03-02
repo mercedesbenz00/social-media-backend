@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+    <changeSet id="1709023255955-1" author="bauyrzhanibraimov">
+        <createTable tableName="outbox_messages">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="topic" type="VARCHAR(255)"/>
+            <column name="key" type="VARCHAR(255)"/>
+            <column name="payload" type="JSONB"/>
+            <column name="status" type="VARCHAR(255)"/>
+            <column name="notes" type="VARCHAR(255)"/>
+            <column name="sent_at" type="DATETIME"/>
+            <column defaultValueNumeric="0" name="attempts_number" type="integer"/>
+            <column name="created_at" type="DATETIME"/>
+        </createTable>
+    </changeSet>
+</databaseChangeLog>

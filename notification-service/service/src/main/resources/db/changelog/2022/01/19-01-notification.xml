@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+
+    <changeSet id="1642607359750-1" author="jermakova">
+        <dropTable tableName="notification_view"/>
+        <dropTable tableName="notification_event"/>
+    </changeSet>
+
+    <changeSet id="1642607359750-2" author="jermakova">
+        <createTable tableName="notification">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_notification"/>
+            </column>
+            <column name="receiver_id" type="BIGINT"/>
+            <column name="state" type="char(32)" defaultValue="NEW"/>
+            <column name="body" type="VARCHAR(255)"/>
+            <column name="topic" type="char(32)"/>
+            <column name="created_date" type="DATETIME"/>
+            <column name="updated_date" type="DATETIME"/>
+        </createTable>
+        <createIndex indexName="notification_receiver_idx" tableName="notification">
+            <column name="receiver_id"/>
+        </createIndex>
+        <createIndex indexName="notification_state_idx" tableName="notification">
+            <column name="state"/>
+        </createIndex>
+        <createIndex indexName="notification_topic_idx" tableName="notification">
+            <column name="topic"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="1642607359750-3" author="jermakova">
+        <createSequence sequenceName="notification_seq_gen" startValue="1" incrementBy="1"/>
+    </changeSet>
+
+</databaseChangeLog>

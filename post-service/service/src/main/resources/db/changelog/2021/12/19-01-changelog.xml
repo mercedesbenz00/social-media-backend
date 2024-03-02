@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd"
+        objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
+    <changeSet id="1639916097854-1" author="bauyrzhanibraimov (generated)">
+        <createSequence incrementBy="1" sequenceName="story_config_seq_gen" startValue="1"/>
+    </changeSet>
+    <changeSet id="1639916097854-2" author="bauyrzhanibraimov (generated)">
+        <createTable tableName="story_configuration">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_storyconfiguration"/>
+            </column>
+            <column name="person_id" type="BIGINT"/>
+            <column name="access_type" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="1639916097854-3" author="bauyrzhanibraimov (generated)">
+        <createTable tableName="story_configuration_allowed_users">
+            <column name="story_configuration_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="person_id" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="1639916097854-4" author="bauyrzhanibraimov (generated)">
+        <addUniqueConstraint columnNames="person_id" constraintName="uc_4853eac1836e485c53a2e3c14"
+                             tableName="story_configuration"/>
+    </changeSet>
+    <changeSet id="1639916097854-5" author="bauyrzhanibraimov (generated)">
+        <addForeignKeyConstraint baseColumnNames="story_configuration_id"
+                                 baseTableName="story_configuration_allowed_users"
+                                 constraintName="fk_story_configuration_allowed_users_on_story_configuration"
+                                 referencedColumnNames="id" referencedTableName="story_configuration"/>
+    </changeSet>
+
+</databaseChangeLog>

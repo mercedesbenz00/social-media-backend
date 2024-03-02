@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.name }}-env-config
+data:
+  DB_URL: jdbc:postgresql://{{ .Release.Name }}-notification-postgres:5432/{{ .Values.postgres.postgres.name }}
+  DB_USER: {{ .Values.postgres.postgres.username }}
+  DB_PASSWORD: {{ .Values.postgres.postgres.password }}
+  RABBIT_HOST: {{ .Values.rabbit.host }}

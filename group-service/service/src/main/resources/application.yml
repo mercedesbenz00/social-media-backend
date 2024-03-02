@@ -1,0 +1,159 @@
+server:
+  port: ${PORT:8080}
+  auth:
+    apiAuthHeader: X-API-KEY
+    apiSecretKey: ${API_SECRET_KEY:secret}
+    secret: ${SECRET_KEY:EkQCe8jwME187iyzqpxNPUlwu9MaMkXY}
+
+social:
+
+  # URL prefix for all controllers in the service
+  #  url-prefix: group-service
+  job:
+    fixedDelay: "60000"
+  groupservice:
+    personToTag:
+      maxReturnItems: 10
+    migrateGroups: "0 */5 * * * ?"
+    statistics:
+      # every 2 min (for dev env)
+      cron: ${GROUP_STATISTICS_CRON:0 */2 * * * ?}
+      # Every day at 2 am - for production
+      #      cron: "0 0 2 * * ?"
+
+      activity-popular-days-count: 30
+      activity-trending-days-count: 7
+    rabbitmq:
+      dlq:
+        # Rabbit MQ dead-letter-queue messages time-to-live in hours;
+        # deadMessage.queue needs to be deleted to accept updated value:
+        ttl: ${DLQ_TTL:24}
+  openid:
+    key-id: 8810EE7F53ABDB0065EF6417FDEB7C20060E04D5
+    jwks-url: https://social.identity.apps.okd.earthlink.iq/core/.well-known/openid-configuration/jwks
+    access-token-header-name: access-token
+    role-claim-name: socialnetwork.role
+
+spring:
+  application:
+    name: group-service
+  main:
+    allow-bean-definition-overriding: true
+  rabbitmq:
+    host: ${RABBIT_HOST:localhost}
+    port: ${RABBIT_PORT:5672}
+    username: ${RABBIT_USER:guest}
+    password: ${RABBIT_PASS:guest}
+  liquibase:
+    change-log: classpath:/db/changelog/db.changelog-master.xml
+  jpa:
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate:
+        cache:
+          use_query_cache: true
+          use_second_level_cache: true
+          factory_class: org.redisson.hibernate.RedissonRegionFactory
+          redisson:
+            fallback: true
+            config: redisson.yaml
+            entity:
+              eviction:
+                max_entries: ${CACHE_ENTITY_MAX_ENTRIES:200000}
+              expiration:
+                time_to_live: ${CACHE_ENTITY_TTL:1800000}
+                max_idle_time: ${CACHE_ENTITY_IDLE_TIME:300000}
+            query:
+              eviction:
+                max_entries: ${CACHE_QUERY_MAX_ENTRIES:200000}
+              expiration:
+                time_to_live: ${CACHE_QUERY_TTL:1800000}
+                max_idle_time: ${CACHE_QUERY_IDLE_TIME:300000}
+            collection:
+              eviction:
+                max_entries: ${CACHE_COLLECTION_MAX_ENTRIES:200000}
+              expiration:
+                time_to_live: ${CACHE_COLLECTION_TTL:1800000}
+                max_idle_time: ${CACHE_COLLECTION_IDLE_TIME:300000}
+        jdbc:
+          lob:
+            non_contextual_creation: true
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    open-in-view: false
+  sleuth:
+    messaging:
+      kafka:
+        enabled: false
+  kafka:
+    producer:
+      bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      properties:
+        max.block.ms: 4000
+    consumer:
+      bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+      group-id: group-id
+      auto-offset-reset: earliest
+  redis:
+    host: ${REDIS_HOST:localhost}
+    port: ${REDIS_PORT:6379}
+    password: ${REDIS_PASS:guest}
+    database: ${REDIS_DB:0}
+
+  # Data source configuration for user groups
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/group_service}
+    driver-class-name: org.postgresql.Driver
+    username: ${DB_USER:earthlink}
+    password: ${DB_PASSWORD:example}
+  autoconfigure:
+    exclude: org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration
+  jackson:
+    serialization:
+      write_dates_as_timestamps: true
+
+web:
+  cors:
+    allowedOrigins: ${ALLOWED_ORIGINS:*}
+    allowedHeaders: ${ALLOWED_HEADERS:*}
+    allowedMethods: ${ALLOWED_METHODS:*}
+    allowCredentials: ${ALLOWED_CREDENTIALS:false}
+
+management:
+  endpoint:
+    health:
+      show-details: always
+    prometheus:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: [ 'health', 'metrics', 'prometheus' ]
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+        pushgateway:
+          enabled: true
+
+filestorage:
+  minio:
+    endpoint: ${MINIO_ENDPOINT:http://localhost:9000}
+    externalEndpoint: ${MINIO_EXTERNAL_ENDPOINT:http://localhost:9000}
+    accessKey: ${MINIO_ACCESS_KEY:minio}
+    secretKey: ${MINIO_SECRET_KEY:password}
+    bucketName: ${MINIO_BUCKET:social-media-bucket}
+
+person:
+  service:
+    url: ${PERSON_SERVICE_URL:http://localhost:8081}
+
+post:
+  service:
+    url: ${POST_SERVICE_URL:http://localhost:8083}
+
+sentry:
+  dsn: ${SENTRY_DSN:https://5807e19a3a2943f6862270d23262508f@o4505390493073408.ingest.sentry.io/4505390512340992}
+  environment: ${SENTRY_ENVIRONMENT:local}

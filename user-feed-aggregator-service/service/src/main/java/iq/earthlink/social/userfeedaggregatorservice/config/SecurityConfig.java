@@ -1,0 +1,40 @@
+package iq.earthlink.social.userfeedaggregatorservice.config;
+
+import iq.earthlink.social.security.JwtAuthenticationFilter;
+import iq.earthlink.social.security.SecurityProvider;
+import iq.earthlink.social.util.LocalizationUtil;
+import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.HttpStatusEntryPoint;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+@EnableWebSecurity
+@EnableMethodSecurity(proxyTargetClass = true)
+@RequiredArgsConstructor
+@Configuration
+public class SecurityConfig {
+
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http, SecurityProvider securityProvider, LocalizationUtil localizationUtil) throws Exception {
+        http.cors().disable()
+                .csrf().disable()
+                .authorizeHttpRequests()
+                .requestMatchers("/actuator/**").permitAll()
+                .and()
+                .authorizeHttpRequests()
+                .anyRequest().authenticated()
+                .and()
+                .addFilterBefore(new JwtAuthenticationFilter(securityProvider, localizationUtil), UsernamePasswordAuthenticationFilter.class)
+                .exceptionHandling()
+                .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED));
+        return http.build();
+    }
+
+
+}

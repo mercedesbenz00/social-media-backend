@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd"
+        objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
+    <changeSet id="1680848999461-35" author="bauyrzhanibraimov (generated)">
+        <createSequence incrementBy="50" sequenceName="sized_image_seq_gen" startValue="1"/>
+    </changeSet>
+    <changeSet id="1680848999461-36" author="bauyrzhanibraimov (generated)">
+        <createTable tableName="media_file_sized_images">
+            <column name="media_file_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_mediafile_sizedimages"/>
+            </column>
+            <column name="sized_images_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_mediafile_sizedimages"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1680848999461-37" author="bauyrzhanibraimov (generated)">
+        <addColumn tableName="sized_image">
+            <column name="created_at" type="DATETIME"/>
+            <column name="mime_type" type="VARCHAR(255)"/>
+            <column name="path" type="VARCHAR(255)"/>
+            <column name="size" type="BIGINT"/>
+            <column name="storage_type" type="VARCHAR(255)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet id="1680848999461-52" author="bauyrzhanibraimov (generated)">
+        <addUniqueConstraint columnNames="sized_images_id" constraintName="uc_media_file_sized_images_sizedimages"
+                             tableName="media_file_sized_images"/>
+    </changeSet>
+    <changeSet id="1680848999461-56" author="bauyrzhanibraimov (generated)">
+        <addForeignKeyConstraint baseColumnNames="media_file_id" baseTableName="media_file_sized_images"
+                                 constraintName="fk_medfilsizima_on_media_file" referencedColumnNames="id"
+                                 referencedTableName="media_file"/>
+    </changeSet>
+    <changeSet id="1680848999461-59" author="bauyrzhanibraimov (generated)">
+        <dropTable cascadeConstraints="true" tableName="image"/>
+    </changeSet>
+    <changeSet id="1680848999461-60" author="bauyrzhanibraimov (generated)">
+        <dropColumn columnName="file_name" tableName="sized_image"/>
+
+        <dropColumn columnName="file_size" tableName="sized_image"/>
+
+        <dropColumn columnName="image_id" tableName="sized_image"/>
+
+        <dropColumn columnName="permanent_url" tableName="sized_image"/>
+
+        <dropColumn columnName="upload_status" tableName="sized_image"/>
+
+        <dropColumn columnName="id" tableName="sized_image"/>
+    </changeSet>
+    <changeSet id="1680848999461-65" author="bauyrzhanibraimov (generated)">
+        <dropSequence sequenceName="tag_seq_gen"/>
+    </changeSet>
+    <changeSet id="1680848999461-1" author="bauyrzhanibraimov (generated)">
+        <addNotNullConstraint columnDataType="BIGINT" columnName="author_id" tableName="comment" validate="true"/>
+    </changeSet>
+    <changeSet id="1680848999461-2" author="bauyrzhanibraimov (generated)">
+        <addNotNullConstraint columnDataType="BIGINT" columnName="author_id" tableName="comment_complaint"
+                              validate="true"/>
+    </changeSet>
+    <changeSet id="1680848999461-3" author="bauyrzhanibraimov (generated)">
+        <addNotNullConstraint columnDataType="BIGINT" columnName="author_id" tableName="story" validate="true"/>
+    </changeSet>
+    <changeSet id="1680848999461-4" author="bauyrzhanibraimov (generated)">
+        <addNotNullConstraint columnDataType="BIGINT" columnName="comment_id" tableName="comment_complaint"
+                              validate="true"/>
+    </changeSet>
+    <changeSet id="1680848999461-5" author="bauyrzhanibraimov (generated)">
+        <addNotNullConstraint columnDataType="bool" columnName="comments_allowed" tableName="post" validate="true"/>
+    </changeSet>
+    <changeSet id="1680848999461-6" author="bauyrzhanibraimov (generated)">
+        <addNotNullConstraint columnDataType="VARCHAR(2000)" columnName="content" tableName="comment" validate="true"/>
+    </changeSet>
+    <changeSet id="1680848999461-7" author="bauyrzhanibraimov (generated)">
+        <addNotNullConstraint columnDataType="DATETIME" columnName="created_at" tableName="comment" validate="true"/>
+    </changeSet>
+    <changeSet id="1680848999461-8" author="bauyrzhanibraimov (generated)">
+        <addNotNullConstraint columnDataType="DATETIME" columnName="created_at" tableName="comment_complaint"
+                              validate="true"/>
+    </changeSet>
+    <changeSet id="1680848999461-9" author="bauyrzhanibraimov (generated)">
+        <addNotNullConstraint columnDataType="DATETIME" columnName="created_at" tableName="post" validate="true"/>
+    </changeSet>
+    <changeSet id="1680848999461-10" author="bauyrzhanibraimov (generated)">
+        <addNotNullConstraint columnDataType="DATETIME" columnName="created_at" tableName="post_collection"
+                              validate="true"/>
+    </changeSet>
+    <changeSet id="1680848999461-11" author="bauyrzhanibraimov (generated)">
+        <addNotNullConstraint columnDataType="DATETIME" columnName="created_at" tableName="post_complaint"
+                              validate="true"/>
+    </changeSet>
+    <changeSet id="1680848999461-12" author="bauyrzhanibraimov (generated)">
+        <addNotNullConstraint columnDataType="DATETIME" columnName="created_at" tableName="story" validate="true"/>
+    </changeSet>
+    <changeSet id="1680848999461-13" author="bauyrzhanibraimov (generated)">
+        <addNotNullConstraint columnDataType="DATETIME" columnName="created_at" tableName="story_view" validate="true"/>
+    </changeSet>
+    <changeSet id="1680848999461-14" author="bauyrzhanibraimov (generated)">
+        <addNotNullConstraint columnDataType="BOOLEAN" columnName="default_collection" tableName="group_post_collection"
+                              validate="true"/>
+    </changeSet>
+    <changeSet id="1680848999461-15" author="bauyrzhanibraimov (generated)">
+        <addNotNullConstraint columnDataType="BOOLEAN" columnName="default_collection" tableName="post_collection"
+                              validate="true"/>
+    </changeSet>
+    <changeSet id="1680848999461-17" author="bauyrzhanibraimov (generated)">
+        <addColumn tableName="sized_image">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_sizedimage" validateNullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet id="1680848999461-57" author="bauyrzhanibraimov (generated)">
+        <addForeignKeyConstraint baseColumnNames="sized_images_id" baseTableName="media_file_sized_images"
+                                 constraintName="fk_medfilsizima_on_sized_image" referencedColumnNames="id"
+                                 referencedTableName="sized_image"/>
+    </changeSet>
+    <changeSet id="1680848999461-18" author="bauyrzhanibraimov (generated)">
+        <addNotNullConstraint columnDataType="VARCHAR(255)" columnName="image_size_type" tableName="sized_image"
+                              validate="true"/>
+    </changeSet>
+    <changeSet id="1680848999461-19" author="bauyrzhanibraimov (generated)">
+        <addNotNullConstraint columnDataType="bool" columnName="is_deleted" tableName="comment" validate="true"/>
+    </changeSet>
+    <changeSet id="1680848999461-20" author="bauyrzhanibraimov (generated)">
+        <addNotNullConstraint columnDataType="BIGINT" columnName="media_file_id" tableName="story" validate="true"/>
+    </changeSet>
+    <changeSet id="1680848999461-21" author="bauyrzhanibraimov (generated)">
+        <addNotNullConstraint columnDataType="VARCHAR(255)" columnName="name" tableName="group_post_collection"
+                              validate="true"/>
+    </changeSet>
+    <changeSet id="1680848999461-22" author="bauyrzhanibraimov (generated)">
+        <addNotNullConstraint columnDataType="VARCHAR(255)" columnName="name" tableName="post_collection"
+                              validate="true"/>
+    </changeSet>
+    <changeSet id="1680848999461-24" author="bauyrzhanibraimov (generated)">
+        <addNotNullConstraint columnDataType="bool" columnName="pinned" tableName="post" validate="true"/>
+    </changeSet>
+    <changeSet id="1680848999461-25" author="bauyrzhanibraimov (generated)">
+        <addNotNullConstraint columnDataType="BIGINT" columnName="post_id" tableName="comment" validate="true"/>
+    </changeSet>
+    <changeSet id="1680848999461-26" author="bauyrzhanibraimov (generated)">
+        <addNotNullConstraint columnDataType="BIGINT" columnName="post_id" tableName="post_complaint" validate="true"/>
+    </changeSet>
+    <changeSet id="1680848999461-28" author="bauyrzhanibraimov (generated)">
+        <addNotNullConstraint columnDataType="char(20)" columnName="state" tableName="comment_complaint"
+                              validate="true"/>
+    </changeSet>
+    <changeSet id="1680848999461-29" author="bauyrzhanibraimov (generated)">
+        <addNotNullConstraint columnDataType="char(32)" columnName="state" tableName="post" validate="true"/>
+    </changeSet>
+    <changeSet id="1680848999461-30" author="bauyrzhanibraimov (generated)">
+        <addNotNullConstraint columnDataType="BIGINT" columnName="story_id" tableName="story_view" validate="true"/>
+    </changeSet>
+    <changeSet id="1680848999461-31" author="bauyrzhanibraimov (generated)">
+        <addNotNullConstraint columnDataType="DATETIME" columnName="updated_at" tableName="story_view" validate="true"/>
+    </changeSet>
+    <changeSet id="1680848999461-32" author="bauyrzhanibraimov (generated)">
+        <addNotNullConstraint columnDataType="BIGINT" columnName="viewer_id" tableName="story_view" validate="true"/>
+    </changeSet>
+    <changeSet id="1680848999461-33" author="bauyrzhanibraimov (generated)">
+        <addNotNullConstraint columnDataType="INT" columnName="vote_type" tableName="comment_vote" validate="true"/>
+    </changeSet>
+    <changeSet id="1680848999461-34" author="bauyrzhanibraimov (generated)">
+        <addNotNullConstraint columnDataType="INT" columnName="vote_type" tableName="post_vote" validate="true"/>
+    </changeSet>
+
+</databaseChangeLog>

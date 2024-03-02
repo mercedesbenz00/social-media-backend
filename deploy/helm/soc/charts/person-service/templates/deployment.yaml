@@ -1,0 +1,77 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "person-service.fullname" . }}
+  labels:
+    {{- include "person-service.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "person-service.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "person-service.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "person-service.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      initContainers:
+        - image:
+          name: wait-postgres
+          command: ['sh', '-c', 'until nc -zv {{ .Values.postgres.nameOverride }}-postgres-svc 5432 -w1; do echo waiting for {{ .Values.postgres.nameOverride }}-postgres-svc; sleep 5; done;']
+        - image:
+          name: wait-rabbit
+          command: ['sh', '-c', 'until nc -zv {{ .Release.Name }}-rabbit-svc 5672 -w1; do echo waiting for {{ .Release.Name }}-rabbitmq; sleep 5; done;']
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.service.port }}
+              protocol: TCP
+          env:
+            - name: DB_URL
+              value: "jdbc:postgresql://{{ .Values.postgres.nameOverride }}-postgres-svc:5432/earthlink"
+            - name: DB_USER
+              value: {{ .Values.postgres.user }}
+            - name: DB_PASSWORD
+              value: {{ .Values.postgres.password }}
+            - name: RABBIT_HOST
+              value: {{ .Release.Name }}-rabbitmq
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

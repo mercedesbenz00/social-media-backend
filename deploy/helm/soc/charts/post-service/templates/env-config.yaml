@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-post-service-env-config
+data:
+  DB_URL: jdbc:postgresql://{{ .Release.Name }}-post-service-postgres:5432/{{ .Values.postgres.postgres.name }}
+  DB_USER: {{ .Values.postgres.postgres.username }}
+  DB_PASSWORD: {{ .Values.postgres.postgres.password }}
+  RABBIT_HOST: {{ .Release.Name }}-rabbit-svc
+  PERSON_SERVICE: {{ .Release.Name }}-person-service
+  GROUP_SERVICE: {{ .Release.Name }}-group-service

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet id="1652794139484-1" author="jermakova">
+        <createTable tableName="comment_entity">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_commententity"/>
+            </column>
+            <column name="content" type="VARCHAR(2000)"/>
+            <column name="author_id" type="BIGINT"/>
+            <column name="created_at" type="DATETIME"/>
+            <column name="modified_at" type="DATETIME"/>
+            <column name="deleted_at" type="DATETIME"/>
+            <column defaultValueBoolean="false" name="is_deleted" type="bool"/>
+            <column name="object_id" type="UUID"/>
+            <column name="reply_to_id" type="BIGINT"/>
+            <column defaultValueNumeric="0" name="reply_comments_count" type="int8">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <createIndex indexName="comment_entity_created_at_idx" tableName="comment_entity">
+            <column name="created_at"/>
+        </createIndex>
+        <addForeignKeyConstraint baseColumnNames="reply_to_id" baseTableName="comment_entity" constraintName="FK_COMMENTENTITY_ON_REPLYTO" referencedColumnNames="id" referencedTableName="comment_entity"/>
+        <createIndex indexName="comment_entity_reply_to_idx" tableName="comment_entity">
+            <column name="reply_to_id"/>
+        </createIndex>
+        <createSequence sequenceName="comment_entity_seq_gen" startValue="1" incrementBy="1"/>
+    </changeSet>
+</databaseChangeLog>

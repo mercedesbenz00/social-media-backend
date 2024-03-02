@@ -1,0 +1,229 @@
+server:
+  port: ${PORT:8080}
+  auth:
+    host: ${SERVER_AUTH:localhost}
+    apiAuthHeader: X-API-KEY
+    secret: ${SECRET_KEY:EkQCe8jwME187iyzqpxNPUlwu9MaMkXY}
+    # Spam protection method. Valid values - CAPTCHA, NA (default).
+    method: ${AUTH_METHOD:NA}
+    captcha:
+      verifyUrl: ${GOOGLE_VERIFY_URL:https://www.google.com/recaptcha/api/siteverify}
+      credentials:
+        - site: ${GOOGLE_SITE_KEY_ANDROID:6LfJ8pojAAAAABfK8xpudL1NW9oFDAtoEfcxfS_I}
+          secret: ${GOOGLE_SECRET_KEY_ANDROID:6LfJ8pojAAAAAD3UqWWeUvLtgwK96mSgPXi-ojHC}
+        - site: ${GOOGLE_SITE_KEY_WEB:6Lcc9pojAAAAAGKV9wdHcmLWnbm2P-A3-nrzwjd3}
+          secret: ${GOOGLE_SECRET_KEY_WEB:6Lcc9pojAAAAAAZ3ZO2mkyZdqnMoA4aSXTo9trmj}
+        - site: ${GOOGLE_SITE_KEY_IOS:6LfMBqAjAAAAAK2boowRCaJAH2JeLQlctP5ufDvR}
+          secret: ${GOOGLE_SECRET_KEY_IOS:6LfMBqAjAAAAACFVULgjUh5WqR0UQF_ebvi76a-S}
+      maxAttempt: 4
+      # Attempt cache expiration time in hours
+      attemptCacheExpireAfter: ${CAPTCHA_ATTEMPT_CACHE_EXPIRE_AFTER:1}
+    # Maximum failed user login attempts
+    maxLoginAttempts: ${MAX_FAILED_ATTEMPTS:3}
+    # Person account lock time in hours
+    lockTimeDuration: ${LOCK_TIME:1}
+
+social:
+  authentication:
+    codeExpirationInMinutes: 60
+    tokenExpirationInMinutes: ${JWT_TOKEN_TTL:60}
+    refreshTokenExpirationInMinutes: ${JWT_REFRESH_TOKEN_TTL:1800}
+    facebookURI: https://graph.facebook.com
+    google:
+      clientIds: ${GOOGLE_SSO_CLIENT_IDS:1055327503816-8lvvrs3q3a364fs0i3ikt9eqao5eru2h.apps.googleusercontent.com, 1055327503816-nq719rvg822g5dc1tqe7eltirmnpuqlf.apps.googleusercontent.com}
+    appleKeyId: ${APPLE_SSO_KEY_ID:3DBNSP9K49}
+    appleTeamId: ${APPLE_SSO_TEAM_ID:338WRSHYXJ}
+    appleURI: ${APPLE_SSO_URI:https://appleid.apple.com}
+    ttl: 43200
+    restricted:
+      domains: ${RESTRICTED_DOMAINS:}
+  default:
+    defaultDisplayName: "SN User"
+    deleteAfterDays: 30
+    minAge: 8
+    usernameGeneratorMaxAttempts: 10
+    webUrl: ${USER_UI_URL:http://localhost:3000}
+    changeEmailRequestExpirationInHours: 3
+    bioMaxLength: 800
+
+  job:
+    fixedDelay: "60000"
+    initialDelay: "120000"
+    migrateUsers: "0 */2 * * * *"
+    cleanup:
+      cron: ${ACCOUNTS_CLEANUP_CRON:0 0 * * * *}
+    syncFollowerStats: ${SYNC_FOLLOWERS_STAT:0 0 * * * *}
+
+spring:
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+  sleuth:
+    messaging:
+      kafka:
+        enabled: false
+  kafka:
+    producer:
+      bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+    consumer:
+      bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+      group-id: group-id
+      auto-offset-reset: earliest
+      properties:
+        isolation.level: read_committed
+  profiles:
+    active: ${PERSON_SERVICE_MODE:dev} #possible values are "production", "dev"
+  application:
+    name: person-service
+  rabbitmq:
+    listener:
+      simple:
+        retry:
+          enabled: true
+          initial-interval: 3s
+          max-attempts: 6
+          max-interval: 10s
+          multiplier: 2
+    host: ${RABBIT_HOST:localhost}
+    port: ${RABBIT_PORT:5672}
+    username: ${RABBIT_USER:guest}
+    password: ${RABBIT_PASS:guest}
+  liquibase:
+    change-log: classpath:/db/changelog/db.changelog-master.xml
+  main:
+    allow-bean-definition-overriding: true
+  jpa:
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate:
+        cache:
+          use_query_cache: true
+          use_second_level_cache: true
+          factory_class: org.redisson.hibernate.RedissonRegionFactory
+          redisson:
+            fallback: true
+            config: redisson.yaml
+            entity:
+              eviction:
+                max_entries: ${CACHE_ENTITY_MAX_ENTRIES:200000}
+              expiration:
+                time_to_live: ${CACHE_ENTITY_TTL:1800000}
+                max_idle_time: ${CACHE_ENTITY_IDLE_TIME:300000}
+            query:
+              eviction:
+                max_entries: ${CACHE_QUERY_MAX_ENTRIES:200000}
+              expiration:
+                time_to_live: ${CACHE_QUERY_TTL:1800000}
+                max_idle_time: ${CACHE_QUERY_IDLE_TIME:300000}
+            collection:
+              eviction:
+                max_entries: ${CACHE_COLLECTION_MAX_ENTRIES:200000}
+              expiration:
+                time_to_live: ${CACHE_COLLECTION_TTL:1800000}
+                max_idle_time: ${CACHE_COLLECTION_IDLE_TIME:300000}
+        jdbc:
+          lob:
+            non_contextual_creation: true
+    database-platform: org.hibernate.dialect.PostgreSQL10Dialect
+    show-sql: false
+    open-in-view: false
+  redis:
+    host: ${REDIS_HOST:localhost}
+    port: ${REDIS_PORT:6379}
+    password: ${REDIS_PASS:guest}
+    database: ${REDIS_DB:0}
+  autoconfigure:
+    exclude: org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration
+  jackson:
+    serialization:
+      write_dates_as_timestamps: true
+
+  # Data source configuration for user groups
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/person_service}
+    driver-class-name: org.postgresql.Driver
+    username: ${DB_USER:earthlink}
+    password: ${DB_PASSWORD:example}
+
+  servlet:
+    multipart:
+      maxFileSize: 20000000
+      maxRequestSize: 50000000
+
+filestorage:
+  minio:
+    endpoint: ${MINIO_ENDPOINT:http://localhost:9000}
+    externalEndpoint: ${MINIO_EXTERNAL_ENDPOINT:http://localhost:9000}
+    accessKey: ${MINIO_ACCESS_KEY:minio}
+    secretKey: ${MINIO_SECRET_KEY:password}
+    bucketName: ${MINIO_BUCKET:social-media-bucket}
+
+feign:
+  client:
+    config:
+      default:
+        connect-timeout: 60000
+        read-timeout: 60000
+
+post:
+  service:
+    url: ${POST_SERVICE_URL:http://localhost:8083}
+
+person:
+  service:
+    url: ${PERSON_SERVICE_URL:http://localhost:8081}
+    refresh:
+      secret:
+        # refresh JWT secret key on first day of every month at midnight:
+        cron: ${REFRESH_SECRET_CRON:0 0 1 * * ?}
+
+group:
+  service:
+    url: ${GROUP_SERVICE_URL:http://localhost:8082}
+
+chat:
+  synapse:
+    serverName: ${SYNAPSE_SERVER_NAME:matrix}
+    url: ${SYNAPSE_SERVER_URL:http://localhost:8008}
+    pusher:
+      url: ${PUSHER_URL:https://localhost:8008/_matrix/push/v1/notify}
+    adminToken: ${SYNAPSE_ADMIN_TOKEN:syt_dXNlci4x_aYvudGMlmLDTaXpclJcT_0oZIK8}
+    pushAppName: ${PUSHER_APP_NAME:social.media}
+
+web:
+  cors:
+    allowedOrigins: ${ALLOWED_ORIGINS:*}
+    allowedHeaders: ${ALLOWED_HEADERS:*}
+    allowedMethods: ${ALLOWED_METHODS:*}
+    allowCredentials: ${ALLOWED_CREDENTIALS:false}
+
+management:
+  health:
+    mail:
+      enabled: false
+  endpoint:
+    health:
+      show-details: always
+    prometheus:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: ['health', 'metrics', 'prometheus']
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+        pushgateway:
+          enabled: true
+
+short-video-registry:
+  service:
+    url: ${SHORT_VIDEO_REGISTRY_SERVICE_URL:http://localhost:8091}
+
+sentry:
+  dsn: ${SENTRY_DSN:https://5807e19a3a2943f6862270d23262508f@o4505390493073408.ingest.sentry.io/4505390512340992}
+  environment: ${SENTRY_ENVIRONMENT:local}

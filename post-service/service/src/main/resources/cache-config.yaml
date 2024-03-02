@@ -1,0 +1,9 @@
+spring.cache.post.media:
+  ttl: 600000
+  maxIdleTime: 60000
+#  localCacheOptions:
+#    invalidationPolicy: "ON_CHANGE"
+#    evictionPolicy: "NONE"
+#    cacheSize: 0
+#    timeToLiveInMillis: 0
+#    maxIdleInMillis: 0

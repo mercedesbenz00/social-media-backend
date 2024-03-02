@@ -1,0 +1,878 @@
+openapi: 3.0.2
+info:
+  title: Short Video Service
+  description: Services to support short videos
+  version: "1.0"
+paths:
+  /short-video:
+    post:
+      tags:
+        - Short Video
+      summary: Adds a short video data
+      operationId: addShortVideoData
+      requestBody:
+        description: Short video object that needs to be added
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateShortVideo'
+        required: true
+      responses:
+        201:
+          description: Created short video
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateShortVideoResponse'
+        400:
+          $ref: '#/components/responses/InvalidInput'
+        default:
+          $ref: '#/components/responses/Error'
+  /short-video/upload:
+    post:
+      tags:
+        - Short Video
+      summary: Uploads a short video
+      operationId: uploadShortVideo
+      parameters:
+        - in: header
+          name: X-API-KEY
+          schema:
+            type: string
+          required: true
+      requestBody:
+        description: Short video object to be uploaded
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UploadShortVideo'
+        required: true
+      responses:
+        201:
+          description: Uploaded short video
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UploadShortVideoResponse'
+        400:
+          $ref: '#/components/responses/InvalidInput'
+        default:
+          $ref: '#/components/responses/Error'
+  /short-video/by-author:
+    get:
+      tags:
+        - Short Video
+      summary: Retrieves short video objects by author
+      operationId: findShortVideosByAuthor
+      parameters:
+        - $ref: '#/components/parameters/authorId'
+        - $ref: '#/components/parameters/fromDate'
+        - $ref: '#/components/parameters/size'
+        - $ref: '#/components/parameters/pagingState'
+      responses:
+        200:
+          description: Successfully get objects
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ShortVideoListResponse'
+        default:
+          $ref: '#/components/responses/Error'
+  /short-video/by-categories:
+    get:
+      tags:
+        - Short Video
+      summary: Retrieves short video objects by caregories
+      operationId: findShortVideosByCategories
+      parameters:
+        - $ref: '#/components/parameters/categories'
+        - $ref: '#/components/parameters/fromDate'
+        - $ref: '#/components/parameters/size'
+        - $ref: '#/components/parameters/pagingState'
+      responses:
+        200:
+          description: Successfully get objects
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ShortVideoListResponse'
+        default:
+          $ref: '#/components/responses/Error'
+  /short-video/friends:
+    get:
+      tags:
+        - Short Video
+      summary: Retrieves short videos of friends
+      operationId: findShortVideosOfFriends
+      parameters:
+        - $ref: '#/components/parameters/friendUserName'
+        - $ref: '#/components/parameters/fromDate'
+        - $ref: '#/components/parameters/size'
+        - $ref: '#/components/parameters/pagingState'
+      responses:
+        200:
+          description: Successfully get objects
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ShortVideoListResponse'
+        default:
+          $ref: '#/components/responses/Error'
+  /short-video/{videoId}:
+    get:
+      tags:
+        - Short Video
+      summary: Retrieves a short video by id
+      operationId: findShortVideoById
+      parameters:
+        - $ref: '#/components/parameters/videoId'
+      responses:
+        200:
+          description: A short video
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ShortVideoResponse'
+        404:
+          $ref: '#/components/responses/NotFound'
+        default:
+          $ref: '#/components/responses/Error'
+    put:
+      tags:
+        - Short Video
+      summary: Updates a short videos
+      operationId: updateShortVideo
+      parameters:
+        - $ref: '#/components/parameters/videoId'
+      requestBody:
+        description: Fields to be updated
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateShortVideo'
+        required: true
+      responses:
+        200:
+          description: Short video successfully updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ShortVideoResponse'
+        404:
+          $ref: '#/components/responses/NotFound'
+        default:
+          $ref: '#/components/responses/Error'
+    delete:
+      tags:
+        - Short Video
+      summary: Deletes a short video
+      operationId: deleteShortVideo
+      parameters:
+        - $ref: '#/components/parameters/videoId'
+      responses:
+        204:
+          description: Deleted
+          content: { }
+        404:
+          $ref: '#/components/responses/NotFound'
+        default:
+          $ref: '#/components/responses/Error'
+  /short-video/configuration:
+    get:
+      tags:
+        - Short Video
+      operationId: getShortVideoConfiguration
+      summary: Get short video configuration
+      responses:
+        200:
+          description: Successfully get objects
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ShortVideoConfigurationResponse'
+        default:
+          $ref: '#/components/responses/Error'
+    post:
+      tags:
+        - Short Video
+      operationId: setShortVideoConfiguration
+      summary: Set short video configuration
+      requestBody:
+        description: Short video configuration object
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ShortVideoConfigurationRequest'
+      responses:
+        200:
+          description: Ok
+        default:
+          $ref: '#/components/responses/Error'
+  /short-video/comment:
+    post:
+      tags:
+        - Short Video
+      summary: Adds a short video comment
+      operationId: addComment
+      requestBody:
+        description: Comment object that needs to be added
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ShortVideoComment'
+        required: true
+      responses:
+        201:
+          description: Created short video comment
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ShortVideoStatsResponse'
+        400:
+          $ref: '#/components/responses/InvalidInput'
+        default:
+          $ref: '#/components/responses/Error'
+    get:
+      tags:
+        - Short Video
+      summary: Retrieves short video comments
+      operationId: findComments
+      x-spring-paginated: true
+      parameters:
+        - $ref: '#/components/parameters/videoUuid'
+        - $ref: '#/components/parameters/showAll'
+      responses:
+        200:
+          description: Successfully get objects
+          content:
+            application/json:
+              schema:
+                type: array
+                description: Found short video comment objects
+                items:
+                  $ref: '#/components/schemas/ShortVideoComment'
+        default:
+          $ref: '#/components/responses/Error'
+  /short-video/comment/{commentId}:
+    put:
+      tags:
+        - Short Video
+      summary: Updates a short video comment
+      operationId: updateComment
+      parameters:
+        - $ref: '#/components/parameters/commentId'
+      requestBody:
+        description: Comment object that needs to be updated
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ShortVideoComment'
+        required: true
+      responses:
+        200:
+          description: Short video successfully updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ShortVideoComment'
+        404:
+          $ref: '#/components/responses/NotFound'
+        default:
+          $ref: '#/components/responses/Error'
+    delete:
+      tags:
+        - Short Video
+      summary: Deletes a short video comment
+      operationId: removeComment
+      parameters:
+        - $ref: '#/components/parameters/commentId'
+        - $ref: '#/components/parameters/videoUuid'
+      responses:
+        204:
+          description: Deleted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ShortVideoStatsResponse'
+        404:
+          $ref: '#/components/responses/NotFound'
+        default:
+          $ref: '#/components/responses/Error'
+    get:
+      tags:
+        - Short Video
+      summary: Retrieves short video comment by id
+      operationId: getComment
+      parameters:
+          - $ref: '#/components/parameters/commentId'
+          - $ref: '#/components/parameters/videoUuid'
+      responses:
+        200:
+          description: Successfully get short video comment
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ShortVideoComment'
+        default:
+          $ref: '#/components/responses/Error'
+  /short-video/comment/{commentId}/reply:
+    post:
+      tags:
+        - Short Video
+      summary: Replies to the short video comment
+      operationId: reply
+      parameters:
+        - $ref: '#/components/parameters/commentId'
+      requestBody:
+        description: Reply object that needs to be added
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ShortVideoComment'
+        required: true
+      responses:
+        201:
+          description: Created reply to the short video comment
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ShortVideoStatsResponse'
+        400:
+          $ref: '#/components/responses/InvalidInput'
+        default:
+          $ref: '#/components/responses/Error'
+    get:
+      tags:
+        - Short Video
+      summary: Retrieves short video comment replies
+      operationId: getCommentReplies
+      x-spring-paginated: true
+      parameters:
+        - $ref: '#/components/parameters/commentId'
+        - $ref: '#/components/parameters/videoUuid'
+        - $ref: '#/components/parameters/showAll'
+      responses:
+        200:
+          description: Successfully get objects
+          content:
+            application/json:
+              schema:
+                type: array
+                description: Found short video comment replies
+                items:
+                  $ref: '#/components/schemas/ShortVideoComment'
+        default:
+          $ref: '#/components/responses/Error'
+  /short-video/{videoId}/votes/{voteType}:
+    put:
+      tags:
+        - Short Video
+      summary: Adds vote to the short video
+      operationId: addShortVideoVote
+      parameters:
+        - $ref: '#/components/parameters/videoId'
+        - $ref: '#/components/parameters/voteType'
+      responses:
+        201:
+          description: Added vote to the short video
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ShortVideoStatsResponse'
+        400:
+          $ref: '#/components/responses/InvalidInput'
+        default:
+          $ref: '#/components/responses/Error'
+  /short-video/{videoId}/votes:
+    delete:
+      tags:
+        - Short Video
+      summary: Removes user vote to the short video
+      operationId: removeShortVideoVote
+      parameters:
+        - $ref: '#/components/parameters/videoId'
+      responses:
+        204:
+          description: Deleted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ShortVideoStatsResponse'
+        404:
+          $ref: '#/components/responses/NotFound'
+        default:
+          $ref: '#/components/responses/Error'
+components:
+  schemas:
+    Error:
+      required:
+        - code
+        - message
+      type: object
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+    ShortVideoId:
+      required:
+        - id
+      type: object
+      properties:
+        id:
+          description: Unique short video ID
+          type: string
+          format: uuid
+    CreateShortVideoResponse:
+      required:
+        - presignedUrl
+      type: object
+      properties:
+        videoId:
+          description: Unique short video ID
+          type: string
+          format: uuid
+        presignedUrl:
+          description: Presigned url for the short video
+          type: string
+    UploadShortVideoResponse:
+      type: object
+      properties:
+        videoId:
+          description: Unique short video ID
+          type: string
+          format: uuid
+    ShortVideoProperties:
+      required:
+        - title
+        - url
+        - authorId
+      type: object
+      properties:
+        title:
+          description: Title of the short video
+          type: string
+          example: Amazing short video
+        url:
+          type: string
+          description: URL of the short video
+          example: https://minio-storage/bucket-name/file-name.jpg
+        thumbnailUrl:
+          type: string
+          description: Thumbnail url of the short video
+          example: https://minio-storage/bucket-name/file-name.jpg
+        authorId:
+          description: Author id
+          type: integer
+          format: int64
+          example: 150
+        commentsAllowed:
+          description: Defines if commenting allowed for the short video
+          type: boolean
+          example: true
+        privacyLevel:
+          $ref: '#/components/schemas/PrivacyLevel'
+        selectedUsers:
+          description: required if privacyLevel SELECTED_USERS
+          type: array
+          items:
+            type: integer
+            format: int64
+          example: [ 1,2 ]
+        selectedGroups:
+          description: required if privacyLevel SELECTED_GROUPS
+          type: array
+          items:
+            type: integer
+            format: int64
+          example: [ 1,2 ]
+        categories:
+          description: List of categories
+          type: array
+          items:
+            type: object
+            properties:
+              categoryId:
+                type: string
+                format: uuid
+                example: life_style
+              name:
+                type: string
+                example: Life style
+        createdAt:
+          description: Short video created date
+          type: string
+          format: date-time
+        updatedAt:
+          description: Short video updated date
+          type: string
+          format: date-time
+        stats:
+          $ref: '#/components/schemas/ShortVideoStatsResponse'
+        metadata:
+          description: Video metadata
+          type: object
+          additionalProperties: true
+          example: {
+            "extension": ".mp4",
+            "resolution": "640 x 480"
+          }
+    PrivacyLevel:
+      type: string
+      enum: [ PUBLIC, SELECTED_GROUPS, SELECTED_USERS, FOLLOWERS ]
+      x-discriminator-value: PrivacyLevel
+    ShortVideoListResponse:
+      type: object
+      properties:
+        count:
+          type: integer
+          format: int64
+          example: 20
+        pagingState:
+          type: string
+        hasNext:
+          type: boolean
+          example: true
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/ShortVideoResponse'
+    ShortVideoResponse:
+      allOf:
+        - $ref: '#/components/schemas/ShortVideoId'
+        - $ref: '#/components/schemas/ShortVideoProperties'
+    ShortVideoComment:
+      required:
+        - content
+      type: object
+      properties:
+        id:
+          description: Comment id
+          type: integer
+          format: int64
+          example: 150
+        authorId:
+          description: Author id
+          type: integer
+          format: int64
+          example: 150
+        content:
+          description: Comment content
+          type: string
+          example: Some content
+        videoId:
+          description: Unique short video ID
+          type: string
+          format: uuid
+        replyTo:
+          description: Reply to comment id
+          type: integer
+          format: int64
+    ShortVideoStatsResponse:
+      type: object
+      properties:
+        id:
+          description: Unique short video ID
+          type: string
+          format: uuid
+        likes:
+          description: Likes count
+          type: integer
+          format: int64
+        dislikes:
+          description: Dislikes count
+          type: integer
+          format: int64
+        comments:
+          description: Comments count
+          type: integer
+          format: int64
+        halves:
+          description: Halves count
+          type: integer
+          format: int64
+        views:
+          description: Views count
+          type: integer
+          format: int64
+        skips:
+          description: Skips count
+          type: integer
+          format: int64
+    ShortVideoConfigurationRequest:
+      required:
+        - privacyLevel
+      type: object
+      properties:
+        commentsAllowed:
+          description: Defines if commenting allowed for the short video
+          type: boolean
+          example: true
+        privacyLevel:
+          $ref: '#/components/schemas/PrivacyLevel'
+        selectedUsers:
+          description: required if privacyLevel SELECTED_USERS
+          type: array
+          items:
+            type: integer
+            format: int64
+          example: [ 1,2 ]
+        selectedGroups:
+          description: required if privacyLevel SELECTED_GROUPS
+          type: array
+          items:
+            type: integer
+            format: int64
+          example: [ 1,2 ]
+    ShortVideoConfigurationResponse:
+      allOf:
+        - $ref: '#/components/schemas/ShortVideoConfigurationRequest'
+    CreateShortVideo:
+      required:
+        - title
+      type: object
+      properties:
+        title:
+          description: Title of the short video
+          type: string
+          example: Amazing short video
+        categories:
+          description: List of categories
+          type: array
+          items:
+            required:
+              - categoryId
+              - name
+            type: object
+            properties:
+              categoryId:
+                type: string
+                format: uuid
+                example: UUID
+              name:
+                type: string
+                example: Life style
+    UploadShortVideo:
+      required:
+        - title
+        - url
+      type: object
+      properties:
+        title:
+          description: Title of the short video
+          type: string
+          example: Amazing short video
+        categories:
+          description: List of categories
+          type: array
+          items:
+            required:
+              - categoryId
+              - name
+            type: object
+            properties:
+              categoryId:
+                type: string
+                format: uuid
+                example: UUID
+              name:
+                type: string
+                example: Life style
+        url:
+          type: string
+        thumbnailUrl:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        videoDuration:
+          type: integer
+          format: int64
+        likesCount:
+          type: integer
+          format: int64
+        commentsCount:
+          type: integer
+          format: int64
+        playCount:
+          type: integer
+          format: int64
+    UpdateShortVideo:
+      type: object
+      properties:
+        title:
+          description: Title of the short video
+          type: string
+          example: Amazing short video
+        commentsAllowed:
+          description: Defines if commenting allowed for the short video
+          type: boolean
+          example: true
+        privacyLevel:
+          $ref: '#/components/schemas/PrivacyLevel'
+        selectedUsers:
+          description: required if privacyLevel SELECTED_USERS
+          type: array
+          items:
+            type: integer
+            format: int64
+          example: [ 1,2 ]
+        selectedGroups:
+          description: required if privacyLevel SELECTED_GROUPS
+          type: array
+          items:
+            type: integer
+            format: int64
+          example: [ 1,2 ]
+        categories:
+          description: List of categories
+          type: array
+          items:
+            type: object
+            properties:
+              categoryId:
+                type: string
+                format: UUID
+                example: life_style
+              name:
+                type: string
+                example: Life style
+        metadata:
+          description: Video metadata
+          type: object
+          additionalProperties: true
+          example: {
+            "extension": ".mp4",
+            "resolution": "640 x 480"
+          }
+    VideoFile:
+      required:
+        - fileName
+      type: object
+      properties:
+        fileName:
+          type: string
+          format: binary
+    Pageable:
+      description: minimal Pageable query parameters
+      type: object
+      properties:
+        page:
+          type: integer
+        size:
+          type: integer
+  responses:
+    Error:
+      description: Error accessing the service consistent with http status code
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    InvalidInput:
+      description: Invalid input
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFound:
+      description: Unable to find resource
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  parameters:
+    videoId:
+      description: Short Video ID
+      name: videoId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    commentId:
+      description: Comment id
+      name: commentId
+      in: path
+      required: true
+      schema:
+        type: integer
+        format: int64
+    voteType:
+      description: Vote type
+      name: voteType
+      in: path
+      required: true
+      schema:
+        type: integer
+    authorId:
+      description: Short Video Author ID
+      name: authorId
+      in: query
+      required: false
+      schema:
+        type: integer
+        format: int64
+    categories:
+      description: List of categories
+      name: categories
+      in: query
+      required: false
+      schema:
+        type: array
+        items:
+          type: string
+    tags:
+      description: List of tags
+      name: tags
+      in: query
+      required: false
+      schema:
+        type: array
+        items:
+          type: integer
+          format: int64
+    fromDate:
+      description: Date to find short videos from
+      name: fromDate
+      in: query
+      required: false
+      schema:
+        type: string
+        example: 2020-01-01
+    size:
+      description: page size
+      name: size
+      in: query
+      required: false
+      schema:
+        type: integer
+    pagingState:
+      description: paging state
+      name: pagingState
+      in: query
+      required: false
+      schema:
+        type: string
+    videoUuid:
+      description: Short Video UUID
+      name: videoId
+      in: query
+      required: true
+      schema:
+        type: string
+        format: uuid
+    showAll:
+      description: Indicator to show deleted comments.
+      name: showAll
+      in: query
+      required: false
+      schema:
+        type: boolean
+    friendUserName:
+      description: Friend username
+      name: friendUserName
+      in: query
+      required: true
+      schema:
+        type: string

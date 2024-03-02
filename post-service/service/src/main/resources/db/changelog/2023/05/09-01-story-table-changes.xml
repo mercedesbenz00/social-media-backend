@@ -1,0 +1,40 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd"
+        objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
+    <changeSet id="1683610648878-191" author="bauyrzhanibraimov (generated)">
+        <sql>
+            update media_file m
+            set owner_id = (select s.id from story s where s.media_file_id = m.id and s.author_id = m.owner_id)
+            where m.file_type = 'STORY'
+        </sql>
+    </changeSet>
+    <changeSet id="1683610648878-19" author="bauyrzhanibraimov (generated)" failOnError="false">
+        <dropForeignKeyConstraint baseTableName="story" constraintName="fk_story_on_media_file"/>
+    </changeSet>
+    <changeSet id="1683610648878-20" author="bauyrzhanibraimov (generated)">
+        <dropColumn columnName="media_file_id" tableName="story"/>
+    </changeSet>
+    <changeSet id="1683610648878-2" author="bauyrzhanibraimov (generated)">
+        <addNotNullConstraint columnDataType="DATETIME" columnName="created_at" tableName="sized_image"
+                              validate="true"/>
+    </changeSet>
+    <changeSet id="1683610648878-4" author="bauyrzhanibraimov (generated)">
+        <addNotNullConstraint columnDataType="VARCHAR(255)" columnName="mime_type" tableName="sized_image"
+                              validate="true"/>
+    </changeSet>
+    <changeSet id="1683610648878-5" author="bauyrzhanibraimov (generated)">
+        <addNotNullConstraint columnDataType="VARCHAR(255)" columnName="path" tableName="sized_image" validate="true"/>
+    </changeSet>
+    <changeSet id="1683610648878-10" author="bauyrzhanibraimov (generated)">
+        <addNotNullConstraint columnDataType="BIGINT" columnName="size" tableName="sized_image" validate="true"/>
+    </changeSet>
+    <changeSet id="1683610648878-11" author="bauyrzhanibraimov (generated)">
+        <addNotNullConstraint columnDataType="VARCHAR(255)" columnName="storage_type" tableName="sized_image"
+                              validate="true"/>
+    </changeSet>
+
+</databaseChangeLog>

@@ -1,0 +1,72 @@
+server:
+  port: ${PORT:8091}
+  auth:
+    secret: ${SECRET_KEY:EkQCe8jwME187iyzqpxNPUlwu9MaMkXY}
+management:
+  health:
+    rabbit:
+      enabled: false
+spring:
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE:api}
+  kafka:
+    consumer:
+      bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+      group-id: group-id
+      auto-offset-reset: earliest
+  sleuth:
+    messaging:
+      kafka:
+        enabled: false
+  application:
+    name: short-video-registry-service
+  servlet:
+    multipart:
+      max-request-size: ${MAX_REQUEST_SIZE:250MB}
+      max-file-size: ${MAX_FILE_SIZE:250MB}
+  main:
+    allow-bean-definition-overriding: true
+  data:
+    cassandra:
+      schema-action: NONE
+      create-keyspace: true
+      request:
+        timeout: 10s
+      connection:
+        connect-timeout: 10s
+        init-query-timeout: 10s
+      local-datacenter: ${DB_DATA_CENTER:datacenter1}
+      keyspace-name: ${DB_KEYSPACE_NAME:short_video_service}
+      port: ${DB_PORT:9042}
+      contact-points: ${CASSANDRA_DB_URL:cassandra}
+      username: ${DB_USER:cassandra}
+      password: ${DB_PASSWORD:cassandra}
+  redis:
+    host: ${REDIS_HOST:localhost}
+    port: ${REDIS_PORT:6379}
+    password: ${REDIS_PASS:guest}
+    database: ${REDIS_DB:0}
+  autoconfigure:
+    exclude: org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration
+  jackson:
+    serialization:
+      write_dates_as_timestamps: true
+
+filestorage:
+  minio:
+    endpoint: ${MINIO_ENDPOINT:http://localhost:9000}
+    externalEndpoint: ${MINIO_EXTERNAL_ENDPOINT:http://localhost:9000}
+    accessKey: ${MINIO_ACCESS_KEY:minio}
+    secretKey: ${MINIO_SECRET_KEY:password}
+    bucketName: ${MINIO_BUCKET:social-media-short-videos}
+cassandra:
+  migration:
+    keyspace-name: ${DB_KEYSPACE_NAME:short_video_service}
+    scriptLocation: cassandra/migration
+person:
+  service:
+    url: ${PERSON_SERVICE_URL:http://localhost:8081}
+
+sentry:
+  dsn: ${SENTRY_DSN:https://5807e19a3a2943f6862270d23262508f@o4505390493073408.ingest.sentry.io/4505390512340992}
+  environment: ${SENTRY_ENVIRONMENT:local}

@@ -1,0 +1,201 @@
+kind: pipeline
+name: "Backend"
+type: docker
+
+clone:
+  depth: 50
+
+trigger:
+  branch:
+    - master
+  event:
+    - push
+    - custom
+
+steps:
+  - name: "Build Backend Services"
+    image: registry.earthlink.iq/soc/openjdk:11.0.12-slim-buster
+    commands:
+      - apt-get update && apt-get install -y make git
+      - make service=person-service compile
+      - make service=group-service compile
+      - make service=post-service compile
+      - make service=chat-service compile
+      - make service=notification-service compile
+
+  - name: "Publish Person Service"
+    image: registry.earthlink.iq/drone-plugins/docker
+    settings:
+      username:
+        from_secret: docker_username
+      password:
+        from_secret: docker_password
+      tags: ["${DRONE_COMMIT_SHA:0:7}_ci_build_${DRONE_BUILD_NUMBER}"]
+      repo: registry.earthlink.iq/soc/person-service
+      registry: registry.earthlink.iq
+      dockerfile: Dockerfile-el
+      build_args:
+        - service=person-service
+
+  - name: "Publish Group Service"
+    image: registry.earthlink.iq/drone-plugins/docker
+    settings:
+      username:
+        from_secret: docker_username
+      password:
+        from_secret: docker_password
+      tags: ["${DRONE_COMMIT_SHA:0:7}_ci_build_${DRONE_BUILD_NUMBER}"]
+      repo: registry.earthlink.iq/soc/group-service
+      registry: registry.earthlink.iq
+      dockerfile: Dockerfile-el
+      build_args:
+        - service=group-service
+
+  - name: "Publish Post Service"
+    image: registry.earthlink.iq/drone-plugins/docker
+    settings:
+      username:
+        from_secret: docker_username
+      password:
+        from_secret: docker_password
+      tags: ["${DRONE_COMMIT_SHA:0:7}_ci_build_${DRONE_BUILD_NUMBER}"]
+      repo: registry.earthlink.iq/soc/post-service
+      registry: registry.earthlink.iq
+      dockerfile: Dockerfile-el
+      build_args:
+        - service=post-service
+
+  - name: "Publish Chat Service"
+    image: registry.earthlink.iq/drone-plugins/docker
+    settings:
+      username:
+        from_secret: docker_username
+      password:
+        from_secret: docker_password
+      tags: ["${DRONE_COMMIT_SHA:0:7}_ci_build_${DRONE_BUILD_NUMBER}"]
+      repo: registry.earthlink.iq/soc/chat-service
+      registry: registry.earthlink.iq
+      dockerfile: Dockerfile-el
+      build_args:
+        - service=chat-service
+
+  - name: "Publish Notification Service"
+    image: registry.earthlink.iq/drone-plugins/docker
+    settings:
+      username:
+        from_secret: docker_username
+      password:
+        from_secret: docker_password
+      tags: ["${DRONE_COMMIT_SHA:0:7}_ci_build_${DRONE_BUILD_NUMBER}"]
+      repo: registry.earthlink.iq/soc/notification-service
+      registry: registry.earthlink.iq
+      dockerfile: Dockerfile-el
+      build_args:
+        - service=notification-service
+  - name: "Publish Matrix"
+    image: registry.earthlink.iq/drone-plugins/docker
+    settings:
+      username:
+        from_secret: docker_username
+      password:
+        from_secret: docker_password
+      dockerfile: matrix/Dockerfile
+      registry: registry.earthlink.iq
+      repo: registry.earthlink.iq/soc/synapse-matrix
+      region: eu-central-1
+      tags:
+        - "${DRONE_COMMIT_SHA:0:7}_ci_build_${DRONE_BUILD_NUMBER}"
+
+  - name: "Publish Short Videos API"
+    image: registry.earthlink.iq/drone-plugins/docker
+    settings:
+      username:
+        from_secret: docker_username
+      password:
+        from_secret: docker_password
+      dockerfile: Dockerfile-el
+      build_args:
+        - service=short-videos-api
+      registry: registry.earthlink.iq
+      repo: registry.earthlink.iq/soc/snp_short-videos-api
+      region: eu-central-1
+      tags:
+        - "${DRONE_COMMIT_SHA:0:7}_ci_build_${DRONE_BUILD_NUMBER}"
+
+  - name: "Publish Short Videos Registry"
+    image: registry.earthlink.iq/drone-plugins/docker
+    settings:
+      username:
+        from_secret: docker_username
+      password:
+        from_secret: docker_password
+      dockerfile: Dockerfile-el
+      build_args:
+        - service=short-videos-registry
+      registry: registry.earthlink.iq
+      repo: registry.earthlink.iq/soc/snp_short-videos-registry
+      region: eu-central-1
+      tags:
+        - "${DRONE_COMMIT_SHA:0:7}_ci_build_${DRONE_BUILD_NUMBER}"
+
+  - name: "Publish Short Videos Service"
+    image: registry.earthlink.iq/drone-plugins/docker
+    settings:
+      username:
+        from_secret: docker_username
+      password:
+        from_secret: docker_password
+      dockerfile: Dockerfile-el
+      build_args:
+        - service=short-videos-service
+      registry: registry.earthlink.iq
+      repo: registry.earthlink.iq/soc/snp_short-videos-service
+      region: eu-central-1
+      tags:
+        - "${DRONE_COMMIT_SHA:0:7}_ci_build_${DRONE_BUILD_NUMBER}"
+---
+kind: pipeline
+name: deploy
+type: docker
+trigger:
+  event:
+    - promote
+  target:
+    - production
+clone:
+  disabled: true
+steps:
+  - name: clone extra repo
+    image: registry.earthlink.iq/drone-plugins/drone-pipeline-img:96fabeb92b1c
+    environment:
+      SSH_KEY:
+        from_secret: ssh_key
+      GPG_KEY:
+        from_secret: gpg_key
+      KUBE_CONFIG_CONTENT:
+        from_secret: kube_config
+    commands:
+      # init ssh to clone private repos
+      - mkdir -p $HOME/.ssh
+      - echo "$SSH_KEY" > $HOME/.ssh/id_rsa
+      - chmod 600 $HOME/.ssh/id_rsa
+      - ssh-keyscan bitbucket.org > /$HOME/.ssh/known_hosts
+      # - echo "$GPG_KEY" > $HOME/snp.asc
+      # - gpg --import $HOME/snp.asc
+      # cloning helmchart manifests
+      - git clone git@bitbucket.org:creativeadvtech/soc-helm-charts.git
+      - cd ./soc-helm-charts
+      - git checkout staging && git branch --set-upstream-to=origin staging
+      - export TAG=${DRONE_COMMIT_SHA:0:7}_ci_build_${DRONE_BUILD_PARENT}
+      - yq e -i '(.person-service.image.tag, .post-service.image.tag, .group-service.image.tag, .chat-service.image.tag, .notification-service.image.tag, .image-service.thumbor.image.tag, .short-videos-api.image.tag, .short-videos-registry.image.tag, .short-videos-service.image.tag) = strenv(TAG)' ./values-aws.yaml
+      - helm lint ./ -f ./values-staging.yaml
+      - |
+        if git add --all && git commit -m "bump image tag to $TAG" && git push -u origin staging;  then
+          mkdir -p "$HOME/.kube"
+          echo "$KUBE_CONFIG_CONTENT" > "$HOME/.kube/config"
+          chmod 600 ~/.kube/config
+          helm upgrade -i -n snp-prod --create-namespace soc-101 -f ./values-staging.yaml ./ --set transcoder.enabled=false
+          echo "**SUCCESS** backend services will be deployed soon"
+        else
+          echo "**WARNING** nothing has changed"
+        fi

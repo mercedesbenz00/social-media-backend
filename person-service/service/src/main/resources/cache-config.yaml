@@ -1,0 +1,10 @@
+spring.cache.person.config:
+  ttl: 120000
+  maxIdleTime: 60000
+  maxSize: 30000
+#  localCacheOptions:
+#    invalidationPolicy: "ON_CHANGE"
+#    evictionPolicy: "NONE"
+#    cacheSize: 0
+#    timeToLiveInMillis: 0
+#    maxIdleInMillis: 0

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <property name="uuid_function" value="uuid_in(md5(random()::text || clock_timestamp()::text)::cstring)" dbms="postgresql"/>
+
+    <changeSet id="1678950753813-1" author="aakinin">
+        <addColumn tableName="comment_complaint">
+            <column name="complaint_uuid" type="UUID" defaultValueComputed="${uuid_function}">
+                <constraints nullable="false" unique="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+</databaseChangeLog>

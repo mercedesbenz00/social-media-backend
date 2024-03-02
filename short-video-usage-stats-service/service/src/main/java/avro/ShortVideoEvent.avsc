@@ -1,0 +1,19 @@
+{
+  "type": "record",
+  "name": "ShortVideoEvent",
+  "namespace": "iq.earthlink.social.shortvideousagestatsservice",
+  "fields": [
+    {
+      "name": "videoId",
+      "type": "string"
+    },
+    {
+      "name": "actionType",
+      "type": "string"
+    },
+    {
+      "name": "actionValue",
+      "type": "string"
+    }
+  ]
+}

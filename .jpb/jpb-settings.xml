@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DatabaseMigrationSettings">
+    <database-infos>
+      <database-info>
+        <option name="enabled" value="true" />
+        <dbms-id>postgres</dbms-id>
+      </database-info>
+    </database-infos>
+  </component>
+  <component name="JpaLiquibaseChangesConfig">
+    <exclude-change idName="person#first_last_name" tagName="addColumn" />
+    <exclude-change idName="person#last_first_name" tagName="addColumn" />
+  </component>
+  <component name="PersistenceUnitSettings">
+    <persistence-units>
+      <persistence-unit name="Short video registry and Social Common" defaultIncludeChangeLogFile="short-video-registry-service/service/src/main/resources/db/changelog/db.changelog-master.xml">
+        <packages>
+          <package value="iq.earthlink.social.shortvideoregistryservice" />
+          <package value="iq.earthlink.social.common.shortvideo" />
+        </packages>
+      </persistence-unit>
+      <persistence-unit name="Notification service" defaultIncludeChangeLogFile="notification-service/service/src/main/resources/db/changelog/db.changelog-master.xml">
+        <packages>
+          <package value="iq.earthlink.social.notificationservice" />
+        </packages>
+      </persistence-unit>
+      <persistence-unit name="Comment service" defaultIncludeChangeLogFile="comment-service/service/src/main/resources/db/changelog/db.changelog-master.xml">
+        <packages>
+          <package value="iq.earthlink.social.commentservice" />
+        </packages>
+      </persistence-unit>
+      <persistence-unit name="Person service and Social common" persistenceXmlPath="person-service/service/src/main/resources/db/changelog/db.changelog-master.xml" defaultIncludeChangeLogFile="person-service/service/src/main/resources/db/changelog/db.changelog-master.xml">
+        <packages>
+          <package value="iq.earthlink.social.personservice" />
+          <package value="iq.earthlink.social.common.file" />
+        </packages>
+      </persistence-unit>
+      <persistence-unit name="Post Service and Social Common" persistenceXmlPath="post-service/service/src/main/resources/db/changelog/db.changelog-master.xml" defaultIncludeChangeLogFile="post-service/service/src/main/resources/db/changelog/db.changelog-master.xml">
+        <packages>
+          <package value="iq.earthlink.social.common.file" />
+          <package value="iq.earthlink.social.postservice" />
+        </packages>
+      </persistence-unit>
+      <persistence-unit name="Group service and Social Common" persistenceXmlPath="userGroup-service/service/src/main/resources/db/changelog/db.changelog-master.xml" defaultIncludeChangeLogFile="userGroup-service/service/src/main/resources/db/changelog/db.changelog-master.xml">
+        <packages>
+          <package value="iq.earthlink.social.groupservice" />
+          <package value="iq.earthlink.social.common.file" />
+        </packages>
+      </persistence-unit>
+    </persistence-units>
+  </component>
+</project>

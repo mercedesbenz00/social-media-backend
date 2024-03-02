@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+    <changeSet author="bauyrzhan.ibraimov" id="001-person-service" labels="Importing all cities">
+        <sql>
+
+            insert into city (id, name) values (nextval('city_seq_gen'), 'Ad-Dawr');
+            insert into city_localized(id, locale, city_id, name) values(nextval('city_localized_seq_gen'), 'ar', currval('city_seq_gen'), 'الدور');
+            insert into city (id, name) values (nextval('city_seq_gen'), 'Afak');
+            insert into city_localized(id, locale, city_id, name) values(nextval('city_localized_seq_gen'), 'ar', currval('city_seq_gen'), 'عفك');
+            insert into city (id, name) values (nextval('city_seq_gen'), 'Al-Awja');
+            insert into city_localized(id, locale, city_id, name) values(nextval('city_localized_seq_gen'), 'ar', currval('city_seq_gen'), 'العوجا');
+            insert into city (id, name) values (nextval('city_seq_gen'), 'Al Diwaniyah');
+            insert into city_localized(id, locale, city_id, name) values(nextval('city_localized_seq_gen'), 'ar', currval('city_seq_gen'), 'الديوانية');
+            insert into city (id, name) values (nextval('city_seq_gen'), 'Al Hillah');
+            insert into city_localized(id, locale, city_id, name) values(nextval('city_localized_seq_gen'), 'ar', currval('city_seq_gen'), 'الحلة');
+            insert into city (id, name) values (nextval('city_seq_gen'), 'Al Qasim');
+            insert into city_localized(id, locale, city_id, name) values(nextval('city_localized_seq_gen'), 'ar', currval('city_seq_gen'), 'القاسم');
+            insert into city (id, name) values (nextval('city_seq_gen'), 'Al Eskanaria');
+            insert into city_localized(id, locale, city_id, name) values(nextval('city_localized_seq_gen'), 'ar', currval('city_seq_gen'), 'الاسكندرية');
+            insert into city (id, name) values (nextval('city_seq_gen'), 'Al Mehawil');
+            insert into city_localized(id, locale, city_id, name) values(nextval('city_localized_seq_gen'), 'ar', currval('city_seq_gen'), 'المحاويل');
+            insert into city (id, name) values (nextval('city_seq_gen'), 'Al Mosayeb');
+            insert into city_localized(id, locale, city_id, name) values(nextval('city_localized_seq_gen'), 'ar', currval('city_seq_gen'), 'المسيب');
+            insert into city (id, name) values (nextval('city_seq_gen'), 'Al-Qa''im');
+            insert into city_localized(id, locale, city_id, name) values(nextval('city_localized_seq_gen'), 'ar', currval('city_seq_gen'), 'القائم');
+            insert into city (id, name) values (nextval('city_seq_gen'), 'Al Zab');
+            insert into city_localized(id, locale, city_id, name) values(nextval('city_localized_seq_gen'), 'ar', currval('city_seq_gen'), 'الزاب');
+            insert into city (id, name) values (nextval('city_seq_gen'), 'Amarah');
+            insert into city_localized(id, locale, city_id, name) values(nextval('city_localized_seq_gen'), 'ar', currval('city_seq_gen'), 'العمارة');
+            insert into city (id, name) values (nextval('city_seq_gen'), 'Ar Rutba');
+            insert into city_localized(id, locale, city_id, name) values(nextval('city_localized_seq_gen'), 'ar', currval('city_seq_gen'), 'الرطبة');
+            insert into city (id, name) values (nextval('city_seq_gen'), 'Erbil');
+            insert into city_localized(id, locale, city_id, name) values(nextval('city_localized_seq_gen'), 'ar', currval('city_seq_gen'), 'هەولێر، أربيل');
+            insert into city (id, name) values (nextval('city_seq_gen'), 'Baghdad');
+            insert into city_localized(id, locale, city_id, name) values(nextval('city_localized_seq_gen'), 'ar', currval('city_seq_gen'), 'بغداد');
+            insert into city (id, name) values (nextval('city_seq_gen'), 'Baghdadi');
+            insert into city_localized(id, locale, city_id, name) values(nextval('city_localized_seq_gen'), 'ar', currval('city_seq_gen'), 'البغدادي');
+            insert into city (id, name) values (nextval('city_seq_gen'), 'Baiji');
+            insert into city_localized(id, locale, city_id, name) values(nextval('city_localized_seq_gen'), 'ar', currval('city_seq_gen'), 'بيجي');
+            insert into city (id, name) values (nextval('city_seq_gen'), 'Balad');
+            insert into city_localized(id, locale, city_id, name) values(nextval('city_localized_seq_gen'), 'ar', currval('city_seq_gen'), 'بلد');
+            insert into city (id, name) values (nextval('city_seq_gen'), 'Baqubah');
+            insert into city_localized(id, locale, city_id, name) values(nextval('city_localized_seq_gen'), 'ar', currval('city_seq_gen'), 'بعقوبة');
+            insert into city (id, name) values (nextval('city_seq_gen'), 'Basra');
+            insert into city_localized(id, locale, city_id, name) values(nextval('city_localized_seq_gen'), 'ar', currval('city_seq_gen'), 'البصرة');
+            insert into city (id, name) values (nextval('city_seq_gen'), 'Dahuk');
+            insert into city_localized(id, locale, city_id, name) values(nextval('city_localized_seq_gen'), 'ar', currval('city_seq_gen'), 'دهۆک، دهوك');
+            insert into city (id, name) values (nextval('city_seq_gen'), 'Fallujah');
+            insert into city_localized(id, locale, city_id, name) values(nextval('city_localized_seq_gen'), 'ar', currval('city_seq_gen'), 'الفلّوجة');
+            insert into city (id, name) values (nextval('city_seq_gen'), 'Haditha');
+            insert into city_localized(id, locale, city_id, name) values(nextval('city_localized_seq_gen'), 'ar', currval('city_seq_gen'), 'حديثة');
+            insert into city (id, name) values (nextval('city_seq_gen'), 'Hīt');
+            insert into city_localized(id, locale, city_id, name) values(nextval('city_localized_seq_gen'), 'ar', currval('city_seq_gen'), 'هيت');
+            insert into city (id, name) values (nextval('city_seq_gen'), 'Iskandariya');
+            insert into city_localized(id, locale, city_id, name) values(nextval('city_localized_seq_gen'), 'ar', currval('city_seq_gen'), 'إسكندرية');
+            insert into city (id, name) values (nextval('city_seq_gen'), 'Karbala');
+            insert into city_localized(id, locale, city_id, name) values(nextval('city_localized_seq_gen'), 'ar', currval('city_seq_gen'), 'كربلاء');
+            insert into city (id, name) values (nextval('city_seq_gen'), 'Khanaqin');
+            insert into city_localized(id, locale, city_id, name) values(nextval('city_localized_seq_gen'), 'ar', currval('city_seq_gen'), 'خانقين');
+            insert into city (id, name) values (nextval('city_seq_gen'), 'Kirkuk');
+            insert into city_localized(id, locale, city_id, name) values(nextval('city_localized_seq_gen'), 'ar', currval('city_seq_gen'), 'كركوك،کەرکووک');
+            insert into city (id, name) values (nextval('city_seq_gen'), 'Najaf Governorate');
+            insert into city_localized(id, locale, city_id, name) values(nextval('city_localized_seq_gen'), 'ar', currval('city_seq_gen'), 'كوفه');
+            insert into city (id, name) values (nextval('city_seq_gen'), 'Kut');
+            insert into city_localized(id, locale, city_id, name) values(nextval('city_localized_seq_gen'), 'ar', currval('city_seq_gen'), 'الكوت');
+            insert into city (id, name) values (nextval('city_seq_gen'), 'Mosul');
+            insert into city_localized(id, locale, city_id, name) values(nextval('city_localized_seq_gen'), 'ar', currval('city_seq_gen'), 'الموصل');
+            insert into city (id, name) values (nextval('city_seq_gen'), 'Muqdadiyah');
+            insert into city_localized(id, locale, city_id, name) values(nextval('city_localized_seq_gen'), 'ar', currval('city_seq_gen'), 'المقدادية');
+            insert into city (id, name) values (nextval('city_seq_gen'), 'Najaf');
+            insert into city_localized(id, locale, city_id, name) values(nextval('city_localized_seq_gen'), 'ar', currval('city_seq_gen'), 'النجف');
+            insert into city (id, name) values (nextval('city_seq_gen'), 'Nasiriyah');
+            insert into city_localized(id, locale, city_id, name) values(nextval('city_localized_seq_gen'), 'ar', currval('city_seq_gen'), 'الناصرية');
+            insert into city (id, name) values (nextval('city_seq_gen'), 'Ramadi');
+            insert into city_localized(id, locale, city_id, name) values(nextval('city_localized_seq_gen'), 'ar', currval('city_seq_gen'), 'الرمادي');
+            insert into city (id, name) values (nextval('city_seq_gen'), 'Samarra');
+            insert into city_localized(id, locale, city_id, name) values(nextval('city_localized_seq_gen'), 'ar', currval('city_seq_gen'), 'سامراء');
+            insert into city (id, name) values (nextval('city_seq_gen'), 'Samawah');
+            insert into city_localized(id, locale, city_id, name) values(nextval('city_localized_seq_gen'), 'ar', currval('city_seq_gen'), 'السماوة');
+            insert into city (id, name) values (nextval('city_seq_gen'), 'Shamia');
+            insert into city_localized(id, locale, city_id, name) values(nextval('city_localized_seq_gen'), 'ar', currval('city_seq_gen'), 'الشامية');
+            insert into city (id, name) values (nextval('city_seq_gen'), 'Sulaymaniyah');
+            insert into city_localized(id, locale, city_id, name) values(nextval('city_localized_seq_gen'), 'ar', currval('city_seq_gen'), 'سلێمانی، السليمانية');
+            insert into city (id, name) values (nextval('city_seq_gen'), 'Taji');
+            insert into city_localized(id, locale, city_id, name) values(nextval('city_localized_seq_gen'), 'ar', currval('city_seq_gen'), 'لتاجي');
+            insert into city (id, name) values (nextval('city_seq_gen'), 'Tal Afar');
+            insert into city_localized(id, locale, city_id, name) values(nextval('city_localized_seq_gen'), 'ar', currval('city_seq_gen'), 'تلعفر');
+            insert into city (id, name) values (nextval('city_seq_gen'), 'Tel Keppe');
+            insert into city_localized(id, locale, city_id, name) values(nextval('city_localized_seq_gen'), 'ar', currval('city_seq_gen'), 'تل كيف');
+            insert into city (id, name) values (nextval('city_seq_gen'), 'Tikrit');
+            insert into city_localized(id, locale, city_id, name) values(nextval('city_localized_seq_gen'), 'ar', currval('city_seq_gen'), 'تكريت');
+            insert into city (id, name) values (nextval('city_seq_gen'), 'Umm Qasr');
+            insert into city_localized(id, locale, city_id, name) values(nextval('city_localized_seq_gen'), 'ar', currval('city_seq_gen'), 'أم قصر');
+            insert into city (id, name) values (nextval('city_seq_gen'), 'Zakho');
+            insert into city_localized(id, locale, city_id, name) values(nextval('city_localized_seq_gen'), 'ar', currval('city_seq_gen'), 'زاخو،زاخۆ');
+            insert into city (id, name) values (nextval('city_seq_gen'), 'Zubayr');
+            insert into city_localized(id, locale, city_id, name) values(nextval('city_localized_seq_gen'), 'ar', currval('city_seq_gen'), 'الزبير');
+            insert into city (id, name) values (nextval('city_seq_gen'), 'Halabja');
+            insert into city_localized(id, locale, city_id, name) values(nextval('city_localized_seq_gen'), 'ar', currval('city_seq_gen'), 'حلبجه');
+        </sql>
+    </changeSet>
+</databaseChangeLog>

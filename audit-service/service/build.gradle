@@ -1,0 +1,55 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot'
+}
+
+springBoot {
+    mainClass = 'iq.earthlink.social.auditservice.AuditServiceApplication'
+    buildInfo()
+}
+
+dependencies {
+    implementation 'co.elastic.clients:elasticsearch-java:8.8.2'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.12.3'
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
+    implementation 'jakarta.json:jakarta.json-api:2.0.1'
+    implementation 'org.springframework.boot:spring-boot-starter-log4j2'
+    implementation group: 'org.springframework.kafka', name: 'spring-kafka', version: '2.8.1'
+    modules {
+        module("org.springframework.boot:spring-boot-starter-logging") {
+            replacedBy("org.springframework.boot:spring-boot-starter-log4j2", "Use Log4j2 instead of Logback")
+        }
+    }
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+    implementation "org.liquibase:liquibase-core"
+
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'org.springframework.security.oauth.boot:spring-security-oauth2-autoconfigure'
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+
+    implementation 'org.jsoup:jsoup:1.12.1'
+
+    implementation project(':social-common')
+    implementation project(":social-error-handling")
+    implementation project(":social-common-security")
+    implementation project(':services:person-client')
+
+    implementation 'org.postgresql:postgresql'
+    implementation 'com.squareup.okhttp3:okhttp:4.8.1'
+
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
+    implementation 'com.google.code.gson:gson:2.8.6'
+    implementation 'com.github.dozermapper:dozer-core:6.1.0'
+
+    testImplementation 'org.mockito:mockito-core:1.10.19'
+    testImplementation 'org.assertj:assertj-core:3.5.2'
+    testImplementation "org.powermock:powermock-api-mockito:1.6.5"
+    testImplementation "org.powermock:powermock-module-junit4:1.6.5"
+    testImplementation "org.powermock:powermock-module-testng:1.6.5"
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+    implementation 'org.springframework.data:spring-data-elasticsearch'
+
+}

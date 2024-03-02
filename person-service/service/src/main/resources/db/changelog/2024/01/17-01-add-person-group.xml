@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.1.xsd">
+    <changeSet id="1705470670059-1" author="bauyrzhanIbraimov">
+        <createTable tableName="person_group">
+            <column name="id" type="BIGINT">
+                <constraints primaryKey="true" nullable="false" primaryKeyName="pk_person_group"/>
+            </column>
+            <column name="person_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="group_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="1705470670059-2" author="bauyrzhanIbraimov">
+        <createSequence sequenceName="person_group_seq_gen" startValue="1" incrementBy="1"/>
+    </changeSet>
+
+    <changeSet id="1705470670059-3" author="bauyrzhanIbraimov">
+        <addDefaultValue tableName="person_group" columnName="id" defaultValueSequenceNext="person_group_seq_gen"/>
+    </changeSet>
+
+    <changeSet id="1705470670059-4" author="bauyrzhanibraimov">
+        <addUniqueConstraint columnNames="person_id, group_id" constraintName="uk_person_group_person_id_group_id"
+                             tableName="person_group"/>
+    </changeSet>
+
+</databaseChangeLog>

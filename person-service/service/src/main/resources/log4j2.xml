@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration>
+    <Properties>
+        <Property name="bootstrap.servers">${env:KAFKA_BOOTSTRAP_SERVERS:-localhost:9092}</Property>
+        <Property name="audit.logmarker">AuditRecord</Property>
+        <Property name="kafka.topic.audit">AUDIT</Property>
+    </Properties>
+    <Appenders>
+        <Kafka name="Kafka" topic="${kafka.topic.audit}">
+            <PatternLayout pattern="%message"/>
+            <Property name="bootstrap.servers">${bootstrap.servers}</Property>
+            <MarkerFilter marker="${audit.logmarker}" onMatch="ACCEPT" onMismatch="DENY"/>
+        </Kafka>
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout
+                    pattern="%style{%d{ISO8601}}{black} %highlight{%-5level }[%style{%t}{bright,blue}] %style{%C{1.}}{bright,yellow}: %notEmpty{%X{traceId}}%notEmpty{ - %X{spanId} -} %msg%n%throwable"/>
+        </Console>
+        <Sentry name="Sentry"
+                dsn="${SENTRY_DSN:https://5807e19a3a2943f6862270d23262508f@o4505390493073408.ingest.sentry.io/4505390512340992}"/>
+
+        <Async name="AsyncKafka">
+            <AppenderRef ref="Kafka"/>
+        </Async>
+
+    </Appenders>
+
+    <Loggers>
+        <Root level="INFO">
+            <AppenderRef ref="Sentry"/>
+            <AppenderRef ref="Console"/>
+            <AppenderRef ref="Kafka"/>
+        </Root>
+    </Loggers>
+
+</Configuration>

@@ -1,0 +1,487 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+    <changeSet author="bauyrzhan.ibraimov" id="001-group-service" labels="Importing all cities">
+       <sql>
+            -- Entertainment
+            insert into category (id, created_at, name, parent_category_id) values (1, CURRENT_DATE, 'Entertainment', null);
+            insert into category_localized (id, locale, name, category_id) values (1, 'en', 'Entertainment', 1);
+            insert into category_localized (id, locale, name, category_id) values (2, 'ar', 'ترفيهي', 1);
+            --       - ‏Movies
+            insert into category (id, created_at, name, parent_category_id) values (2, CURRENT_DATE, '‏Movies', 1);
+            insert into category_localized (id, locale, name, category_id) values (3, 'en', '‏Movies', 2);
+            insert into category_localized (id, locale, name, category_id) values (4, 'ar', 'افلام', 2);
+            --       - ‏Series
+            insert into category (id, created_at, name, parent_category_id) values (3, CURRENT_DATE, '‏Series', 1);
+            insert into category_localized (id, locale, name, category_id) values (5, 'en', '‏Series', 3);
+            insert into category_localized (id, locale, name, category_id) values (6, 'ar', 'مسلسلات', 3);
+            --       - ‏Anime
+            insert into category (id, created_at, name, parent_category_id) values (4, CURRENT_DATE, '‏Anime', 1);
+            insert into category_localized (id, locale, name, category_id) values (7, 'en', '‏Anime', 4);
+            insert into category_localized (id, locale, name, category_id) values (8, 'ar', 'انمي', 4);
+            --       - ‏Games
+            insert into category (id, created_at, name, parent_category_id) values (5, CURRENT_DATE, '‏Games', 1);
+            insert into category_localized (id, locale, name, category_id) values (9, 'en', '‏Games', 5);
+            insert into category_localized (id, locale, name, category_id) values (10, 'ar', 'العاب', 5);
+            --       - ‏Songs
+            insert into category (id, created_at, name, parent_category_id) values (6, CURRENT_DATE, '‏Songs', 1);
+            insert into category_localized (id, locale, name, category_id) values (11, 'en', '‏Songs', 6);
+            insert into category_localized (id, locale, name, category_id) values (12, 'ar', 'اغاني', 6);
+            --       - ‏Devices
+            insert into category (id, created_at, name, parent_category_id) values (7, CURRENT_DATE, '‏Devices', 1);
+            insert into category_localized (id, locale, name, category_id) values (13, 'en', '‏Devices', 7);
+            insert into category_localized (id, locale, name, category_id) values (14, 'ar', 'أجهزة', 7);
+            --       - ‏Internet \ Applications
+            insert into category (id, created_at, name, parent_category_id) values (8, CURRENT_DATE, '‏Internet \ Applications', 1);
+            insert into category_localized (id, locale, name, category_id) values (15, 'en', '‏Internet \ Applications', 8);
+            insert into category_localized (id, locale, name, category_id) values (16, 'ar', 'انترنيت/تطبيقات', 8);
+            --       - ‏Comics \ Manga
+            insert into category (id, created_at, name, parent_category_id) values (9, CURRENT_DATE, '‏Comics \ Manga', 1);
+            insert into category_localized (id, locale, name, category_id) values (17, 'en', '‏Comics \ Manga', 9);
+            insert into category_localized (id, locale, name, category_id) values (18, 'ar', 'كومكس/مانگا (قصص مصورة)', 9);
+            --       - ‏Books \ E-books
+            insert into category (id, created_at, name, parent_category_id) values (10, CURRENT_DATE, '‏Books \ E-books', 1);
+            insert into category_localized (id, locale, name, category_id) values (19, 'en', '‏Books \ E-books', 10);
+            insert into category_localized (id, locale, name, category_id) values (20, 'ar', 'كتاب/كتاب الكتروني', 10);
+
+            -- Hobbies \ Talents
+            insert into category (id, created_at, name, parent_category_id) values (11, CURRENT_DATE, 'Hobbies \ Talents', null);
+            insert into category_localized (id, locale, name, category_id) values (21, 'en', 'Hobbies \ Talents', 11);
+            insert into category_localized (id, locale, name, category_id) values (22, 'ar', 'هوايات/مواهب', 11);
+            --       - ‏Art
+            insert into category (id, created_at, name, parent_category_id) values (12, CURRENT_DATE, '‏Art', 11);
+            insert into category_localized (id, locale, name, category_id) values (23, 'en', '‏Art', 12);
+            insert into category_localized (id, locale, name, category_id) values (24, 'ar', 'فنون', 12);
+            --       - ‏Motor vehicles
+            insert into category (id, created_at, name, parent_category_id) values (13, CURRENT_DATE, '‏Motor vehicles', 11);
+            insert into category_localized (id, locale, name, category_id) values (25, 'en', '‏Motor vehicles', 13);
+            insert into category_localized (id, locale, name, category_id) values (26, 'ar', 'سيارات', 13);
+            --       - ‏Designs
+            insert into category (id, created_at, name, parent_category_id) values (14, CURRENT_DATE, '‏Designs', 11);
+            insert into category_localized (id, locale, name, category_id) values (27, 'en', '‏Designs', 14);
+            insert into category_localized (id, locale, name, category_id) values (28, 'ar', 'تصميم', 14);
+            --       - ‏Music
+            insert into category (id, created_at, name, parent_category_id) values (15, CURRENT_DATE, '‏Music', 11);
+            insert into category_localized (id, locale, name, category_id) values (29, 'en', '‏Music', 15);
+            insert into category_localized (id, locale, name, category_id) values (30, 'ar', 'موسيقى', 15);
+            --       - ‏Photography \ Movie filming
+            insert into category (id, created_at, name, parent_category_id) values (16, CURRENT_DATE, '‏Photography \ Movie filming', 11);
+            insert into category_localized (id, locale, name, category_id) values (31, 'en', '‏Photography \ Movie filming', 16);
+            insert into category_localized (id, locale, name, category_id) values (32, 'ar', 'تصوير/تصوير افلام', 16);
+            --       - ‏Technology
+            insert into category (id, created_at, name, parent_category_id) values (17, CURRENT_DATE, '‏Technology', 11);
+            insert into category_localized (id, locale, name, category_id) values (33, 'en', '‏Technology', 17);
+            insert into category_localized (id, locale, name, category_id) values (34, 'ar', 'تكنلوجيا', 17);
+            --       - ‏Traveling
+            insert into category (id, created_at, name, parent_category_id) values (18, CURRENT_DATE, '‏Traveling', 11);
+            insert into category_localized (id, locale, name, category_id) values (35, 'en', '‏Traveling', 18);
+            insert into category_localized (id, locale, name, category_id) values (36, 'ar', 'السفر', 18);
+            --       - ‏Crafts
+            insert into category (id, created_at, name, parent_category_id) values (19, CURRENT_DATE, '‏Crafts', 11);
+            insert into category_localized (id, locale, name, category_id) values (37, 'en', '‏Crafts', 19);
+            insert into category_localized (id, locale, name, category_id) values (38, 'ar', 'حرفة', 19);
+            --       - ‏Driving
+            insert into category (id, created_at, name, parent_category_id) values (20, CURRENT_DATE, '‏Driving', 11);
+            insert into category_localized (id, locale, name, category_id) values (39, 'en', '‏Driving', 20);
+            insert into category_localized (id, locale, name, category_id) values (40, 'ar', 'القيادة', 20);
+            --       - ‏Taking risks
+            insert into category (id, created_at, name, parent_category_id) values (21, CURRENT_DATE, '‏Taking risks', 11);
+            insert into category_localized (id, locale, name, category_id) values (41, 'en', '‏Taking risks', 21);
+            insert into category_localized (id, locale, name, category_id) values (42, 'ar', 'اخذ المخاطرات', 21);
+            --       - ‏Cooking
+            insert into category (id, created_at, name, parent_category_id) values (22, CURRENT_DATE, '‏Cooking', 11);
+            insert into category_localized (id, locale, name, category_id) values (43, 'en', '‏Cooking', 22);
+            insert into category_localized (id, locale, name, category_id) values (44, 'ar', 'الطبخ', 22);
+            --       - ‏Communication
+            insert into category (id, created_at, name, parent_category_id) values (23, CURRENT_DATE, '‏Communication', 11);
+            insert into category_localized (id, locale, name, category_id) values (45, 'en', '‏Communication', 23);
+            insert into category_localized (id, locale, name, category_id) values (46, 'ar', 'تواصل', 23);
+            --       - ‏Fake it till you make it
+            insert into category (id, created_at, name, parent_category_id) values (24, CURRENT_DATE, '‏Fake it till you make it', 11);
+            insert into category_localized (id, locale, name, category_id) values (47, 'en', '‏Fake it till you make it', 24);
+            insert into category_localized (id, locale, name, category_id) values (48, 'ar', 'زيفها حتى تصنعها', 24);
+
+            -- Life style
+            insert into category (id, created_at, name, parent_category_id) values (25, CURRENT_DATE, 'Life style', null);
+            insert into category_localized (id, locale, name, category_id) values (49, 'en', 'Life style', 25);
+            insert into category_localized (id, locale, name, category_id) values (50, 'ar', 'اسلوب حياة', 25);
+            --       - Fashion \ Beauty
+            insert into category (id, created_at, name, parent_category_id) values (26, CURRENT_DATE, 'Fashion \ Beauty', 25);
+            insert into category_localized (id, locale, name, category_id) values (51, 'en', 'Fashion \ Beauty', 26);
+            insert into category_localized (id, locale, name, category_id) values (52, 'ar', 'موضة/جمال', 26);
+            --       - Exercise \ Health
+            insert into category (id, created_at, name, parent_category_id) values (27, CURRENT_DATE, 'Exercise \ Health', 25);
+            insert into category_localized (id, locale, name, category_id) values (53, 'en', 'Exercise \ Health', 27);
+            insert into category_localized (id, locale, name, category_id) values (54, 'ar', 'تمارين/صحة', 27);
+            --       - Physical activities
+            insert into category (id, created_at, name, parent_category_id) values (28, CURRENT_DATE, 'Physical activities', 25);
+            insert into category_localized (id, locale, name, category_id) values (55, 'en', 'Physical activities', 28);
+            insert into category_localized (id, locale, name, category_id) values (56, 'ar', 'بدني', 28);
+            --       - Body building
+            insert into category (id, created_at, name, parent_category_id) values (29, CURRENT_DATE, 'Body building', 25);
+            insert into category_localized (id, locale, name, category_id) values (57, 'en', 'Body building', 29);
+            insert into category_localized (id, locale, name, category_id) values (58, 'ar', 'بناء الأجسام', 29);
+            --       - Diets
+            insert into category (id, created_at, name, parent_category_id) values (30, CURRENT_DATE, 'Diets', 25);
+            insert into category_localized (id, locale, name, category_id) values (59, 'en', 'Diets', 30);
+            insert into category_localized (id, locale, name, category_id) values (60, 'ar', 'حمية', 30);
+            --       - Food
+            insert into category (id, created_at, name, parent_category_id) values (31, CURRENT_DATE, 'Food', 25);
+            insert into category_localized (id, locale, name, category_id) values (61, 'en', 'Food', 31);
+            insert into category_localized (id, locale, name, category_id) values (62, 'ar', 'اكل', 31);
+            --       - Money
+            insert into category (id, created_at, name, parent_category_id) values (32, CURRENT_DATE, 'Money', 25);
+            insert into category_localized (id, locale, name, category_id) values (63, 'en', 'Money', 32);
+            insert into category_localized (id, locale, name, category_id) values (64, 'ar', 'أموال', 32);
+            --       - Religion \ Beliefs
+            insert into category (id, created_at, name, parent_category_id) values (33, CURRENT_DATE, 'Religion \ Beliefs', 25);
+            insert into category_localized (id, locale, name, category_id) values (65, 'en', 'Religion \ Beliefs', 33);
+            insert into category_localized (id, locale, name, category_id) values (66, 'ar', 'الدين/معتقدات', 33);
+            --       - Self development
+            insert into category (id, created_at, name, parent_category_id) values (34, CURRENT_DATE, 'Self development', 25);
+            insert into category_localized (id, locale, name, category_id) values (67, 'en', 'Self development', 34);
+            insert into category_localized (id, locale, name, category_id) values (68, 'ar', 'تطوير الذات', 34);
+
+            -- Education
+            insert into category (id, created_at, name, parent_category_id) values (35, CURRENT_DATE, 'Education', null);
+            insert into category_localized (id, locale, name, category_id) values (69, 'en', 'Education', 35);
+            insert into category_localized (id, locale, name, category_id) values (70, 'ar', 'تعليمي', 35);
+            --       - Medical
+            insert into category (id, created_at, name, parent_category_id) values (36, CURRENT_DATE, 'Medical', 35);
+            insert into category_localized (id, locale, name, category_id) values (71, 'en', 'Medical', 36);
+            insert into category_localized (id, locale, name, category_id) values (72, 'ar', 'أدوية', 36);
+            --       - Computer science \ Engineering
+            insert into category (id, created_at, name, parent_category_id) values (37, CURRENT_DATE, 'Computer science \ Engineering', 35);
+            insert into category_localized (id, locale, name, category_id) values (73, 'en', 'Computer science \ Engineering', 37);
+            insert into category_localized (id, locale, name, category_id) values (74, 'ar', 'علوم حاسبات/هندسة', 37);
+            --       - Art
+            insert into category (id, created_at, name, parent_category_id) values (38, CURRENT_DATE, 'Art', 35);
+            insert into category_localized (id, locale, name, category_id) values (75, 'en', 'Art', 38);
+            insert into category_localized (id, locale, name, category_id) values (76, 'ar', 'فن', 38);
+            --       - Economy
+            insert into category (id, created_at, name, parent_category_id) values (39, CURRENT_DATE, 'Economy', 35);
+            insert into category_localized (id, locale, name, category_id) values (77, 'en', 'Economy', 39);
+            insert into category_localized (id, locale, name, category_id) values (78, 'ar', 'اقتصاد', 39);
+            --       - Environment
+            insert into category (id, created_at, name, parent_category_id) values (40, CURRENT_DATE, 'Environment', 35);
+            insert into category_localized (id, locale, name, category_id) values (79, 'en', 'Environment', 40);
+            insert into category_localized (id, locale, name, category_id) values (80, 'ar', 'بيئة', 40);
+            --       - History
+            insert into category (id, created_at, name, parent_category_id) values (41, CURRENT_DATE, 'History', 35);
+            insert into category_localized (id, locale, name, category_id) values (81, 'en', 'History', 41);
+            insert into category_localized (id, locale, name, category_id) values (82, 'ar', 'تاريخ', 41);
+            --       - Languages
+            insert into category (id, created_at, name, parent_category_id) values (42, CURRENT_DATE, 'Languages', 35);
+            insert into category_localized (id, locale, name, category_id) values (83, 'en', 'Languages', 42);
+            insert into category_localized (id, locale, name, category_id) values (84, 'ar', 'لغات', 42);
+            --       - Phycology
+            insert into category (id, created_at, name, parent_category_id) values (43, CURRENT_DATE, 'Phycology', 35);
+            insert into category_localized (id, locale, name, category_id) values (85, 'en', 'Phycology', 43);
+            insert into category_localized (id, locale, name, category_id) values (86, 'ar', 'علم نفس', 43);
+            --       - Science
+            insert into category (id, created_at, name, parent_category_id) values (44, CURRENT_DATE, 'Science', 35);
+            insert into category_localized (id, locale, name, category_id) values (87, 'en', 'Science', 44);
+            insert into category_localized (id, locale, name, category_id) values (88, 'ar', 'علوم', 44);
+            --       - Law
+            insert into category (id, created_at, name, parent_category_id) values (45, CURRENT_DATE, 'Law', 35);
+            insert into category_localized (id, locale, name, category_id) values (89, 'en', 'Law', 45);
+            insert into category_localized (id, locale, name, category_id) values (90, 'ar', 'قانون', 45);
+            --       - Schools
+            insert into category (id, created_at, name, parent_category_id) values (46, CURRENT_DATE, 'Schools', 35);
+            insert into category_localized (id, locale, name, category_id) values (91, 'en', 'Schools', 46);
+            insert into category_localized (id, locale, name, category_id) values (92, 'ar', 'مدارس', 46);
+            --       - Anthropology
+            insert into category (id, created_at, name, parent_category_id) values (47, CURRENT_DATE, 'Anthropology', 35);
+            insert into category_localized (id, locale, name, category_id) values (93, 'en', 'Anthropology', 47);
+            insert into category_localized (id, locale, name, category_id) values (94, 'ar', 'علم الانسان', 47);
+
+            -- Business
+            insert into category (id, created_at, name, parent_category_id) values (48, CURRENT_DATE, 'Business', null);
+            insert into category_localized (id, locale, name, category_id) values (95, 'en', 'Business', 48);
+            insert into category_localized (id, locale, name, category_id) values (96, 'ar', 'الاعمال', 48);
+            --       - Jobs
+            insert into category (id, created_at, name, parent_category_id) values (49, CURRENT_DATE, 'Jobs', 48);
+            insert into category_localized (id, locale, name, category_id) values (97, 'en', 'Jobs', 49);
+            insert into category_localized (id, locale, name, category_id) values (98, 'ar', 'وظائف', 49);
+            --       - Advertisements \ Promotion
+            insert into category (id, created_at, name, parent_category_id) values (50, CURRENT_DATE, 'Advertisements \ Promotion', 48);
+            insert into category_localized (id, locale, name, category_id) values (99, 'en', 'Advertisements \ Promotion', 50);
+            insert into category_localized (id, locale, name, category_id) values (100, 'ar', 'اعلانات/تسويق', 50);
+            --       - Art and entertainment
+            insert into category (id, created_at, name, parent_category_id) values (51, CURRENT_DATE, 'Art and entertainment', 48);
+            insert into category_localized (id, locale, name, category_id) values (101, 'en', 'Art and entertainment', 51);
+            insert into category_localized (id, locale, name, category_id) values (102, 'ar', 'الفنون و الترفيه', 51);
+            --       - Beauty, cosmetics and care
+            insert into category (id, created_at, name, parent_category_id) values (52, CURRENT_DATE, 'Beauty, cosmetics and care', 48);
+            insert into category_localized (id, locale, name, category_id) values (103, 'en', 'Beauty, cosmetics and care', 52);
+            insert into category_localized (id, locale, name, category_id) values (104, 'ar', 'جمال، تجميلية و العناية', 52);
+            --       - Commercial and industrial
+            insert into category (id, created_at, name, parent_category_id) values (53, CURRENT_DATE, 'Commercial and industrial', 48);
+            insert into category_localized (id, locale, name, category_id) values (105, 'en', 'Commercial and industrial', 53);
+            insert into category_localized (id, locale, name, category_id) values (106, 'ar', 'تجاري و صناعي', 53);
+            --       - Accounting
+            insert into category (id, created_at, name, parent_category_id) values (54, CURRENT_DATE, 'Accounting', 48);
+            insert into category_localized (id, locale, name, category_id) values (107, 'en', 'Accounting', 54);
+            insert into category_localized (id, locale, name, category_id) values (108, 'ar', 'حسابات', 54);
+            --       - Food and drinks
+            insert into category (id, created_at, name, parent_category_id) values (55, CURRENT_DATE, 'Food and drinks', 48);
+            insert into category_localized (id, locale, name, category_id) values (109, 'en', 'Food and drinks', 55);
+            insert into category_localized (id, locale, name, category_id) values (110, 'ar', 'الطعام و المشروبات', 55);
+            --       - Hotels and residence
+            insert into category (id, created_at, name, parent_category_id) values (56, CURRENT_DATE, 'Hotels and residence', 48);
+            insert into category_localized (id, locale, name, category_id) values (111, 'en', 'Hotels and residence', 56);
+            insert into category_localized (id, locale, name, category_id) values (112, 'ar', 'الفندق و الاقامة', 56);
+            --       - Health and medical
+            insert into category (id, created_at, name, parent_category_id) values (57, CURRENT_DATE, 'Health and medical', 48);
+            insert into category_localized (id, locale, name, category_id) values (113, 'en', 'Health and medical', 57);
+            insert into category_localized (id, locale, name, category_id) values (114, 'ar', 'طبي و صحي', 57);
+            --       - Shopping and retail
+            insert into category (id, created_at, name, parent_category_id) values (58, CURRENT_DATE, 'Shopping and retail', 48);
+            insert into category_localized (id, locale, name, category_id) values (115, 'en', 'Shopping and retail', 58);
+            insert into category_localized (id, locale, name, category_id) values (116, 'ar', 'التسوق و التجزئة', 58);
+            --       - Traveling and transportation
+            insert into category (id, created_at, name, parent_category_id) values (59, CURRENT_DATE, 'Traveling and transportation', 48);
+            insert into category_localized (id, locale, name, category_id) values (117, 'en', 'Traveling and transportation', 59);
+            insert into category_localized (id, locale, name, category_id) values (118, 'ar', 'السفر و المواصلات', 59);
+
+            -- Animals
+            insert into category (id, created_at, name, parent_category_id) values (60, CURRENT_DATE, 'Animals', null);
+            insert into category_localized (id, locale, name, category_id) values (119, 'en', 'Animals', 60);
+            insert into category_localized (id, locale, name, category_id) values (120, 'ar', 'حيوانات', 60);
+            --       - Invertebrates
+            insert into category (id, created_at, name, parent_category_id) values (61, CURRENT_DATE, 'Invertebrates', 60);
+            insert into category_localized (id, locale, name, category_id) values (121, 'en', 'Invertebrates', 61);
+            insert into category_localized (id, locale, name, category_id) values (122, 'ar', 'اللافقاريات', 61);
+            --       - Mammals
+            insert into category (id, created_at, name, parent_category_id) values (62, CURRENT_DATE, 'Mammals', 60);
+            insert into category_localized (id, locale, name, category_id) values (123, 'en', 'Mammals', 62);
+            insert into category_localized (id, locale, name, category_id) values (124, 'ar', 'الثدييات', 62);
+            --       - Birds
+            insert into category (id, created_at, name, parent_category_id) values (63, CURRENT_DATE, 'Birds', 60);
+            insert into category_localized (id, locale, name, category_id) values (125, 'en', 'Birds', 63);
+            insert into category_localized (id, locale, name, category_id) values (126, 'ar', 'طيور', 63);
+            --       - Reptiles
+            insert into category (id, created_at, name, parent_category_id) values (64, CURRENT_DATE, 'Reptiles', 60);
+            insert into category_localized (id, locale, name, category_id) values (127, 'en', 'Reptiles', 64);
+            insert into category_localized (id, locale, name, category_id) values (128, 'ar', 'الزواحف', 64);
+            --       - Amphibians
+            insert into category (id, created_at, name, parent_category_id) values (65, CURRENT_DATE, 'Amphibians', 60);
+            insert into category_localized (id, locale, name, category_id) values (129, 'en', 'Amphibians', 65);
+            insert into category_localized (id, locale, name, category_id) values (130, 'ar', 'البرمائيات', 65);
+            --       - Fish
+            insert into category (id, created_at, name, parent_category_id) values (66, CURRENT_DATE, 'Fish', 60);
+            insert into category_localized (id, locale, name, category_id) values (131, 'en', 'Fish', 66);
+            insert into category_localized (id, locale, name, category_id) values (132, 'ar', 'سمك', 66);
+
+            -- Sexual intercourse
+            insert into category (id, created_at, name, parent_category_id) values (67, CURRENT_DATE, 'Sexual intercourse', null);
+            insert into category_localized (id, locale, name, category_id) values (133, 'en', 'Sexual intercourse', 67);
+            insert into category_localized (id, locale, name, category_id) values (134, 'ar', 'الجنس', 67);
+            --       - For men
+            insert into category (id, created_at, name, parent_category_id) values (68, CURRENT_DATE, 'For men', 67);
+            insert into category_localized (id, locale, name, category_id) values (135, 'en', 'For men', 68);
+            insert into category_localized (id, locale, name, category_id) values (136, 'ar', 'للرجال', 68);
+            --       - For women
+            insert into category (id, created_at, name, parent_category_id) values (69, CURRENT_DATE, 'For women', 67);
+            insert into category_localized (id, locale, name, category_id) values (137, 'en', 'For women', 69);
+            insert into category_localized (id, locale, name, category_id) values (138, 'ar', 'للنساء', 69);
+
+            -- General content
+            insert into category (id, created_at, name, parent_category_id) values (70, CURRENT_DATE, 'General content', null);
+            insert into category_localized (id, locale, name, category_id) values (139, 'en', 'General content', 70);
+            insert into category_localized (id, locale, name, category_id) values (140, 'ar', 'محتوى عام', 70);
+            --       - Gifs
+            insert into category (id, created_at, name, parent_category_id) values (71, CURRENT_DATE, 'Gifs', 70);
+            insert into category_localized (id, locale, name, category_id) values (141, 'en', 'Gifs', 71);
+            insert into category_localized (id, locale, name, category_id) values (142, 'ar', 'صور متحركة', 71);
+            --       - Memes
+            insert into category (id, created_at, name, parent_category_id) values (72, CURRENT_DATE, 'Memes', 70);
+            insert into category_localized (id, locale, name, category_id) values (143, 'en', 'Memes', 72);
+            insert into category_localized (id, locale, name, category_id) values (144, 'ar', 'الميمات', 72);
+            --       - Figures
+            insert into category (id, created_at, name, parent_category_id) values (73, CURRENT_DATE, 'Figures', 70);
+            insert into category_localized (id, locale, name, category_id) values (145, 'en', 'Figures', 73);
+            insert into category_localized (id, locale, name, category_id) values (146, 'ar', 'اشخاص', 73);
+            --       - Reactions
+            insert into category (id, created_at, name, parent_category_id) values (74, CURRENT_DATE, 'Reactions', 70);
+            insert into category_localized (id, locale, name, category_id) values (147, 'en', 'Reactions', 74);
+            insert into category_localized (id, locale, name, category_id) values (148, 'ar', 'رد فعل', 74);
+            --       - Nature
+            insert into category (id, created_at, name, parent_category_id) values (75, CURRENT_DATE, 'Nature', 70);
+            insert into category_localized (id, locale, name, category_id) values (149, 'en', 'Nature', 75);
+            insert into category_localized (id, locale, name, category_id) values (150, 'ar', 'طبيعة', 75);
+            --       - Impressive subjects
+            insert into category (id, created_at, name, parent_category_id) values (76, CURRENT_DATE, 'Impressive subjects', 70);
+            insert into category_localized (id, locale, name, category_id) values (151, 'en', 'Impressive subjects', 76);
+            insert into category_localized (id, locale, name, category_id) values (152, 'ar', 'مثير للإعجاب', 76);
+            --       - Videos
+            insert into category (id, created_at, name, parent_category_id) values (77, CURRENT_DATE, 'Videos', 70);
+            insert into category_localized (id, locale, name, category_id) values (153, 'en', 'Videos', 77);
+            insert into category_localized (id, locale, name, category_id) values (154, 'ar', 'فيديو', 77);
+            --       - Discussions
+            insert into category (id, created_at, name, parent_category_id) values (78, CURRENT_DATE, 'Discussions', 70);
+            insert into category_localized (id, locale, name, category_id) values (155, 'en', 'Discussions', 78);
+            insert into category_localized (id, locale, name, category_id) values (156, 'ar', 'نقاش', 78);
+
+            -- Sports
+            insert into category (id, created_at, name, parent_category_id) values (79, CURRENT_DATE, 'Sports', null);
+            insert into category_localized (id, locale, name, category_id) values (157, 'en', 'Sports', 79);
+            insert into category_localized (id, locale, name, category_id) values (158, 'ar', 'رياضة', 79);
+            --       - Football
+            insert into category (id, created_at, name, parent_category_id) values (80, CURRENT_DATE, 'Football', 79);
+            insert into category_localized (id, locale, name, category_id) values (159, 'en', 'Football', 80);
+            insert into category_localized (id, locale, name, category_id) values (160, 'ar', 'كرة القدم', 80);
+            --       - Basketball
+            insert into category (id, created_at, name, parent_category_id) values (81, CURRENT_DATE, 'Basketball', 79);
+            insert into category_localized (id, locale, name, category_id) values (161, 'en', 'Basketball', 81);
+            insert into category_localized (id, locale, name, category_id) values (162, 'ar', 'كرة السلة', 81);
+            --       - Volleyball
+            insert into category (id, created_at, name, parent_category_id) values (82, CURRENT_DATE, 'Volleyball', 79);
+            insert into category_localized (id, locale, name, category_id) values (163, 'en', 'Volleyball', 82);
+            insert into category_localized (id, locale, name, category_id) values (164, 'ar', 'كرة الطائرة', 82);
+            --       - Tennis
+            insert into category (id, created_at, name, parent_category_id) values (83, CURRENT_DATE, 'Tennis', 79);
+            insert into category_localized (id, locale, name, category_id) values (165, 'en', 'Tennis', 83);
+            insert into category_localized (id, locale, name, category_id) values (166, 'ar', 'تنس', 83);
+            --       - Archery
+            insert into category (id, created_at, name, parent_category_id) values (84, CURRENT_DATE, 'Archery', 79);
+            insert into category_localized (id, locale, name, category_id) values (167, 'en', 'Archery', 84);
+            insert into category_localized (id, locale, name, category_id) values (168, 'ar', 'الرماية', 84);
+            --       - Badminton
+            insert into category (id, created_at, name, parent_category_id) values (85, CURRENT_DATE, 'Badminton', 79);
+            insert into category_localized (id, locale, name, category_id) values (169, 'en', 'Badminton', 85);
+            insert into category_localized (id, locale, name, category_id) values (170, 'ar', 'تنس الريشة', 85);
+            --       - Cricket
+            insert into category (id, created_at, name, parent_category_id) values (86, CURRENT_DATE, 'Cricket', 79);
+            insert into category_localized (id, locale, name, category_id) values (171, 'en', 'Cricket', 86);
+            insert into category_localized (id, locale, name, category_id) values (172, 'ar', 'كريكيت', 86);
+            --       - Boling
+            insert into category (id, created_at, name, parent_category_id) values (87, CURRENT_DATE, 'Boling', 79);
+            insert into category_localized (id, locale, name, category_id) values (173, 'en', 'Boling', 87);
+            insert into category_localized (id, locale, name, category_id) values (174, 'ar', 'البولينغ', 87);
+            --       - Boxing
+            insert into category (id, created_at, name, parent_category_id) values (88, CURRENT_DATE, 'Boxing', 79);
+            insert into category_localized (id, locale, name, category_id) values (175, 'en', 'Boxing', 88);
+            insert into category_localized (id, locale, name, category_id) values (176, 'ar', 'ملاكمة', 88);
+            --       - Surfing
+            insert into category (id, created_at, name, parent_category_id) values (89, CURRENT_DATE, 'Surfing', 79);
+            insert into category_localized (id, locale, name, category_id) values (177, 'en', 'Surfing', 89);
+            insert into category_localized (id, locale, name, category_id) values (178, 'ar', 'ركوب الامواج', 89);
+            --       - Hockey
+            insert into category (id, created_at, name, parent_category_id) values (90, CURRENT_DATE, 'Hockey', 79);
+            insert into category_localized (id, locale, name, category_id) values (179, 'en', 'Hockey', 90);
+            insert into category_localized (id, locale, name, category_id) values (180, 'ar', 'الهوكي', 90);
+            --       - Ice skating
+            insert into category (id, created_at, name, parent_category_id) values (91, CURRENT_DATE, 'Ice skating', 79);
+            insert into category_localized (id, locale, name, category_id) values (181, 'en', 'Ice skating', 91);
+            insert into category_localized (id, locale, name, category_id) values (182, 'ar', 'التزلج على الجليد', 91);
+            --       - Yoga
+            insert into category (id, created_at, name, parent_category_id) values (92, CURRENT_DATE, 'Yoga', 79);
+            insert into category_localized (id, locale, name, category_id) values (183, 'en', 'Yoga', 92);
+            insert into category_localized (id, locale, name, category_id) values (184, 'ar', 'اليوجا', 92);
+            --       - Fencing
+            insert into category (id, created_at, name, parent_category_id) values (93, CURRENT_DATE, 'Fencing', 79);
+            insert into category_localized (id, locale, name, category_id) values (185, 'en', 'Fencing', 93);
+            insert into category_localized (id, locale, name, category_id) values (186, 'ar', 'سياج', 93);
+            --       - Fitness
+            insert into category (id, created_at, name, parent_category_id) values (94, CURRENT_DATE, 'Fitness', 79);
+            insert into category_localized (id, locale, name, category_id) values (187, 'en', 'Fitness', 94);
+            insert into category_localized (id, locale, name, category_id) values (188, 'ar', 'الرشاقة', 94);
+            --       - Aerobics
+            insert into category (id, created_at, name, parent_category_id) values (95, CURRENT_DATE, 'Aerobics', 79);
+            insert into category_localized (id, locale, name, category_id) values (189, 'en', 'Aerobics', 95);
+            insert into category_localized (id, locale, name, category_id) values (190, 'ar', 'رياضة بدنية', 95);
+            --       - Karate
+            insert into category (id, created_at, name, parent_category_id) values (96, CURRENT_DATE, 'Karate', 79);
+            insert into category_localized (id, locale, name, category_id) values (191, 'en', 'Karate', 96);
+            insert into category_localized (id, locale, name, category_id) values (192, 'ar', 'الكاراتيه', 96);
+            --       - Weight-lifting
+            insert into category (id, created_at, name, parent_category_id) values (97, CURRENT_DATE, 'Weight-lifting', 79);
+            insert into category_localized (id, locale, name, category_id) values (193, 'en', 'Weight-lifting', 97);
+            insert into category_localized (id, locale, name, category_id) values (194, 'ar', 'رفع الأثقال', 97);
+            --       - Baseball
+            insert into category (id, created_at, name, parent_category_id) values (98, CURRENT_DATE, 'Baseball', 79);
+            insert into category_localized (id, locale, name, category_id) values (195, 'en', 'Baseball', 98);
+            insert into category_localized (id, locale, name, category_id) values (196, 'ar', 'البيسبول', 98);
+            --       - American football
+            insert into category (id, created_at, name, parent_category_id) values (99, CURRENT_DATE, 'American football', 79);
+            insert into category_localized (id, locale, name, category_id) values (197, 'en', 'American football', 99);
+            insert into category_localized (id, locale, name, category_id) values (198, 'ar', 'كرة القدم الأمريكية', 99);
+            --       - Wrestling
+            insert into category (id, created_at, name, parent_category_id) values (100, CURRENT_DATE, 'Wrestling', 79);
+            insert into category_localized (id, locale, name, category_id) values (199, 'en', 'Wrestling', 100);
+            insert into category_localized (id, locale, name, category_id) values (200, 'ar', 'المصارعة', 100);
+            --       - High jumping
+            insert into category (id, created_at, name, parent_category_id) values (101, CURRENT_DATE, 'High jumping', 79);
+            insert into category_localized (id, locale, name, category_id) values (201, 'en', 'High jumping', 101);
+            insert into category_localized (id, locale, name, category_id) values (202, 'ar', 'القفز العالي', 101);
+            --       - Parachute jumping
+            insert into category (id, created_at, name, parent_category_id) values (102, CURRENT_DATE, 'Parachute jumping', 79);
+            insert into category_localized (id, locale, name, category_id) values (203, 'en', 'Parachute jumping', 102);
+            insert into category_localized (id, locale, name, category_id) values (204, 'ar', 'القفز المظلي', 102);
+            --       - Car racing
+            insert into category (id, created_at, name, parent_category_id) values (103, CURRENT_DATE, 'Car racing', 79);
+            insert into category_localized (id, locale, name, category_id) values (205, 'en', 'Car racing', 103);
+            insert into category_localized (id, locale, name, category_id) values (206, 'ar', 'سباق السيارات', 103);
+            --       - Motorcycles
+            insert into category (id, created_at, name, parent_category_id) values (104, CURRENT_DATE, 'Motorcycles', 79);
+            insert into category_localized (id, locale, name, category_id) values (207, 'en', 'Motorcycles', 104);
+            insert into category_localized (id, locale, name, category_id) values (208, 'ar', 'ركوب الدراجات', 104);
+            --       - Jogging
+            insert into category (id, created_at, name, parent_category_id) values (105, CURRENT_DATE, 'Jogging', 79);
+            insert into category_localized (id, locale, name, category_id) values (209, 'en', 'Jogging', 105);
+            insert into category_localized (id, locale, name, category_id) values (210, 'ar', 'الركض', 105);
+            --       - Table tennis
+            insert into category (id, created_at, name, parent_category_id) values (106, CURRENT_DATE, 'Table tennis', 79);
+            insert into category_localized (id, locale, name, category_id) values (211, 'en', 'Table tennis', 106);
+            insert into category_localized (id, locale, name, category_id) values (212, 'ar', 'تنس طاولة', 106);
+            --       - Fishing
+            insert into category (id, created_at, name, parent_category_id) values (107, CURRENT_DATE, 'Fishing', 79);
+            insert into category_localized (id, locale, name, category_id) values (213, 'en', 'Fishing', 107);
+            insert into category_localized (id, locale, name, category_id) values (214, 'ar', 'صيد السمك', 107);
+            --       - Judo
+            insert into category (id, created_at, name, parent_category_id) values (108, CURRENT_DATE, 'Judo', 79);
+            insert into category_localized (id, locale, name, category_id) values (215, 'en', 'Judo', 108);
+            insert into category_localized (id, locale, name, category_id) values (216, 'ar', 'الجودو', 108);
+            --       - Climbing
+            insert into category (id, created_at, name, parent_category_id) values (109, CURRENT_DATE, 'Climbing', 79);
+            insert into category_localized (id, locale, name, category_id) values (217, 'en', 'Climbing', 109);
+            insert into category_localized (id, locale, name, category_id) values (218, 'ar', 'التسلق', 109);
+            --       - Billiard
+            insert into category (id, created_at, name, parent_category_id) values (110, CURRENT_DATE, 'Billiard', 79);
+            insert into category_localized (id, locale, name, category_id) values (219, 'en', 'Billiard', 110);
+            insert into category_localized (id, locale, name, category_id) values (220, 'ar', 'بلياردو', 110);
+            --       - Shooting
+            insert into category (id, created_at, name, parent_category_id) values (111, CURRENT_DATE, 'Shooting', 79);
+            insert into category_localized (id, locale, name, category_id) values (221, 'en', 'Shooting', 111);
+            insert into category_localized (id, locale, name, category_id) values (222, 'ar', 'الرمي/اطلاق الرصاص', 111);
+            --       - Horse-racing
+            insert into category (id, created_at, name, parent_category_id) values (112, CURRENT_DATE, 'Horse-racing', 79);
+            insert into category_localized (id, locale, name, category_id) values (223, 'en', 'Horse-racing', 112);
+            insert into category_localized (id, locale, name, category_id) values (224, 'ar', 'سباق الخيل', 112);
+            --       - Horse-riding
+            insert into category (id, created_at, name, parent_category_id) values (113, CURRENT_DATE, 'Horse-riding', 79);
+            insert into category_localized (id, locale, name, category_id) values (225, 'en', 'Horse-riding', 113);
+            insert into category_localized (id, locale, name, category_id) values (226, 'ar', 'ركوب الخيل', 113);
+            --       - Golf
+            insert into category (id, created_at, name, parent_category_id) values (114, CURRENT_DATE, 'Golf', 79);
+            insert into category_localized (id, locale, name, category_id) values (227, 'en', 'Golf', 114);
+            insert into category_localized (id, locale, name, category_id) values (228, 'ar', 'غولف', 114);
+            --       - Skating
+            insert into category (id, created_at, name, parent_category_id) values (115, CURRENT_DATE, 'Skating', 79);
+            insert into category_localized (id, locale, name, category_id) values (229, 'en', 'Skating', 115);
+            insert into category_localized (id, locale, name, category_id) values (230, 'ar', 'الكرلنج', 115);
+            --       - Curling sport
+            insert into category (id, created_at, name, parent_category_id) values (116, CURRENT_DATE, 'Curling sport', 79);
+            insert into category_localized (id, locale, name, category_id) values (231, 'en', 'Curling sport', 116);
+            insert into category_localized (id, locale, name, category_id) values (232, 'ar', 'التزلج', 116);
+            ----------------------------------------------
+            -- Rewind sequences
+            select setval('category_seq_gen', 116);
+            select setval('category_localized_seq_gen', 232);
+       </sql>
+    </changeSet>
+</databaseChangeLog>

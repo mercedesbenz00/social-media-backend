@@ -1,0 +1,41 @@
+server:
+  port: ${PORT:8099}
+management:
+  health:
+    rabbit:
+      enabled: false
+spring:
+  kafka:
+    properties:
+      schema.registry.url: ${KAFKA_SCHEMA_REGISTRY_URL:http://localhost:8077}
+    producer:
+      bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+  application:
+    name: short-video-stats-service
+  servlet:
+    multipart:
+      max-request-size: ${MAX_REQUEST_SIZE:250MB}
+      max-file-size: ${MAX_FILE_SIZE:250MB}
+  main:
+    allow-bean-definition-overriding: true
+  autoconfigure:
+    exclude: org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration
+  jackson:
+    serialization:
+      write_dates_as_timestamps: true
+
+security:
+  oauth2:
+    resource:
+      id: short-video-stats-service
+      user-info-uri: ${USER_INFO_URL:http://localhost:8081/api/v1/persons/profile}
+    client:
+      client-id: client
+      client-secret: client_secret
+
+sentry:
+  dsn: ${SENTRY_DSN:https://5807e19a3a2943f6862270d23262508f@o4505390493073408.ingest.sentry.io/4505390512340992}
+  environment: ${SENTRY_ENVIRONMENT:local}
+
+
+

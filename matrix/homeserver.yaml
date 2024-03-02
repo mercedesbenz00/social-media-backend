@@ -1,0 +1,153 @@
+# Generate Configuration
+server_name: "matrix"
+pid_file: /data/homeserver.pid
+web_client: False
+soft_file_limit: 0
+log_config: "/data/matrix.log.config"
+
+listeners:
+  - port: 8008
+    bind_addresses: ['::']
+    type: http
+    tls: false
+    x_forwarded: true
+    resources:
+      - names: [client]
+        compress: true
+      - names: [federation]
+        compress: false
+
+# Database
+database:
+  name: "psycopg2"
+  args:
+    user: earthlink
+    password: example
+    database: synapse
+    host: db
+    port: 5432
+    cp_min: 5
+    cp_max: 10
+
+event_cache_size: "10K"
+# Rate limiting
+rc_messages_per_second: 0.2
+rc_message_burst_count: 10.0
+federation_rc_window_size: 1000
+federation_rc_sleep_limit: 10
+federation_rc_sleep_delay: 500
+federation_rc_reject_limit: 50
+federation_rc_concurrent: 3
+
+# Files
+media_store_path: /data/media_store
+uploads_path: /data/uploads
+max_upload_size: 10M
+max_image_pixels: 32M
+dynamic_thumbnails: false
+
+media_storage_providers:
+  - module: s3_storage_provider.S3StorageProviderBackend
+    store_local: True
+    store_remote: True
+    store_synchronous: True
+    config:
+      bucket: social-media-bucket
+      # All of the below options are optional, for use with non-AWS S3-like
+      # services, or to specify access tokens here instead of some external method.
+      region_name: us-east-1
+      endpoint_url: http://minio:9000 #this variable should be checked by DevOps and updated for each environment necessarily.
+      access_key_id: minio #this variable should be checked by DevOps and updated for each environment necessarily.
+      secret_access_key: password #this variable should be checked by DevOps and updated for each environment necessarily.
+
+      # The object storage class used when uploading files to the bucket.
+      # Default is STANDARD.
+      #storage_class: "STANDARD_IA"
+
+      # The maximum number of concurrent threads which will be used to connect
+      # to S3. Each thread manages a single connection. Default is 40.
+      #
+      #threadpool_size: 20
+
+# Thumbnails
+thumbnail_sizes:
+  - width: 32
+    height: 32
+    method: crop
+  - width: 96
+    height: 96
+    method: crop
+  - width: 320
+    height: 240
+    method: scale
+  - width: 640
+    height: 480
+    method: scale
+  - width: 800
+    height: 600
+    method: scale
+
+# Captcha
+recaptcha_public_key: YOUR_PUBLIC_KEY
+recaptcha_private_key: YOUR_PRIVATE_KEY
+enable_registration_captcha: false
+recaptcha_siteverify_api: "https://www.google.com/recaptcha/api/siteverify"
+
+# Turn
+turn_uris: []
+turn_shared_secret: YOUR_SHARED_SECRET
+turn_user_lifetime: 1h
+turn_allow_guests: true
+
+# Registration
+enable_registration: false
+registration_shared_secret: ab447310d429e5a6f31ae63ba0d903e178c6fb5c9d4308114fdf8c4db81fd398
+bcrypt_rounds: 12
+allow_guest_access: false
+enable_group_creation: true
+
+trusted_third_party_id_servers:
+  - matrix.org
+  - vector.im
+
+# Metrics
+enable_metrics: False
+report_stats: False
+
+## API Configuration ##
+room_invite_state_types:
+  - "m.room.join_rules"
+  - "m.room.canonical_alias"
+  - "m.room.avatar"
+  - "m.room.name"
+
+filter_timeline_limit: -1
+
+app_service_config_files: []
+
+macaroon_secret_key: 53b1ccb73628e288b34aeff464ba23bdff7503486bd567b6d0807b88f2360a73
+expire_access_token: false
+
+## Signing Keys ##
+signing_key_path: /data/matrix.signing.key
+old_signing_keys: {}
+key_refresh_interval: 1d
+
+# The trusted servers to download signing keys from.
+perspectives:
+  servers:
+    "matrix.org":
+      verify_keys:
+        "ed25519:auto":
+          key: "Noi6WqcDj0QmPxCNQqgezwTlBKrfqehY1u2FyWP9uYw"
+password_config:
+  enabled: true
+modules:
+  - module: rest_auth_provider.RestAuthProvider
+    config:
+      policy:
+        login:
+          profile:
+            name: true
+      endpoint: http://host.docker.internal:8081 #this needs to be changed as per the environment and route to the person service, current value can be used in dev env
+disable_existing_loggers: false

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet id="1701968012129-1" author="aakinin">
+        <update tableName="comment">
+            <column name="author_uuid" valueComputed="(SELECT person_uuid FROM person WHERE person.person_id = comment.author_id)"/>
+            <where>author_uuid IS NULL</where>
+        </update>
+    </changeSet>
+</databaseChangeLog>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+    <changeSet author="bauyrzhan.ibraimov" id="001-category-media-urls" labels="Updating category cover and avatar ids">
+        <sql>
+            update category c set avatar_id = (select id from media_file m  where m.file_type='CATEGORY_AVATAR' and m.owner_id=c.id );
+            update category c set cover_id = (select id from media_file m  where m.file_type='CATEGORY_COVER' and m.owner_id=c.id );
+        </sql>
+    </changeSet>
+</databaseChangeLog>

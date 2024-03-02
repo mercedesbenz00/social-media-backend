@@ -1,0 +1,24 @@
+# Drone for group service
+kind: pipeline
+name: default
+clone:
+type: docker
+steps:
+  - name: Clone
+    image: plugins/git
+    commands:
+      - git submodule update --init
+      - git submodule update --init --recursive
+  - name: push
+    image: plugins/docker
+    settings:
+      tags:
+        - latest
+        - ${DRONE_COMMIT:0:7}
+      repo: registry.earthlink.iq/social/group-service
+      dockerfile: Dockerfile
+      registry: registry.earthlink.iq
+      username:
+        from_secret: docker_username
+      password:
+        from_secret: docker_password

@@ -1,0 +1,29 @@
+# Drone for person service
+kind: pipeline
+name: default
+clone:
+type: docker
+steps:
+  - name: list
+    image: alpine
+    commands:
+      - ls -l
+      - ls -l identity-server-spring-security/
+  - name: Clone
+    image: plugins/git
+    commands:
+      - git submodule update --init
+      - git submodule update --init --recursive
+  - name: push
+    image: plugins/docker
+    settings:
+      tags:
+        - latest
+        - "0.1"
+      repo: registry.earthlink.iq/social/person-service
+      dockerfile: Dockerfile
+      registry: registry.earthlink.iq
+      username:
+        from_secret: docker_username
+      password:
+        from_secret: docker_password
